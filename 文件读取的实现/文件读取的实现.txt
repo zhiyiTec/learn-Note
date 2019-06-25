@@ -1,0 +1,34 @@
+直接举一个小的Demo:
+	方法1：使用RandomAccessFile进行读取
+		public static void listDicTory(File file) throws IllegalAccessException, IOException {
+			RandomAccessFile raf=new RandomAccessFile(file, "rw");
+			raf.seek(0);//先把指针移动到头部
+			byte bytes1[]=new byte[(int)raf.length()];//直接读取所有的字节数
+			raf.read(bytes1);//将数据写入缓冲区bytes1
+			String content=new String(bytes1,"utf-8");
+			System.out.println(content);}
+		方法2：利用字节流读取：InputStreamReader
+		public static void listDicTory(File file) throws IllegalAccessException, IOException {
+			FileInputStream in=new FileInputStream(file);
+			InputStreamReader inReader=new InputStreamReader(in);
+			int c;
+			while((c=inReader.read())!=-1) {
+				System.out.print((char)c);
+			}
+	}
+	方法3：BufferedReader  字符流，缺点是不能识别换行
+		public static void listDicTory2(File file1) throws IllegalAccessException, IOException {
+		FileInputStream inputStream=new FileInputStream(file1);
+		InputStreamReader inputStreamReader=new InputStreamReader(inputStream,"utf-8");
+		BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
+		String line;
+		while((line=bufferedReader.readLine())!=null) {
+			System.out.println(line);
+		}
+}
+		//以下是测试方法：
+	public static void main(String[] args) throws IllegalAccessException, IOException {
+			File file=new File("C:\\Users\\17732\\Desktop\\test\\testFile.txt");
+			listDicTory(file);}
+
+			结论：RandomAccessFile效率比InputStreamReader低

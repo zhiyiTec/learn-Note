@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--下面用于引入bootStrap样式-->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <!--引入boootBox-->
+    <script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.js"></script>
+    <!--引入下拉菜单样式（自定义的）-->
+    <link rel="stylesheet" href="css/dropdown-submenu.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h2>Bootstrap 3多级下拉菜单</h2>
+            <hr>
+            <div class="dropdown">
+                <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="javascript:;">
+                    下拉多级菜单 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li><a href="javascript:;">一级菜单</a></li>
+                    <li><a href="javascript:;">一级菜单</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="javascript:;">一级菜单</a>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="javascript:;">二级菜单</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-submenu">
+                                <a href="javascript:;">二级菜单</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:;">三级菜单</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

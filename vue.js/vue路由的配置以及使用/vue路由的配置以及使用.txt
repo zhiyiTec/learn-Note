@@ -1,0 +1,27 @@
+1.先cd切换到对应的工程目录，然后使用npm install --save vue-router 进行安装
+2.在main.js中进行引入：(注：所有的步骤都是在Main.js文件中创建的)
+	import VueRouter from 'vue-router'(注：如果在刚开始创建项目的时候选择创建了路由，就不需要在引入了，一般main.js中已经出现import router from './router',当然你也可以删除自定义)
+3.那么就看一下自定义的路由怎么使用：
+	将router放在vue中：
+	Vue.use(VueRouter)
+4.设置路由：
+	const router = new VueRouter({
+		mode: 'history',
+		routes: [{
+				path: "/user",//此处表示拦截所有的user请求
+				component: Users//注册它时现在头部import对应的vue组件
+			},
+			{
+				path: "/test",//此处表示拦截所有的user请求
+				component: Test1//注册它时现在头部import对应的vue组件
+			}
+		]
+	})
+5.在new Vue中先引用上面设置的路由router
+	下面是个小例子自行参考：但是必不可少的是<router-link to="/user">:to:表示跳转的方向
+										<router-view></router-view>表示可以使用路由视图
+		new Vue({
+			router,
+			template: '<div id="app"><router-link to="/user">Users</router-link><hr/><router-link to="/test">test</router-link><hr/><router-view></router-view></div>'
+		}).$mount("#app")//表示操作的根节点是id="app"的容器
+		所有的代码请参考vue路由的配置以及使用.docx

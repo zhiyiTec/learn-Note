@@ -1,0 +1,2 @@
+1.先下载weui.wxss，里面包含着微信的自定义的css样式
+2.引入方式：@import '../weui.wxss'样式

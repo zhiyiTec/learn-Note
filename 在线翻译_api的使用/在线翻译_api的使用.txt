@@ -1,0 +1,18 @@
+1.要想实现翻译功能，必须借助官方的Api,先进入一个官方的翻译文档：https://translate.yandex.com
+2.通过http请求这个网址来实现翻译功能：
+		http需要vue resource,所以先安装并配置vue-resource，详情请参考vue.js笔记（简单的用户管理2	/3.vue请求http）
+3.安装完成之后调用vue http:
+	this.$http.get(
+		"https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20181111T115634Z.a26b275c72ad9f9f.9b5c1e7d6c8fd92b6f269d7fa2843a8c4a07f1be&lang=en&text="+text).then(function(response){
+		console.log(response); 
+	})
+	调用这个网址的方法具体如下：
+		https://translate.yandex.net/api/v1.5/tr.json/translate
+		? key=<API key>//这个key：就是秘钥，位于https://tech.yandex.com/translate/主页下的Get a free API key.点击进入，如果是还没创建
+		点击创建即可
+		& text=<text to translate>//这个text就是你要翻译的内容
+		& lang=<translation direction>//lang是指你要翻译成的语言，参考https://tech.yandex.com/translate/doc/dg/concepts/api-overview-docpage/
+		& [format=<text format>]
+		& [options=<translation options>]
+		& [callback=<name of the callback function>]
+		至于是否翻译成功，可以console.log(response);查看控制台中返回的code，具体的值所对应的状态参考https://tech.yandex.com/translate/doc/dg/reference/detect-docpage/

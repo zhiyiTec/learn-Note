@@ -1,0 +1,298 @@
+											1.文件的编码
+1.按照惯例先写知识点，在讲主要程序先写一下新知识：
+	str.getBytes()会把str字符串变为项目同样的编码，返回的类型为byte byres[]，但是我们可以通过设置来改变字符编码：
+	byte by[]=str.getBytes("utf-8"),设置成utf-8的字符编码
+	Integer.toHexString这个方法是把字节（转换成了int）以16进制的方式显示。
+	&是位操作符,“按位与”当&作为位运算时，1&1=1 ，1&0=0，0&0=0
+	0x表示是十六进制,ff是两个十六进制的数,每个f用二进制表示是1111,所以占四位（bit）,两个f（ff）占八位（bit），八位（bit）
+	也就是一个字节（byte）.
+	首先toHexString传的参数应该是int类型32位，此处传的是byte类型8位，所以前面需要补24个0。然后& 0xff 
+	就是把前面24个0去掉只要后8位。	int本身就是由4组byte组成，并且Java中本身就以byte读取。所以此处传参没有问题。
+	toHexString(b & 0xff)相当于做了一次位的与运算，将前24位字符省略，将后8位保留。即只转了后8位。即可得到两个十六进制的值。
+	总而言之，就是把转16进制的时候去掉前面的24个0
+2.不同的字符编码，中文和英文占得位数：
+	gbk:中文：3字节，英文：1个字节
+	utf-8:中文：3字节，英文：1个字节
+3.有一个注意点需要注意一下就是当把字符序列转化为字符串时，也需要同样的字符编码，否则就会出现乱码
+	至于具体如何转换，举一个小demo:
+		String str1=new String(byte,"utf-8"),byte:字符序列，后面的是和byte同样的字符编码
+
+
+										2.FIle的使用
+1.新知识： 创建目录：File file=new File("文件或目录的路径");
+				  file.mkdirs();//创建一级或者多级目录
+				  file.createNewFile();//创建文件
+				  file.getAbsolutePath()//获取文件的绝对路径
+				  file.getName()//获取文件/目录名
+				  file.getParentFile()//获取所在父目录的路径
+		 判断目录或者文件是否存在：file.exists();
+								file.isDirectory()//判断是否是一个目录
+								file.isFile()//判断是否是一个文件
+
+
+
+									3.遍历目录
+1.新知识：
+	获取这个目录下所有的目录名以及文件名，但是不包含子目录中的内容
+		File dir=new File("路径");
+		String fileName[]=dir.list();
+		 for(String fiN:fileName) {
+			// System.out.println(dir+"\\"+fiN);//这种方式是输出这个文件的全部路径
+			 System.out.println(fiN);//这种方式是只输出这个文件名
+			 }
+	获取目录中所有的内容，包括子目录：
+		public static void listDicTory(File dir) throws IllegalAccessException {
+		 if(!dir.exists()) {
+			 throw new IllegalAccessException("目录"+dir+"不存在");
+		 }
+		 if(!dir.isDirectory()) {
+			 throw new IllegalAccessException(dir+"不是目录");
+		 }
+		 //如果要继续遍历子目录下的内容，就要进行递归操作
+		 File files[]=dir.listFiles();//返回的是子目录（文件的抽象）
+		 if(files!=null&&files.length>=1) {
+			 for(File f:files) {
+				 if(f.isDirectory()) {
+					 //递归
+					 listDicTory(f);
+					 System.out.println(f);
+				 }else { System.out.println(f); } } }}
+
+
+				 					4.RandomAccessFIle类的使用
+1.RandomAccessFIle支持随机访问文件，可以访问文件的任意位置
+2.打开文件有两种模式：（1）.rw:读写；（2）.r:只读；
+		File file=new File("路径");
+		定义使用的方法：RandomAccessFile raf=new RandomAccessFile(file, "rw");
+		它还包括一个指针，打开文件时指针在开头即pointer=0
+3.写方法：
+	raf.write(内容)，一次只写一个字节，同时指针下移一位，准备再次写入
+4.读方法：
+	raf.read();一次也只读一个字节
+5.读写操作结束时一定要关闭
+6.获取指针位置：	raf.getFilePointer();
+7.读文件时必须把指针移动到文件的头部: raf.seek(0);
+8.获取读取文件的字节长度：raf.length()
+9.写文件的方法：
+	String s="内容";
+	 byte bytes[]=s.getBytes("utf-8");
+	 raf.write(bytes);
+10.读文件的方法：
+		raf.seek(0);//先把指针移动到头部
+		byte bytes1[]=new byte[(int)raf.length()];//直接读取所有的字节数
+		raf.read(bytes1);
+		String content=new String(bytes1,"utf-8");
+11. raf.close();
+
+
+												5.字节流之文件输出流FileInputStram
+1.I/O流：
+	字节流、字符流
+		<1>.字节流：
+			InputStream:用于读取
+			OutputStrem:用于写入
+		<2>.读到-1就表示读到了结尾
+具体使用FileInputStram：
+	FileInputStream in=new FileInputStream(文件路径+文件名);//比如：C:\\Users\\17732\\Desktop\\test\\testFile.txt
+	int content;
+	while((content=in.read())!=-1) {System.out.print(Integer.toHexString(content)+"  ");}
+	in.close();
+2.
+		FileInputStream in=new FileInputStream(文件路径+文件名);
+		byte buf[]=new byte[20*1024];
+		//表示从第0个开始读，最多读buf的长度大小，把读取的内容放在buf中
+		int bytes=in.read(buf,0,buf.length);
+		for(int i=0;i<bytes;i++) {
+			System.out.print(Integer.toHexString(buf[i])+"  ");
+		}
+		in.close();
+
+
+												6.字节文件输出流FileOutputStram
+1.FileOutputStram的使用：	
+		FileOutputStream out=new FileOutputStream(fileName,signal);:signal:表示在内容后面追加，false：表示覆盖原来的内容
+			out.write('A');//写了A的第八位
+			out.write('B');//写了B的低八位
+			int a=10;//由于一个int类型占4个字节，但是一次写8位，所以需要所以4次
+			out.write(a>>>24);//把a右移24位，移动到低8位
+		写入字符串的方法：
+			String string="Hello Word";
+	byte buf[]=string.getBytes("utf-8");
+	out.write(buf);
+2.文档拷贝的实现：参考【文件copy的实现.txt】
+
+
+
+												7.DataOutputStram以及DataInputStream
+1.这是对“流”功能的扩展，可以更加方便的读取int long 以及字符等类型的数据
+   DataOutputStram的用法：
+		FileOutputStream out=new FileOutputStream(file);//此处的file为file对象即：File file=new File("路径");
+		DataOutputStream dos=new DataOutputStream(out);
+		dos.writeInt(1);
+		dos.writeUTF("Hello WOrd");//采用utf-8的编码写出
+		dos.writeChars("你好，世界");//采用utf-16be的编码写出
+		dos.writeBoolean(true);
+		dos.writeLong(10l);
+		dos.writeDouble(0.02);
+		dos.writeLong(10l);
+		dos.close();
+	注：这种情况下如果再执行一次只能覆盖掉原来写入的，不会自动追加
+	DataInputStream的用法：
+		FileInputStream in=new FileInputStream(file);
+		DataInputStream dis=new DataInputStream(in);
+		int i=dis.readInt();
+		System.out.println(i);
+		String s=dis.readUTF();
+		System.out.println(s);
+		Boolean b=dis.readBoolean();
+		System.out.println(b);
+		dis.close();
+	注：这种情况下只会默认读取前面的，而且必须按照顺序进行读取
+
+
+											8.字节缓冲流————BufferInputStream&&BufferOutputStream
+1.一般在打开文件进行写入的时候或者进行读取操作的时候都会加上缓冲，用于提高IO的性能
+	FileOutputStream中的write方法：相当于一滴一滴的把水转移到另一个容器
+	 DataOutputStram中的write方法：相当于一瓢一瓢的把水转移到另一个容器
+  	BufferOutputStream中的write方法：相当于一瓢一瓢的把水转移到桶中
+  至于BufferedInputStream，BufferedOutputStream怎么使用，请参考【文件copy的实现.txt】
+
+
+											9.字节字符转换流————InputStreamReader&&OutputStremWriter
+1.首先认识一下文本文件与文本的区别
+		java的文本：是byte byte byte....的数据序列
+		文件：是16位无符号整数，是字符的unicode编码
+		文本文件：是文本（char）序列按照某种编码方案（utf-8,utf-16,gbk312等）序列化byte的结果的存储
+2.字符流事务基本实现：
+	InputStreamReader:完成byte流解析为char流，按照编码进行解析
+	OutputStremWriter:提供char流到byte流，按照编码进行处理
+	具体如何使用：
+	InputStreamReader:
+		FileInputStream in=new FileInputStream(file);
+		InputStreamReader inReader=new InputStreamReader(in,编码);//比如：InputStreamReader inReader=new InputStreamReader(in,"utf-8");
+		int c;
+		while((c=inReader.read())!=-1) {
+			System.out.print((char)c);
+		}
+	OutputStremWriter:
+		FileOutputStream out=new FileOutputStream(file2,true);//true:不覆盖原来文件,false:覆盖原来的文件
+		OutputStreamWriter outWriter=new OutputStreamWriter(out, "utf-8");
+		outWriter.write((char)c);
+		outWriter.flush();//这个操作必不可少
+	
+		
+	使用InputStreamReader&OutputStremWriter完成copy功能
+		FileInputStream in=new FileInputStream(file);
+		InputStreamReader inReader=new InputStreamReader(in);
+		FileOutputStream out=new FileOutputStream(file2,true);//不覆盖原来文件
+		OutputStreamWriter outWriter=new OutputStreamWriter(out, "utf-8");
+		int c;
+		while((c=inReader.read())!=-1) {
+			
+			outWriter.write((char)c);
+			outWriter.flush();
+		}
+		System.out.println("复制完成");
+		inReader.close();
+		outWriter.close();
+
+
+										10.字符流之文件读写流：FileReader&&FileWriter
+1.FileReader:
+	FileReader fr=new FileReader(file);
+	fr.read();
+2.FileWriter:
+	FileWriter fw=new FileWriter(file2);
+	fw.write((char)c);
+			fw.flush();//flush必不可少
+3.两者的混合使用实现copy功能：
+		FileReader fr=new FileReader(file);
+		FileWriter fw=new FileWriter(file2);
+		int c;
+		while((c=fr.read())!=-1) {
+			fw.write((char)c);
+			fw.flush();
+		}
+		fr.close();
+		fw.close();
+		
+
+										11.字符流的过滤器——————BufferedReader&&BufferedWriter
+1.BufferedReader:可以每次读取一行
+  BufferedWriter:可以每次写一行
+	<1>.BufferedReader：
+ 	    FileInputStream inputStream=new FileInputStream(file1);
+		InputStreamReader inputStreamReader=new InputStreamReader(inputStream,"utf-8");
+		BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
+	如何读：
+		String line;//其他的读取方法都是用Int 
+		while((line=bufferedReader.readLine())!=null) {
+			System.out.println(line);
+		}
+	<2>.BufferedWriter:
+		FileOutputStream outputStream=new FileOutputStream(file2);
+		OutputStreamWriter outputStreamWriter=new OutputStreamWriter(outputStream, "utf-8");
+		BufferedWriter bufferedWriter=new BufferedWriter(outputStreamWriter);
+		while((line=bufferedReader.readLine())!=null) {
+			bufferedWriter.write(line);
+			//由于BufferedReader以及BufferedWriter不具有换行功能，所以手动添加换行
+			bufferedWriter.newLine();
+			bufferedWriter.flush();//此处必须有flush
+		}
+2.BufferedReader&&BufferedWriter实现文件copy的功能
+	FileInputStream inputStream=new FileInputStream(file1);
+		InputStreamReader inputStreamReader=new InputStreamReader(inputStream,"utf-8");
+		BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
+		//下面用于定义BufferedWriter 
+		FileOutputStream outputStream=new FileOutputStream(file2);
+		OutputStreamWriter outputStreamWriter=new OutputStreamWriter(outputStream, "utf-8");
+		BufferedWriter bufferedWriter=new BufferedWriter(outputStreamWriter);
+		String line;
+		while((line=bufferedReader.readLine())!=null) {
+			bufferedWriter.write(line);
+			//由于BufferedReader以及BufferedWriter不具有换行功能，所以手动添加换行
+			bufferedWriter.newLine();
+			bufferedWriter.flush();//此处必须有flush
+		}
+		bufferedReader.close();
+		bufferedWriter.close();
+	
+
+									12.对象的序列化以及反序列化
+1.对象的序列化：将object类型转化成byte序列；
+  对象的反序列化：将byte转化为object类型
+2.序列化流：ObjectOutputStream 是过滤流-----writeObject
+  反序列化流：序列化流：ObjectInputStream---readObject
+3.序列化接口：Serializable；
+	对象必须实现序列化接口才能实现序列化，否则就会出现异常，而且这个接口中没有任何的方法
+4.ObjectOutputStream：
+	 FileOutputStream outputStream=new FileOutputStream(file1);
+		 ObjectOutputStream objectOutputStream=new ObjectOutputStream(outputStream);
+		 Student student=new Student("zx","1511",21);//此处的student必须在定义时继承了接口Serializable即：public class Student implements Serializable
+		 objectOutputStream.writeObject(student);
+		 objectOutputStream.flush();//此处必须加上flush
+		 objectOutputStream.close();
+  ObjectInputStream：
+		FileInputStream inputStream=new FileInputStream(file1);
+		ObjectInputStream objectInputStream=new ObjectInputStream(inputStream);
+		Student student=(Student)objectInputStream.readObject();
+		objectInputStream.close();
+		注：文件类型目前测试成功的只有.dat文件
+
+
+											13.选择性的进行序列化元素
+1.使用transient来实现选择性的序列化操作；
+	在元素之前加上transient：	private transient String name;就不会序列化name这个属性
+2.如何对使用transient进行序列化操作：
+	在对应的Object对象中加入ArrayList中的writeObject方法：
+		 private void writeObject(ObjectOutputStream s) throws IOException{
+		 s.defaultWriteObject();
+		 //对使用transient的属性单独进行序列化操作
+		 s.writeInt(this.age);
+3.测试和	对象的序列化以及反序列化中的方法一样
+
+
+
+										 14.序列化中字父类构造函数的问题
+1.若一个类实现了序列化的接口，那么他的子类也都可以全部实现序列化
+2.若父类没有实现Serializable接口，那么子类实现反序列化时父类的构造函数就会被调用，如果父类调用了Serializable接口，那么构造函数就不会被调用

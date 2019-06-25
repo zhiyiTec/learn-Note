@@ -1,0 +1,55 @@
+使用方法：arr.splice(arr.indexOf(ele),length):表示先获取这个数组中这个元素的下标，然后从这个下标开始计算，删除长度为length的元素
+这种删除方式适用于任何js数组
+
+eg:
+<template>
+ <div class="users">
+	<button type="button" class="btn btn-danger" v-on:click="deleteUser(user)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>删除</button>	
+ </div>
+</template>
+
+<script>
+//引入jquery
+
+export default {
+
+  data(){
+		return {
+			
+			users:[
+				{
+					name:'zx',
+					age:18,
+					addrress:'江苏南京',
+					email:'1773203101@qq.com',
+					contacted:false,
+				},
+				{
+					name:'zhiyi',
+					age:19,
+					addrress:'中国北京',
+					email:'1773203101@qq.com',
+					contacted:false,
+				},
+				{
+					name:'zhuxu',
+					age:20,
+					addrress:'中国上海',
+					email:'1773203101@qq.com',
+					contacted:false,
+				},
+			]
+		}
+	},
+	methods:{
+		deleteUser:function(user){
+			//表示先获取这个元素的下标，然后从这个下标开始计算，删除长度为1的元素
+			this.users.splice(this.users.indexOf(user),1);
+		}
+	}
+};
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--scope只会影响到当前组件的样式-->
+<style scoped>
+</style>

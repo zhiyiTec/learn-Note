@@ -1,0 +1,10 @@
+不使用js内置的函数，直接自己编写：
+	var arr =new Array();
+//这个函数是用来判断当数组为空的时候，返回true
+function isEmptyObject(e) {  
+    var t;  
+    for (t in e)  
+        return !1;
+    return !0;
+}  
+isEmptyObject(arr);

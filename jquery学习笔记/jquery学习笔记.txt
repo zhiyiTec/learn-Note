@@ -1,0 +1,890 @@
+ 															1.初识jquery
+1.先引入jquery文件
+	<script src="../resources/js/jquery_3.3.1.js"></script>
+2.在<script>中使用jquery:
+	<script>
+	/* jquery的固定写法 */
+	$(document).ready(function() {
+		alert("first jquery test");
+	});
+	//这是jquery的第二种写法
+	$(function(){
+	alert("first jquery test");
+	});
+</script>
+
+
+
+
+
+
+															2.js与jquery的区别
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	/* jquery的固定写法 */
+	$(document).ready(function() {
+		//通过jquery入口函数可以拿到Dom元素
+		var $img = $("img")[0];
+		//用于在控制台输出
+		console.log($img);
+		//此处用于获取图片的宽度和高度,但是jquery会在Dom加载完成之后获取，但是不会等到图片加载完成之后获取
+		var width = $img.width;
+		var height = $img.height;
+		console.log(width);
+		console.log(height);
+		/*
+		1.原生的js文件在这种情况下只能弹出高度，而jquery会根据alert的顺序分别弹出
+		2.js如果编写了多个入口函数后面的就会覆盖前面的，但是jquery则不会
+		*/
+		alert("宽度"+width);
+		alert("高度"+height);
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															3.解决$符号冲突的问题
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script src="../resources/js/test1.js"></script>
+<script>
+	//由于test.js文件中含有$符号，会与jQuery中的引用冲突，为了避免冲突原来的$符号将会被jquery字符串代替，同时也要释放$符号
+	//1.释放$符号
+	jQuery.noConflict();
+	//2.使用jquery字符串代替$符号
+	jQuery(function(){
+		alert("解决$符号的冲突");
+	});
+	//也可以使用自定义的符号
+	var jQ=jQuery.noConflict();
+	jQ(function(){
+		alert("使用自定义的符号解决$符号的冲突");
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															4.jquery的核心函数
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	//$():用于接收函数
+	//1.接收一个函数
+	$(function(){
+		alert("验证jquery接收函数");
+		//2.接收一个字符串
+		//2.1接收字符串选择器
+		//用于接收所有class=box1的元素
+		var $box1=$(".box1");
+		//用于接收所有class=box2的元素
+		var $box2=$("#box2");
+		console.log($box1);
+		console.log($box2);
+		//2.2接收一个代码片段
+		var $p=$("<p>接收一个代码片段</p>");
+		console.log($p);
+		//用于将刚刚创建的代码片段标签添加到box1下
+		$box1.append($p);
+		//2.3接受一个DOm结点
+		//使用原生的js获取dom结点
+		var span1=document.getElementsByTagName('span')[0];//0:表示获取的第一个元素
+		console.log(span1);
+		//这样会获取一个Dom结点
+		var $span2=$("span");
+		console.log($span2);
+		//这样会获取一个Dom结点所对应的值
+		var $span3=$("span")[0];
+		console.log($span3);
+	});
+	
+		
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<div class="box1"></div>
+	<div id="box2"></div>
+	<span>这是一个span</span>
+</body>
+</html>
+
+
+
+
+
+
+															5.jquery对象
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	//jquery对象其实质是一个伪数组
+	$(function(){
+		//使用这种方法来获取所的div元素
+		var $div1=$("div");
+		console.log($div1);
+		//使用这种方法来获取具体的div元素
+		var $div2=$("div")[0];
+		console.log($div2);
+	});
+	
+		
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<div class="box1">div1</div>
+	<div id="box2"></div>
+	<div class="box1">div2</div>
+	<span>这是一个span</span>
+</body>
+</html>
+
+
+
+
+
+
+
+															6.静态方法和实例方法
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	//1.先定义一个类
+	function AClass(){}
+	//2.给这个类添加一个静态方法
+	AClass.staticMethod=function(){
+		//添加了一个alert方法
+		alert("staticMethod");
+	}
+	//3.添加一个实例化方法
+	AClass.prototype.instanceMethod=function(){
+		//添加了一个alert方法
+		alert("instanceMethod");
+	}
+	//4.调用这两种方法
+	//4.1调用静态方法
+	AClass.staticMethod();
+	//4.2调用实例化方法
+	var aclass=new AClass();
+	aclass.instanceMethod();
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															7.jquery-each方法
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	var arr = [ 1, 3, 5, 7, 9 ];//这是数组
+	var arr1 = [ 11, 13, 15, 17, 19 ];//这是数组
+	var obj = {
+		0 : 0,
+		1 : 2,
+		2 : 4,
+		3 : 6,
+	length : 3
+	};//这是伪数组
+	//使用原生的js来遍历数组，注：js的foeEach方法只可以遍历数组，不能遍历伪数组
+	arr.forEach(function(value, index) {
+		console.log(index, value);
+	});
+	console.log("arr的长度" + arr.length);
+	//使用jquery的each静态方法来遍历数组或者伪数组
+	//先遍历数组
+	$.each(arr1, function(value, index) {
+		console.log(index, value);
+	});
+	console.log("arr1的长度" + arr1.length);
+	//遍历伪数组
+	$.each(obj, function(value, index) {
+		console.log(index, value);
+	});
+	console.log("obj的长度" + obj.length);
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															8.jquery-map方法
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	var arr = [ 1, 3, 5, 7, 9 ];//这是数组
+	var arr1 = [ 11, 13, 15, 17, 19 ];//这是数组
+	var obj = {
+		0 : 0,
+		1 : 2,
+		2 : 4,
+		3 : 6,
+		length : 3
+	};//这是伪数组
+	//使用原生的js来遍历数组，注：js的map方法只可以遍历数组，不能遍历伪数组
+	console.log("js原生map遍历");
+	arr.map(function(value, index, arry) {
+		console.log(index, value, arry);
+	});
+
+	//使用jquery的map来遍历数组或者伪数组
+	console.log("jquery的map遍历");
+	/*
+	arr1:是要遍历的数组
+	function(value,index):每遍历一个元素之后执行的回调函数
+	 */
+	var $arr1 = $.map(arr1, function(value, index) {
+		console.log(index, value);
+	});
+	console.log("jquery的map遍历");
+	var $obj = $.map(obj, function(value, index) {
+		console.log(index, value);
+	});
+	console.log(arr1);
+	console.log(obj);
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															9.jquery中其他静态方法
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	var str="     zx       ";
+	//使用trim去除空格
+	var res=$.trim(str);
+	console.log("-------"+str+"----------");
+	console.log(res);
+	//使用$.isWindow();来判断是否是对象，如果是就返回true
+	var re1=$.isWindow(res);
+	console.log(re1);
+	//使用$.isArray();来判断是否是数组，如果是就返回true
+	var re2=$.isArray(res);
+	console.log(re2);
+	//使用$.isFunction();来判断是否是函数，如果是就返回true,注：jQuery的本质就是一个函数 
+	var re3=$.isFunction(jQuery);
+	console.log(re3);
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+</body>
+</html>
+
+
+
+
+
+
+															10.holdReady方法
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	//用于暂停ready事件
+	$.holdReady(true);
+	$(function() {
+		alert("ready");
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<button>回复ready事件</button>
+	<!-- 注：这个js文件必须放在按钮之后否则检测不到 -->
+	<script>
+		var btn = document.getElementsByTagName('button')[0];
+		//通过这种方式来恢复ready事件	
+		btn.onclick = function() {
+			$.holdReady(false);
+		}
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+															11.jquery内容选择器
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<style type="text/css">
+div {
+	width: 30px;
+	height: 50px;
+	color: gray;
+	background-color: red;
+	border: 20px, solid;
+}
+</style>
+<script>
+	$(function() {
+		//empty:是为了找出既没有文本也没有指定元素的div
+		var $div1 = $("div:empty");
+		console.log($div1);
+		console.log("---------------------");
+		//parent:是为了找出有文本或者有指定元素的div
+		var $div2 = $("div:parent");
+		console.log($div2);
+		console.log("---------------------");
+		//contains('aq'):是为了找出有文本aq的div
+		var $div3 = $("div:contains('aq')");
+		console.log($div3);
+		console.log("---------------------");
+		//has('span'):是为了找出有子元素span的div
+		var $div4 = $("div:has('span')");
+		console.log($div4);
+		console.log("---------------------");
+
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<div id="div1"></div>
+	<div>
+		<span>p</span>
+	</div>
+	<div>aqw</div>
+	<div>
+		<p>aaq</p>
+	</div>
+	<div>
+		<p>aaaaa</p>
+	</div>
+	<div>
+		<span></span>
+	</div>
+</body>
+</html>
+
+
+
+
+
+															12.属性和属性结点
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	$(function(){
+		function person(){}
+		var p=new person();
+		//以下步骤是给属性赋值
+		//方法1：
+		p["name"]="zx";
+		console.log("通过p['name']");
+		console.log(p["name"]);
+		//方法2：
+		p.name="zx";
+		console.log("通过p.name");
+		console.log(p.name);
+		//属性结点：只有DOM元素才有属性结点，而且所有的DOM属性结点全部保存在attributes中
+		//操作DOM结点
+		var span=$("span")[0];
+		//通过这种方法来给DOM结点 ，类似于key value的形式
+		span.setAttribute("name","asdfg");
+		console.log(span);
+		//通过getAttribute来获取属性值
+		console.log(span.getAttribute("name"));
+		
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<span name="qwerty"></span>
+</body>
+</html>
+
+
+
+
+
+															13.使用jquery操作属性和属性结点
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	$(function() {
+		//attr如果传递一个参数，就表示查询属性结点的值,注：如果找到多个属性结点的值，也只返回第一个属性结点的值
+		//$("span").attr("class"):表示获取span中class属性的值
+		var span_class=$("span").attr("class");
+		var span_name=$("span").attr("name");
+		console.log(span_class);
+		console.log(span_name);
+		//attr如果传递两个参数，就表示更改属性结点的值,注:这种方法会更改所有属性的值
+		$("span").attr("class","boxChange");
+		//如果没有这种属性就会给每一个span添加上这个属性
+		$("span").attr("id","box");
+		//使用removeAttr()删除结点属性值
+		//$("span").removeAttr("class"):删除span中class属性
+		$("span").removeAttr("class");
+		//$("span").removeAttr("class"):删除span中class和name属性
+		$("span").removeAttr("class name id");
+	});
+	
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<span class="box1" name="qwerty"></span>
+
+</body>
+</html>
+
+
+
+
+
+															14.使用jquery的prop
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	$(function() {
+		/*
+		prop方法和attr方法基本一致
+		一般情况下使用attr,但是返回的属性值为true或false时就使用prop,如cheked,disabled，selected等
+		*/
+		//$("span").eq(0).prop("demo","zx"):获取第一个span结点，并增加一个属性demo,其值为zx
+		$("span").eq(0).prop("demo", "zx");
+		var $span = $("span").eq(0).prop("demo");
+		console.log($span);
+		//通过prop操作结点
+		//$("span").prop("class","sapnChange")：先找到span的所有class属性，再将其属性值改为spanchange 
+		$("span").prop("class","sapnChange");
+		var $check1=$("input").prop("checked");
+		console.log($check1);
+		var $check2=$("input").attr("checked");
+		console.log($check2);
+	
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<span id="span" class="span" name="span"></span>
+	<input type="checkbox" checked="checked">
+</body>
+</html>
+
+
+
+
+
+															15.attr和prop的使用
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<script>
+	$(function() {
+		//使用jquery获取按钮的点击事件
+		var btn=$("button")[0];
+		btn.onclick = function() {
+			var img_src = $("input").attr("value");
+			var img_src_value=img_src.getAttribute("name");
+			console.log(img_src_value);
+			$("img").attr("src", img_src);
+		};
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<input type="text">
+	<button id="button" onclick="change()">点击切换</button>
+</body>
+</html>
+
+
+
+
+
+															16.jquery的css类的相关操作
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a
+.class1 {
+	width: 100px;
+	height: 100px;
+	background-color: red;
+}
+
+.class2 {
+	border: 10px solid #000;
+}
+</style>
+<script>
+	$(function() {
+		var btns = document.getElementsByTagName('button');
+		btns[0].onclick = function() {
+			//用于添加类 
+			$("div").addClass("class1 class2");
+		};
+		btns[1].onclick = function() {
+			//用于删除类
+			$("div").eq(1).removeClass("class1 class2");
+		};
+		btns[2].onclick = function() {
+			//用于切换类,也就是说有就删除，没有就添加
+			$("div").toggleClass("class1 class2");
+		};
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<button>添加类</button>
+	<button>删除类</button>
+	<button>修改类</button>
+	<div>1</div>
+	<div class="class1 class2">2</div>
+</body>
+</html>
+
+
+
+
+
+															17.jquery操作文本
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<style type="text/css">
+div {
+	width: 10px;
+	height: 20px;
+	border: 2px solid #000;
+}
+</style>
+<script>
+	$(function() {
+		var btns = $('button');
+		btns[0].onclick = function() {
+			//向所有的div中添加<p>标签代码片段,.html()方法和原生的Js中的innerHtml对象一样
+			$("div").html("<p>添加代码片段</p>")
+		};
+		btns[1].onclick = function() {
+			//用于获取html对象
+			var html = $("div").html();
+			console.log(html);
+		};
+		btns[2].onclick = function() {
+			//用于添加text,			text()中的数据会全部显示
+			//和原生的JS中innerText方法一样
+			$("div").text("<p>添加代码片段</p>")
+		};
+		btns[3].onclick = function() {
+			//用于获取text,此处是获取div中所有的文本内容
+			var text=$("div").text();
+			console.log(text);
+		};
+		btns[4].onclick = function() {
+			//用于添加或者设置value,也就是说有就修改，没有就添加
+			$("input").val("添加或者设置value");
+		};
+		btns[5].onclick = function() {
+			//用于获取value值,此处是获取input标签中的value内容,如果有多个默认只获取第一个
+			var value=$("input").val();
+			console.log(value);
+		};
+
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<button>设置html</button>
+	<button>获取html</button>
+	<button>设置text</button>
+	<button>获取text</button>
+	<button>设置value</button>
+	<button>获取value</button>
+	<div ></div>
+	<input type="text" value="aaaaa"/>
+	<input type="text" value="bbbbbb"/>
+</body>
+</html>
+
+
+
+
+
+															18.jquery的css样式的相关操作
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<style type="text/css">
+div {
+	width: 10px;
+	height: 20px;
+	border: 2px solid #000;
+}
+</style>
+<script>
+	$(function() {
+		var btns=$("button");
+		btns[0].onclick=function(){
+			//用于修改div中的字体颜色，这种方式属于逐个设置
+			$("div").css("color","red");
+			$("div").css("width","100px");
+			$("div").css("height","50px");
+		};
+		btns[1].onclick=function(){
+			//用于修改div中的字体颜色，这种方式属于链式设置
+			//注：如果链式操作>3，一般采用逐个设置
+			$("div").css("color","red").css("width","100px").css("height","50px");
+		};
+		btns[2].onclick=function(){
+			//用于修改div中的字体颜色，这种方式属于批量设置
+			$("div").css({
+				width:"100px",
+				height:"50px",
+			color:"red"
+			});
+		};
+		btns[3].onclick=function(){
+			//用于获取div中的字体颜色css样式
+			var color=$("div").css("color");
+			console.log(color);
+		};
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<button>逐个设置切换css</button>
+	<button>链式设置切换css</button>
+	<button>批量设置切换css</button>
+	<button>获取css</button>
+	<div>aaaaaa</div>
+</body>
+</html>
+
+
+
+
+
+															19.jquery的尺寸和位置相关操作
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ch01</title>
+<script src="../resources/js/jquery_3.3.1.js"></script>
+<style type="text/css">
+.father {
+	width: 200px;
+	height: 200px;
+	background: red;
+	border: 50px solid #000;
+	margin-left: 50px;
+	/* 相对定位*/
+	position: relative;
+}
+
+.son {
+	width: 100px;
+	height: 100px;
+	background: blue;
+	margin-left: 50px;
+	/* 相对定位*/
+	position: absolute;
+	left: 50px;
+	top: 50px;
+}
+</style>
+<script>
+	$(function() {
+		var btns = $("button");
+		//用于监听获取
+		btns[0].onclick = function() {
+			//获取css样式下father样式的width
+			var width = $(".father").width();
+			//获取css样式下father样式的height
+			var height = $(".father").height();
+			console.log(width);
+			console.log(height);
+			
+		};
+		//用于监听设置
+		btns[1].onclick = function() {
+			//设置css样式下father样式的height
+			$(".father").height("500px");
+		};
+		//用于监听获取
+		btns[2].onclick = function() {
+			//获取father样式的距离窗口左边的偏位移
+			var offset_left = $(".father").offset().left;
+			console.log(offset_left);
+			
+		};
+		//用于监听设置
+		btns[1].onclick = function() {
+			//设置css样式下father样式的height
+			$(".father").height("500px");
+		};
+	});
+</script>
+</head>
+<body>
+	<img alt="百度" src="https://www.baidu.com/img/bd_logo1.png" />
+	<div class="father">
+		<div class="son"></div>
+	</div>
+	<button>获取元素信息</button>
+	<button>设置元素信息</button>
+	<button>获取位置信息</button>
+	<button>设置位置信息</button>
+</body>
+</html>
+
+
+
+
+
+															20.jquery的scroTop方法
+															

@@ -1,0 +1,19 @@
+1.先cd到对应的工程目录，使用npm install bootstrap --save
+2.修改build/webpack.base.conf.js
+	resolve: {
+extensions: [‘.js’, ‘.vue’, ‘.json’],
+alias: {
+‘vue$’: ‘vue/dist/vue.esm.js’,
+‘@’: resolve(‘src’),
+‘bootstrap’:resolve(‘src/assets/bootstrap’), //如果是自己手动导入的话需要加这一句，如果是 npm install bootstrap –save的话不需要写这个
+}
+},
+注：一般情况下使用npm install bootstrap来安装bootStrap,所以webpack.base.conf.js，不用做任何的修改
+	eg:
+	在vue组件中到如对应的文件
+		import '../assets/css/bootstrap.min.css'
+		import '../assets/css/bootstrap-theme.min.css'
+		import '../assets/js/jquery-3.3.1.min.js'
+		import '../assets/js/bootstrap.min.js'
+		
+		详情参考   vue引用BootStrap.docx

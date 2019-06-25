@@ -1,0 +1,596 @@
+												一、spring入门
+1.xml文件的配置：
+	<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans-5.1.xsd
+   http://www.springframework.org/schema/aop 
+   http://www.springframework.org/schema/aop/spring-aop-5.0.xsd
+   http://www.springframework.org/schema/tx 
+   http://www.springframework.org/schema/tx/spring-tx-5.1.xsd
+   http://www.springframework.org/schema/context      
+   http://www.springframework.org/schema/context/spring-context-5.1.xsd
+   http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-5.1.xsd">
+	
+	
+	
+	
+	
+	
+	<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+2.调用spring创建对象的方法：
+	方法1:这是使用bean方法创建对象
+	<1>.xml的文件配置：
+			<!-- 配置bean id:唯一标识该xml的名称 class:交给spring进行实例化的类的全名称 -->
+	<bean id="user" class="pojo.user">
+	</bean>
+	注：这种方法适用于无参构造
+	<2>.对象的配置：
+		public class user {
+	public user() {
+		System.out.println("user被调用");
+	}
+	public user(String name) {
+		System.out.println("被调用");
+	}
+	public void add() {
+		System.out.println("user....add....");
+	}
+}
+	<3>.具体运用：
+	ApplicationContext aContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		user u = (user) aContext.getBean("user");
+		u.add();
+	方法2:使用静态工厂来创建对象
+	<1>.xml的文件配置：
+		<bean id="bean2" class="pojo.bean2Factory" factory-method="getBean2Object"></bean>
+	<2>.	对象的配置：
+			public class bean2 {
+	public bean2() {
+		System.out.println("bean2被调用");
+	}
+	public void add() {
+		System.out.println("bean的add方法");
+	}
+}
+	<3>.工厂的配置：
+		public class bean2Factory {
+	public static bean2 getBean2Object() {
+		return new bean2();
+	}
+	
+}
+	<4>.具体运用：
+		ApplicationContext aContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		bean2 bean2 = (bean2) aContext.getBean("bean2");
+		bean2.add();
+3.通过set方法进行进行属性注入：主要用于解决无参的构造函数
+	<bean id="custom" class="pojo.custom">
+	<property name="name" value="致一科技"></property></bean>
+	其中name对应的是String name这一属性；
+4.通过构造器进行属性注入：主要用于解决有参数的构造函数
+	<bean id="custom1" class="pojo.custom">
+		<constructor-arg name="name1" value="朱旭旭"></constructor-arg>
+	</bean>
+	其中name对应的是public custonm(String name1){}中参数这一属性；
+3.注入对象类型的值：
+	Dao:
+		public class myDao {
+	public void add() {
+		System.out.println("myDao___________add________");
+	}
+}
+	service:
+public class myServiceDao {
+	private myDao myDao;
+	public myDao getMyDao() {
+		return myDao;
+	}
+	public void setMyDao(myDao myDao) {
+		this.myDao = myDao;
+	}
+	public void add() {
+		System.out.print("myServiceDao___________add________");
+		myDao.add();
+	}
+}
+	配置xml文件：
+		 <!-- 对象的注入 -->
+   <!-- 配置Dao -->
+	<bean id="myDao" class="dao.myDao"></bean>
+	<!-- 配置service -->
+	<bean id="myServiceDao" class="dao.myServiceDao">
+	<property name="myDao" ref="myDao"></property>
+	</bean>	
+	注：name对应的myDao与service里的myDao对应；
+		ref对应的myDao与Dao中bean的id对应
+		测试数据：
+			public static void main(String[] args) {
+		ApplicationContext aContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		myServiceDao mSD = (myServiceDao) aContext.getBean("myServiceDao");
+		mSD.add();
+	}
+5.通过构造器进行类属性注入：主要用于解决有参数的构造函数
+		Dao和set方法一样
+		service:
+		public class myServiceDao {
+	private myDao myDao;
+	public myServiceDao() {}
+	public myServiceDao(myDao myDao) {
+		String name=myDao.class.getSimpleName();
+		System.out.println("形参的名字为="+name);//java的反射：通过对象获取对象名
+		this.myDao=myDao;
+	}
+	public myDao getMyDao() {
+		return myDao;
+	}
+	public void setMyDao(myDao myDao) {
+		this.myDao = myDao;
+	}
+	public void add() {
+		System.out.print("myServiceDao___________add________");
+		myDao.add();
+	}
+}
+		xml的文件配置：
+			<!-- 通过构造器来注入对象类型的值 -->
+	<!-- 配置Dao -->
+	<bean id="myDao1" class="dao.myDao"></bean>
+	<!-- 配置service -->
+	<bean id="myServiceDao1" class="dao.myServiceDao">
+		<constructor-arg name="myDao" ref="myDao1"></constructor-arg>
+	</bean>
+			测试部分和set方法一样
+6.使用p标签对属性值进行注入：
+	编写model:
+		public class bean2 {
+	private String eamil;
+	private String address;
+	public bean2() {
+		System.out.println("bean2被调用");
+	}
+	public String getEamil() {
+		return eamil;
+	}
+	public void setEamil(String eamil) {
+		this.eamil = eamil;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public void show() {
+		System.out.println("email=" + this.eamil);
+		System.out.println("address=" + this.address);
+	}
+}
+		配置xml文件：
+		<bean id="bean2" class="pojo.bean2" p:eamil="649623649@qq.com" p:address="中国南京"></bean>
+		注：p:eamil，p:address,emali,address是bean2的一个属性
+										注解的使用：
+1.<context:component-scan base-package="service"></context:component-scan>
+2.@Component(value="BookService")相当于：<bean id="BookService" class="service.BookService">
+3.创建对象使用spring，注入属性使用注解
+	使用注解必须使用
+	<!-- 注解的使用 -->
+	<context:component-scan base-package="service"></context:component-scan>
+	其中service是注解使用的范围即只作用在service包里
+	<!-- 让spring创建Dao对象 -->
+	<bean id="BookDao" class="Dao.BookDao"></bean>
+	<bean id="OrderDao" class="Dao.OrderDao"></bean>
+	<!-- 让spring创建serviceDao对象 -->
+	<bean id="BookService" class="service.BookService"></bean>
+													 Aop的配置与使用1
+1.创建一个类，用于输出显示
+	public class Book {
+	public void add() {
+		System.out.println("Book----add-------");
+	}
+}
+2.配置另一个用于放置切面
+	public class MyBook {
+	public void berforeOne() {
+		// 前置通知：在Book之前被执行
+		System.out.println("前置增强");
+	}
+}
+3.在xml文件中用spring来创建对象，以及切入点
+	<!-- 配置AOP -->
+	<!-- 配置Book,MyBook -->
+	<bean id="Book" class="aop.Book"></bean>
+	<bean id="MyBook" class="aop.MyBook"></bean>
+	<!-- 配置切入点，即配置AOP的相关操作 ,只有方法才能作为切入点 -->
+	<aop:config> 
+		<aop:pointcut expression="execution(* aop.Book.*(..))"//配置切入点的方法，第一个*表示的是方法属性
+		（*可以代替全部的属性），比如public，private等，第二个*表示的这个类下面的方法（*可以代替这个类中全部的方法）
+			id="pointCutBook" />
+		<!-- 配置切面(把增强运用在具体的方法之上就叫做切面)，将切入点放入方法中 -->
+		<aop:aspect ref="MyBook">//ref对应的是将哪一个类中的方法用于增强。此例对应的就是MyBook类
+			<aop:before method="berforeOne"//method对应的是ref类中的方法,注：这种方法是前置增强，也就是让MyBook的berforeOne
+			方法在Book执行之前执行
+				pointcut-ref="pointCutBook" />//pointcut-ref对应的是上面切入点的id
+		</aop:aspect>
+	</aop:config>
+	环绕增强较为特殊，以下单独讲解
+	BooK类不变，MyBook中添加一个方法：
+		public void aroundOne(ProceedingJoinPoint pjp) {
+		// 前置通知：在Book之前被执行
+		System.out.println("环绕增强-前置");
+		// 调用被增强的方法
+		try {
+			pjp.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 调用后置增强
+		System.out.println("环绕增强-后置");
+	}
+		其调用顺序为先调用前置，在调用增强的方法，最后调用后置方法
+	xml的配置：
+		在原来的切面配置里增加：	<aop:around method="aroundOne" pointcut-ref="pointCutBook" />
+										
+										
+										
+										注解的切面编程
+1.创建Book类：
+	public class Book {
+	public void add() {
+		System.out.println("Book_Add");
+	}
+}
+2.创建MyBook类
+public class MyBook {
+	public void before() {
+		System.out.println("前置增强");
+	}
+	public void after() {
+		System.out.println("后置增强");
+	}
+	public void around(ProceedingJoinPoint pJP) {
+		System.out.println("环绕增强_前置");
+		try {
+			pJP.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("环绕增强——后置");
+	}
+	public void afterThrowing() {
+		System.out.println("afterThrowing_异常出现！！！！");
+	}
+}
+3.配置xml文件
+	<bean id="Book" class="aop.Book"></bean>
+	<bean id="MyBook" class="aop.MyBook"></bean>
+	<!-- 使用注解开启AOPCAO操作 -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+4.给切面类添加注解
+	@Aspect
+public class MyBook {
+	@Before(value="execution(* aop.Book.*(..))")
+	public void before() {
+		System.out.println("前置增强");
+	}
+	@After(value="execution(* aop.Book.*(..))")
+	public void after() {
+		System.out.println("后置增强");
+	}
+	@Around(value="execution(* aop.Book.*(..))")
+	public void around(ProceedingJoinPoint pJP) {
+		System.out.println("环绕增强_前置");
+		try {
+			pJP.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("环绕增强——后置");
+	}
+	/*异常通知*/
+	@AfterThrowing(value="execution(* aop.Book.*(..))")
+	public void afterThrowing() {
+		System.out.println("afterThrowing_异常出现！！！！");
+	}
+}
+5.测试：
+		public static void main(String[] args) {
+		ApplicationContext aC=new ClassPathXmlApplicationContext("applicationContext.xml");
+		Book b=(Book)aC.getBean("Book");
+		b.add();
+	}
+	
+	
+												使用spring操作数据库
+1.先创建一个操作数据库的类
+	public class TestJdbc2 {
+	public void test() {
+		DriverManagerDataSource dMDS = new DriverManagerDataSource();
+		// 用于设置数据库驱动
+		dMDS.setDriverClassName("com.mysql.jdbc.Driver");
+		dMDS.setUrl("jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8");
+		dMDS.setUsername("root");
+		dMDS.setPassword("123456");
+
+		// 用于加载数据库驱动
+		JdbcTemplate jT = new JdbcTemplate(dMDS);
+		String sql = "insert into user(id,userName,userPassword) value(?,?,?)";
+		Object o[]= {1,"致一","zx12345678"};
+		int rows=jT.update(sql, o);
+		System.out.println(rows);
+	}
+}
+2.配置xml文件：
+	<bean id="TestJdbc2" class="springJdbc.TestJdbc2"></bean>
+3.测试
+													
+													
+													
+													使用spring对数据库进行增删改
+1.先封装一个加载jdbc的驱动
+		public static JdbcTemplate loadingDataBase(String DriverClassName, String Url, String Username, String Password) {
+		DriverManagerDataSource dMDS = new DriverManagerDataSource();
+		dMDS.setDriverClassName(DriverClassName);
+		dMDS.setUrl(Url);
+		dMDS.setUsername(Username);
+		dMDS.setPassword(Password);
+		// 用于加载数据库驱动
+		JdbcTemplate jT = new JdbcTemplate(dMDS);
+		return jT;
+	}
+2.具体的增删改操作：
+	// 增
+	public void add() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+
+		String sql = "insert into user(id,userName,userPassword) value(?,?,?)";
+		Object o[] = { 2, "zx", "zx12345678" };
+		int rows = jT.update(sql, o);
+		System.out.println("增加的行数为=" + rows);
+
+	}
+
+	// 改
+	public void change() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+		String sql = "update user set userName=? where id=?";
+		Object o[] = { "致一科技", 2 };
+		int rows = jT.update(sql, o);
+		System.out.println("被修改的行数为=" + rows);
+	}
+
+	// 删
+	public void delete() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+		String sql = "delete from user where id=?";
+		Object o[] = { 2 };
+		int rows = jT.update(sql, o);
+		System.out.println("被删除的行数为=" + rows);
+	}
+							
+							
+							
+											
+											
+												使用spring对数据库进行查询
+1.查询单行记录
+	// 查询对象的某个属性
+	public void searchValue() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+		String sql = "select userPassword from user where id=1 ";
+		String re = jT.queryForObject(sql, String.class);// String.class是表示该方法最终返回的一个类型是String类型
+		System.out.println(re);
+	}
+2.查询对象
+	// 查询某个对象
+	public void searchObject() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+		String sql = "select * from user where userName=? ";
+	
+		User re =jT.queryForObject(sql, new MyRowMaper(),"致一" );
+		System.out.println(re.toString());
+
+	}
+	对应的MyRowMaper()：
+		public class MyRowMaper implements RowMapper<User> {
+	@Override
+	public User mapRow(ResultSet rS, int arg1) throws SQLException {
+		User u=null;
+		int id=rS.getInt("id");
+		String userName=rS.getString("userName");
+		String userPassword=rS.getString("userPassword");
+		u=new User(id, userName, userPassword);
+		try {if(u==null) {
+			System.out.println("查无此人");
+		}}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return u;
+	}
+	对应的实体如下：
+		package model;
+
+public class User {
+	private int id;
+	private String userName;
+	private String userPassword;
+
+	public User() {
+	}
+
+	public User(int id, String userName, String userPassword) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.userPassword = userPassword;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserPassword() {
+		return userPassword;
+	}
+
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", userName=" + userName + ", userPassword=" + userPassword + "]";
+	}
+
+}
+3.使用List集合来返回存储对象
+	//使用List集合存储返回的对象
+	public void searchObject_List() {
+		// 用于加载数据库驱动
+		JdbcTemplate jT = DbUtil2.loadingDataBase("com.mysql.jdbc.Driver",
+				"jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8", "root", "123456");
+		String sql = "select * from user where userName=? ";
+	
+		java.util.List<User> l =jT.query(sql,  new MyRowMaper(),"致一");
+		System.out.println(l);
+
+	}
+	对应的MyRowMaper与2相同，对应的User对象与2相同
+
+	
+	
+	
+												使用spring配置连接池来获取数据库
+1.先使用spring配置c3P0连接池
+	<!-- 使用spring来操作数据库,用于配置C3p0数据源 -->
+	<bean id="ComboPooledDataSource"
+		class=" com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl"
+			value="jdbc:mysql://127.0.0.1:3306/springjdbctempte?characterEncoding=UTF-8"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="123456"></property>
+	</bean>
+2.创建Dao对象来操作数据库，用以对数据库进行增删改
+	public class User {
+	//再Dao中创建jdbcTempte对象
+	private JdbcTemplate jT;
+	public JdbcTemplate getjT() {
+		return jT;
+	}
+	public void setjT(JdbcTemplate jT) {
+		this.jT = jT;
+	}
+	public void add() {
+		String sql = "insert into user(id,userName,userPassword) value(?,?,?)";
+		Object o[] = { 2, "zx", "zx12345678" };
+		int rows = jT.update(sql, o);
+		System.out.println("增加的行数为=" + rows);
+	}
+}
+3.创建service对象，来操作Dao对象
+	public class UserService {
+	private User u;
+	public User getU() {
+		return u;
+	}
+	public void setU(User u) {
+		this.u = u;
+	}
+	public void add() {}
+}
+4.再xml文件中使用spring来配置对象，和属性的注入
+	<!-- 先配置Dao -->
+	<bean id="jT" class="org.springframework.jdbc.core.JdbcTemplate">
+	注：<1>.name="dataSource"->dataSource是JdbcTemplate的一个属性，这个值不可以改变
+		<2>.ref="ComboPooledDataSource"->说明这个属性的注入依赖于<bean id="ComboPooledDataSource"
+		class=" com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="dataSource" ref="ComboPooledDataSource"></property>
+	</bean>
+	<bean id="User" class="Dao.User">
+	注：<1>.name="jT"->jT是User中的一个属性
+		<2>.User中对象jdbcTempte的注入依赖于<bean id="jT" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="jT" ref="jT"></property>
+	</bean>
+	<!-- 再配置service -->
+	<bean id="UserService" class="service.UserService">
+	注：User对象的属性注入依赖于<bean id="User" class="Dao.User">
+	<property name="u" ref="User"></property>
+	</bean>
+													使用spring配置c3P0连接池的外部文件引入的方式：
+1.先配置一个dbconflig.properties文件来存储连接数据库的信息：
+	jdbc.driverClass=com.mysql.jdbc.Driver
+jdbc.jdbcUrl=jdbc:mysql://127.0.0.1:3306/ssm_crud?characterEncoding=UTF-8
+jdbc.user=root
+jdbc.password=123456
+2.在applicationContext文件中引入这个文件：
+		<!-- 使用spring的配置文件，主要是配置业务和逻辑有关的事务处理 -->
+	<!-- 数据源，事务控制 -->
+	<context:property-placeholder location="classpath:dbconflig.properties"></context:property-placeholder>
+	<!-- 使用spring来操作数据库,用于配置C3p0数据源 -->
+	<bean id="ComboPooledDataSource"
+		class=" com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClassName"
+			value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl"
+			value="${jdbc.jdbcUrl}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+										
+										
+										spring的作用域
+1.scope="singleton":单例模式即一个bean只能创建一个对象
+2.scope="prototype":原例模式（也叫多例模式）即一个bean可以创建多个对象
+	单例：
+		<bean id="role" class="spring.chapter2.maryGame.Role" scope="singleton"/>
+		或者<bean id="role" class="spring.chapter2.maryGame.Role" singleton="true"/>
+	多例：
+		<bean id="role" class="spring.chapter2.maryGame.Role" scope="prototype"/>
+		或者<beanid="role" class="spring.chapter2.maryGame.Role" singleton="false"/>
+		
+		

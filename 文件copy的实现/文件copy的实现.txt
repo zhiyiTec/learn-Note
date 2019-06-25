@@ -1,0 +1,104 @@
+话不多说直接看代码：
+	方法1：直接利用FileInputStream，FileOutputStream来实现内容的copy
+    public static void listDicTory(File src, File dest) throws IllegalAccessException, IOException {
+		/*此处用来判断文件是否存在*/if (src.exists() && dest.exists()) {
+		/*此处用来判断文件是否是文件类型*/	if (src.isFile() && dest.isFile()) {
+				/*此处用来声明需要copy的文件*/FileInputStream input = new FileInputStream(src);
+			/*此处用来声明需要copy到的文件*/	FileOutputStream out = new FileOutputStream(dest,false);
+			/*此处用来定义一个缓冲区存放读取的文件*/	byte buf[]=new byte[8*1024];
+				int b;
+			/*此处用来判断文件是否读完，注意点
+            (b=input.read(buf,0,buf.length))!=-1：表示读取到buf缓冲区，从文件的0号位开始读取，最多只能暂存buf.length个字节
+            */	while((b=input.read(buf,0,buf.length))!=-1) {
+				/*此处用来将缓冲区的内容写入到out对应的文件*/	out.write(buf, 0, b);
+					out.flush();//最好加上
+					//关闭(close)输出流时，应先刷新(flush)换冲的输出流，话句话说就是：“迫使所有缓冲的输出数据被写出到底层输出流中”。
+				}
+				input.close();
+				out.close();
+			} else {
+				throw new IllegalArgumentException("有一个或者多个文件文件是文件夹");
+			}
+		} else {
+			throw new IllegalArgumentException("有一个或者多个文件文件不存在");
+		}
+
+	}
+  
+	方法2：利用BufferedInputStream，BufferedOutputStream缓冲区来实现内容的copy
+		public static void listDicTory(File src,File dest) throws IllegalAccessException, IOException {
+		/*此处用来判断文件是否存在*/if (src.exists() && dest.exists()) {
+			/*此处用来判断文件是否是文件类型*/	if (src.isFile() && dest.isFile()) {
+					/*此处用来声明需要copy的文件*/FileInputStream input = new FileInputStream(src);
+					/*此处用来将读取的文件先放入缓冲区*/BufferedInputStream bis=new BufferedInputStream(input);
+				/*此处用来声明需要copy到的文件*/	FileOutputStream out = new FileOutputStream(dest,false);
+				/*此处用来将即将要写入的文件先放入缓冲区*/BufferedOutputStream bos=new BufferedOutputStream(out);
+				/*此处用来定义一个缓冲区存放读取的文件*/	byte buf[]=new byte[8*1024];
+					int b;
+				/*此处用来判断文件是否读完，注意点
+	            (b=bis.read()))!=-1：表示读取到bis缓冲区的还没有读完
+	            */	while((b=bis.read())!=-1) {
+					/*此处用来将缓冲区的内容写入到bos对应的缓冲区*/	bos.write(b);
+					bos.flush();//此处必须加上，用于刷新缓冲区,关闭(close)输出流时，应先刷新(flush)换冲的输出流，话句话说就是：“迫使所有缓冲的输出数据被写出到底层输出流中”。
+					}
+	            bis.close();
+	            bos.close();
+				} else {
+					throw new IllegalArgumentException("有一个或者多个文件文件是文件夹");
+				}
+			} else {
+				throw new IllegalArgumentException("有一个或者多个文件文件不存在");
+			}
+		}
+	方法3：使用InputStreamReader&OutputStremWriter完成copy功能,但是有一个致命的缺点就是无法更改字符编码
+		FileInputStream in=new FileInputStream(file);
+		InputStreamReader inReader=new InputStreamReader(in);
+		FileOutputStream out=new FileOutputStream(file2,true);//true:不覆盖原来内容,false:覆盖原来内容
+		OutputStreamWriter outWriter=new OutputStreamWriter(out, "utf-8");
+		int c;
+		while((c=inReader.read())!=-1) {
+			
+			outWriter.write((char)c);
+			outWriter.flush();
+		}
+		System.out.println("复制完成");
+		inReader.close();
+		outWriter.close();
+	方法4：FileReader&&FileWriter
+		public static void listDicTory2(File file,File file2) throws IllegalAccessException, IOException {
+		FileReader fr=new FileReader(file);
+		FileWriter fw=new FileWriter(file2,true);//true:不覆盖原来内容,false:覆盖原来内容
+		int c;
+		while((c=fr.read())!=-1) {
+			fw.write((char)c);
+			fw.flush();
+		}
+		fr.close();
+		fw.close();
+}
+	方法5：BufferedReader&&BufferedWriter实现文件copy的功能
+	public static void listDicTory2(File file1,File file2) throws IllegalAccessException, IOException {
+		FileInputStream inputStream=new FileInputStream(file1);
+		InputStreamReader inputStreamReader=new InputStreamReader(inputStream,"utf-8");
+		BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
+		//下面用于定义BufferedWriter 
+		FileOutputStream outputStream=new FileOutputStream(file2);
+		OutputStreamWriter outputStreamWriter=new OutputStreamWriter(outputStream, "utf-8");
+		BufferedWriter bufferedWriter=new BufferedWriter(outputStreamWriter);
+		String line;
+		while((line=bufferedReader.readLine())!=null) {
+			bufferedWriter.write(line);
+			//由于BufferedReader以及BufferedWriter不具有换行功能，所以手动添加换行
+			bufferedWriter.newLine();
+			bufferedWriter.flush();//此处必须有flush
+		}
+		bufferedReader.close();
+		bufferedWriter.close();
+		System.out.println("复制完成");
+}
+		//下面是测试功能
+	public static void main(String[] args) throws IllegalAccessException, IOException {
+			File src=new File("C:\\Users\\17732\\Desktop\\test\\testFile.txt");
+			File dest=new File("C:\\Users\\17732\\Desktop\\test\\testFile(2).txt");
+			listDicTory(src,dest);
+	}

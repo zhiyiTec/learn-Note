@@ -1,0 +1,1505 @@
+													1.myBatis配置————操作数据库
+1.先创建SqlMapperConflig，xml文件用于配置以及操作数据库，主要是用于加载驱动
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/mybatislearn?characterEncoding=UTF-8" />
+				<property name="username" value="root" />
+				<property name="password" value="123456" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="org/mybatis/example/BlogMapper.xml" />
+	</mappers>
+</configuration>
+2.创建user类
+public class User {
+	private int id;
+	private String userName;
+	private String userPassword;
+	public User() {
+		super();
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserPassword() {
+		return userPassword;
+	}
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+}
+3.配置与User有关的映射文件
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace就是对SQL进行分类化管理，注：mapper代理开发方式，namespace就有特殊含义 -->
+<mapper namespace="default">
+	<!-- 使用select进行查询数据库	根据Id查询用户的信息 ，表示映射文件的SQL，parameterType是参数id的类型(int ,String等)，resultType是最终返回的类型 
+	此处是输出的类型是User类型
+	-->
+	<select id="ID_Name" parameterType="String" resultType="pojo.User">
+	<!-- #{}:表示的是一个占位符，#{id}:id是指输入参数的名称与select中的id对应 -->
+	select * from user where userName=#{id}//注：此处是精准查询
+	</select>
+	//模糊查询的方法：
+		<select id="ID_Name1" parameterType="String" resultType="pojo.User">
+	<!-- #{}:表示的是一个占位符，#{id}:id是指输入参数的名称与select中的id对应 -->
+	<!-- 模糊查询 -->
+	select * from user where userName like '%${value}%'//注：{}中只能使用value关键字
+	</select>
+	
+<!-- 新增用户信息 -->
+	<!-- id:对应的就是statement Id, parameterType：指定的是输入参数的类型
+	#{}:指定User的属性名
+	-->
+	<insert id="insertUser" parameterType="pojo.User">
+	<!-- 在新增用户之后返回主键的值
+	keyProperty="id":是指将查询到的主键值设置到insert对应的parameterType指定的对象的id中，若keyProperty="name",
+	那么就是将查询到的主键值设置到insert对应的parameterType指定的对象的name中
+	-->
+	<selectKey keyProperty="id" order="AFTER" resultType="int">
+	SELECT LAST_INSERT_ID()
+	</selectKey>
+		insert into user(userName,userPassword)
+		values(#{userName},#{userPassword})
+	</insert>
+	
+	<!-- 用于更新数据库 -->
+	<update id="updateUser" parameterType="pojo.User">
+	update user set userName=#{userName},userPassword=#{userPassword} where id=#{id}
+	</update>
+</mapper>
+3.在主映射文件中映射我们对应的操作数据库的映射文件
+	<mappers>
+		<mapper resource="sqlMapper/User.xml" />
+	</mappers>
+4.获取数据中的数据
+		public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+		String path="SqlMapConflig.xml";
+		//通过mybaties的全局配置文件获取配置文件流
+		try {
+			InputStream IS=Resources.getResourceAsStream(path);
+			//创建会话工厂
+			SqlSessionFactory sSF=new SqlSessionFactoryBuilder().build(IS);
+			//创建会话SqlSession
+			SqlSession sqlSession=sSF.openSession();
+			/*sqlSession.selectOne("n1",n2);n1:对应的是命名空间.StatementId n2:对应的是statement所需要的参数，
+			类型要与statement对应的parameterType一致
+			sqlSession.selectOne("n1",n2)最终返回的类型应该与resultType类型一致
+			*/
+		User u=	sqlSession.selectOne("default.ID_Name","致一");
+		//模糊查询的方法：
+			List<User> lU=sqlSession.selectList("default.ID_Name1", "致");
+		if(u!=null) {
+			System.out.println(u.toString());
+		}else {
+			System.out.println("查询异常");
+			System.out.println("请注意数据库中是否有此人信息");
+		}
+		//用于释放资源
+		sqlSession.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	插入操作的执行操作：
+		public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+		try {
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory sSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession sqlSession = sSF.openSession();
+			User u=new User();
+			u.setUserName("zx");
+			u.setUserPassword("zx12345678");
+			int re1=0;
+					re1=sqlSession.insert("default.insertUser", u);
+					sqlSession.commit();
+					if(re1==0) {
+						System.out.println("插入数据失败，未执行任何操作");
+						return;
+					}else {
+						System.out.println("共插入了"+re1+"条数据");
+						System.out.println("其中新插入数据的ID="+u.getId());
+					}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	更新数据库操作：
+		public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+				String path="SqlMapConflig.xml";
+				//通过mybaties的全局配置文件获取配置文件流
+				try {
+					InputStream IS=Resources.getResourceAsStream(path);
+					//创建会话工厂
+					SqlSessionFactory sSF=new SqlSessionFactoryBuilder().build(IS);
+					//创建会话SqlSession
+					SqlSession sqlSession=sSF.openSession();
+					/*sqlSession.selectOne("n1",n2);n1:对应的是命名空间.StatementId n2:对应的是statement所需要的参数，
+					类型要与statement对应的parameterType一致
+					sqlSession.selectOne("n1",n2)最终返回的类型应该与resultType类型一致
+					*/
+				User u=	sqlSession.selectOne("default.ID_Name","致一");
+				if(u!=null) {
+					System.out.println("姓名为致一的个人信息为"+u.toString());
+					int re=0;
+					u.setId(2);
+					u.setUserName("狼旭");
+					u.setUserPassword("123");
+					re=sqlSession.update("default.updateUser", u);
+					if(re==0) {
+						System.out.println("更新失败");
+					}else {
+						System.out.println("更新数据库");
+						System.out.println("收到影响的行数有"+re+"行");
+						sqlSession.commit();
+						sqlSession.close();
+					}
+				}else {
+					System.out.println("查询异常");
+					System.out.println("请注意数据库中是否有此人信息");
+				}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	总结：parameterType：指定输入参数的类型
+									
+									
+									
+									
+									
+													2.myBaties操作数据库的方法2;
+1.创建user类：
+public class User {
+	private Integer id;
+	private String userName;
+	private String userPassword;
+	public User() {
+		super();
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserPassword() {
+		return userPassword;
+	}
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", userName=" + userName + ", userPassword=" + userPassword + "]";
+	}
+}
+2.创建接口IUser,里面用于添加对数据库的填删改的方法
+public interface IUser {
+	// 通过Id获取用户信息
+	User getInfoById(int id) throws Exception;
+	// 新增用户
+	void addUser(User u) throws Exception;
+	// 通过姓名删除用户
+	void deleteUser(String name) throws Exception;
+}
+3.创建UserDao用于具体实现接口的方法
+public class UserDao implements IUser {
+	private SqlSessionFactory SSF;
+	public UserDao() {
+		super();
+	}
+	public UserDao(SqlSessionFactory sSF) {
+		super();
+		SSF = sSF;
+	}
+	public SqlSessionFactory getSSF() {
+		return SSF;
+	}
+	public void setSSF(SqlSessionFactory sSF) {
+		SSF = sSF;
+	}
+	@Override
+	public User getInfoById(int id) throws Exception {
+		// TODO Auto-generated method stub
+		SqlSession SS=SSF.openSession();
+		User u=SS.selectOne("default.Id", id);
+		return u==null?null:u;
+	}
+	@Override
+	public void addUser(User u) throws Exception {
+		// TODO Auto-generated method stub
+		SqlSession SS=SSF.openSession();
+		int re=SS.insert("default.insertUser", u);
+		System.out.println("插入的用户数="+re);
+		SS.commit();
+		SS.close();
+	}
+	@Override
+	public void deleteUser(String name) throws Exception {
+		// TODO Auto-generated method stub
+		SqlSession SS=SSF.openSession();
+		int re=SS.delete("default.deleteUserByName", name);
+		SS.commit();
+		System.out.println("删除的用户数="+re);
+		SS.close();
+	}
+}
+
+4.测试查询功能：
+		public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+				String path="SqlMapConflig.xml";
+				//通过mybaties的全局配置文件获取配置文件流
+				try {
+					InputStream IS=Resources.getResourceAsStream(path);
+					//创建会话工厂
+					SqlSessionFactory sSF=new SqlSessionFactoryBuilder().build(IS);
+					//创建会话SqlSession
+					UserDao uD=new UserDao(sSF);
+						User u=uD.getInfoById(1);
+						System.out.println(u.toString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	测试添加功能：
+			public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+				String path="SqlMapConflig.xml";
+				//通过mybaties的全局配置文件获取配置文件流
+				try {
+					InputStream IS=Resources.getResourceAsStream(path);
+					//创建会话工厂
+					SqlSessionFactory sSF=new SqlSessionFactoryBuilder().build(IS);
+					//创建会话SqlSession
+					UserDao uD=new UserDao(sSF);
+					User u=new User();
+					u.setUserName("zxzx");
+					u.setUserPassword("gfdsa");
+					uD.addUser(u);
+					System.out.println("插入的用户Id="+u.getId());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		测试删除功能：
+		public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+				String path="SqlMapConflig.xml";
+				//通过mybaties的全局配置文件获取配置文件流
+				try {
+					InputStream IS=Resources.getResourceAsStream(path);
+					//创建会话工厂
+					SqlSessionFactory sSF=new SqlSessionFactoryBuilder().build(IS);
+					//创建会话SqlSession
+					UserDao uD=new UserDao(sSF);
+					uD.deleteUser("zxzx");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+						
+						
+														3.myBaties操作数据库的方法3:使用映射代理的方法：
+1.创建一个接口用于存储查询方法：
+	public interface UserMapper {
+	//用于通过用户Id查询用户信息
+	User findUserById(int id);
+	//通过姓名的部分查询用户信息
+	List<User> findUserByNameSection(String name);
+	//使用多个条件进行查询
+	User findUserByUser(User u);
+	//用HashMap作为参数，查询用户信息
+	List<User> findUserByHashMap(HashMap<String, String> hm);
+}
+2.创建与接口相对应的映射文件（xml类型）
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace要对应Mapper接口的地址 -->
+<mapper namespace="mapper.UserMapper">
+	<!-- id中对应的方法要与接口中的方法名一致 parameterType的类型要与findUserById方法中的参数保持一致 resultSetType的类型要与indUserById方法中返回类型一致 -->
+	<select id="findUserById" parameterType="int"
+		resultType="pojo.User">
+		select * from user where id=#{id}
+	</select>
+	
+	<!-- 根据姓名进行模糊查询 -->
+	<select id="findUserByNameSection" parameterType="String" resultType="pojo.User">
+	<!--%${value}%只能是value -->
+	select * from user where userName like '%${value}%'
+	</select>
+	
+	
+	
+	<!-- 使用多个条件进行查询 -->
+	<select id="findUserByUser" parameterType="pojo.User" resultType="pojo.User">
+	<!-- 在使用多值查询的时候%${}% 中的属性必须要与User中的属性相匹配，但是单值模糊查询时只能使用value字段-->
+	select * from user where userName like '%${userName}%' and id=#{id}
+	</select>
+	
+	
+	<!-- 使用HashMap作为参数，查询用户信息 -->
+	<select id="findUserByHashMap" parameterType="java.util.HashMap"
+		resultType="pojo.User">
+	select * from user where userName like '%${userName}%' and userPassword=#{userPassword}
+	</select>
+</mapper>
+3.在总的映射文件中映射改映射文件
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/mybatislearn?characterEncoding=UTF-8" />
+				<property name="username" value="root" />
+				<property name="password" value="123456" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 用于映射我们编写的映射文件 ,resource:是映射文件的包名加类名，此处是用于映射到User.xml文件-->
+	<mappers>
+		<mapper resource="mapper/UserMapper.xml"></mapper>
+	</mappers>
+</configuration>
+4.测试;
+	对findUserById的方法进行测试
+		public static void main(String[] args) {
+		//首先得到mybaties的全局配置文件
+				String path="SqlMapConflig.xml";
+				//通过mybaties的全局配置文件获取配置文件流
+					InputStream IS=Resources.getResourceAsStream(path);
+					//创建会话工厂
+					SqlSessionFactory SSF=new SqlSessionFactoryBuilder().build(IS);
+					//创建会话SqlSession
+					SqlSession SS=SSF.openSession();
+					UserMapper UM=SS.getMapper(UserMapper.class);
+					User u=UM.findUserById(2);
+					if(u!=null) {
+						System.out.println(u.toString());
+					}else {
+						System.out.println("查无此人");
+					}
+			}
+											
+	对findUserByNameSection的方法进行测试
+		public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			List<User> LU = UM.findUserByNameSection("z");
+			if (LU.size() < 1) {
+				System.out.println("未查询到姓名中有z的用户");
+				return;
+			} else {
+				System.out.println("姓名中有z的用户有" + LU.size() + "个，他们的信息如下：");
+				for (User u : LU) {
+					System.out.println(u.toString());
+				}
+			}
+	}
+	对findUserByUser的方法进行测试：
+		public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			User u = new User();
+			u.setUserName("z");
+			u.setId(9);
+			User u1 = UM.findUserByUser(u);
+			if (u1 == null) {
+				System.out.println("未查询到此用户");
+				return;
+			} else {
+				System.out.println(u1.toString());
+			}	}
+	对ffindUserByHashMap的方法进行测试：
+	public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			HashMap<String, String>HM=new HashMap<>();
+			HM.put("userName", "zx");
+			HM.put("userPassword", "zx12345678");
+			List<User>LU=UM.findUserByHashMap(HM);
+			if(LU.isEmpty()) {
+				System.out.println("未查询到相关用户");
+				return;
+			}else {
+				for(User u:LU) {
+					System.out.println(u.toString());
+				}
+			}	}
+	
+	
+															4.使用配置文件连接数据库
+1.先写一个properties配置文件
+	jdbc.driver=com.mysql.jdbc.Driver
+	jdbc.url=jdbc:mysql://127.0.0.1:3306/mybatislearn?characterEncoding=UTF-8
+	jdbc.username=root
+	jdbc.password=123456
+2.在总的映射文件中进行连接
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 先引入配置文件 -->
+	<properties resource="db.properties"></properties>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+			<!-- 使用el表达式使用properties中的文件属性 -->
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 用于映射我们编写的映射文件 ,resource:是映射文件的包名加类名，此处是用于映射到User.xml文件 -->
+	<mappers>
+		<mapper resource="sqlMapper/User.xml" />
+		<mapper resource="mapper/UserMapper.xml"></mapper>
+	</mappers>
+</configuration>
+									
+									
+											
+													5.起别名：为了方便开发，所以将很长的包名进行起别名
+具体操作如下：
+ <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 先引入配置文件 -->
+	<properties resource="db.properties"></properties>
+	
+	
+	<!-- 为了方便开发，所以将很长的包名进行起别名 -->
+	 <!-- 别名 -->  
+    <typeAliases>  
+	//这种属于单个定义别名
+        <typeAlias alias="User" type="pojo.User"/>  
+		//批量定义别名
+		  <!-- 此后所有的包名为 pojo下的类均可以在使用这个的类的包名时使用类名来代替-->
+        <package name="pojo"></package>
+    </typeAliases>  
+    
+    
+	<!-- 配置驱动环境 -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+			<!-- 使用el表达式使用properties中的文件属性 -->
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	<!-- 用于映射我们编写的映射文件 ,resource:是映射文件的包名加类名，此处是用于映射到User.xml文件 -->
+	<mappers>
+		<mapper resource="sqlMapper/User.xml" />
+		<mapper resource="mapper/UserMapper.xml"></mapper>
+	</mappers>
+</configuration>
+							
+								
+								
+									
+										
+																6.几种常见的名词：
+1.vo:视图层对象（view object）
+2.po:持久层
+3.pojo:自定义的
+
+
+
+
+
+
+
+																7.拓展用户的数据库查询
+1.先创建一个User的继承类UserCustom
+	
+public class UserCustom extends User {
+	//扩展功能
+}
+2.在创建一个view层，来操作UserCustom
+public class UserVo {
+	private UserCustom UC;
+	public UserCustom getUC() {
+		return UC;
+	}
+	public void setUC(UserCustom uC) {
+		UC = uC;
+	}
+}
+3.在映射文件中对数据库进行操作
+	<select id="findUserByList" parameterType="pojo.UserVo"
+		resultType="pojo.UserCustom">
+		select * from user where userName like '%${UC.userName}%' and
+		userPassword=#{UC.userPassword}
+	</select>
+	
+	使用映射来查询数据库
+	<!-- 先定义一个resultMap,用于将 select id id_d username name_n from user where id=#{id}这条sql语句映射成pojo对象 -->
+	<resultMap type="pojo.UserCustom" id="resultMap">
+		<!-- 查询结果中的唯一标识（主键就是唯一标识） -->
+		<id column="id_m" property="id" />
+		<result column="name_m" property="userName" />
+		<result column="userPassword_m" property="userPassword" />
+
+	</resultMap>
+	<!-- 根据用户综合查询 -->
+	<select id="findUserByIdResultMap" parameterType="int"
+		resultMap="resultMap">
+		select id id_m, userName name_m, userPassword userPassword_m
+		from user where id=#{id}
+	</select>
+	
+	
+	<!-- SQL的动态查询，也就是说当查询需要的参数不存在的时候就会自动去掉sql语句 -->
+	<!-- 根据用户的综合查询 -->
+	<select id="findUserByListDynamic" parameterType="pojo.UserVo"
+		resultType="pojo.UserCustom">
+		<!-- where标签自动去掉sql语句中的and -->
+		select * from user
+		<where>
+		<if test="UC!=null">
+		<if test="UC.userName!=null">
+		and userName like '%${UC.userName}%'
+		</if>
+		<if test="UC.userPassword!=null">
+		and userPassword=#{UC.userPassword}
+		</if>
+		</if>
+		</where>
+	</select>
+	
+	
+	
+	定义sql片段用于代码重用
+		<!-- 定义一个SQl片段 ，用于代码重用 -->
+	<sql id="qouteFindUserCountDynamitic">
+		select count(0) from user
+		<where>
+			<if test="UC!=null">
+				<if test="UC.userName!=null">
+					and userName like '%${UC.userName}%'
+				</if>
+				<if test="UC.userPassword!=null">
+					and userPassword=#{UC.userPassword}
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	
+	
+	引用sql片段
+		<select id="findUserCountByListDynamic"
+		parameterType="pojo.UserVo" resultType="int">
+		<include refid="qouteFindUserCountDynamitic"></include>
+	</select>
+	
+	
+	
+	
+	
+	
+														8.使用集合来查询用户
+			<!-- 定义一个SQl片段 ，用于代码重用 -->
+	<sql id="qouteFindUserCountDynamitic">
+		select count(0) from user
+		<where>
+			<if test="UC!=null">
+				<if test="UC.userName!=null">
+					and userName like '%${UC.userName}%'
+				</if>
+				<if test="UC.userPassword!=null">
+					and userPassword=#{UC.userPassword}
+				</if>
+			</if>
+			<!-- LInt是在UserVo中定义的一个属性 -->
+			<if test="LInt!=null">
+				<!-- collection表示的要循环的集合或者数组,item:每次遍历的生成的对象中自定义的一个用于识别的名字 -->
+				<!-- 原有的sql语句为and(Id=1 or id=2) 所以open:and+( close:) separator:是间隔符，由于原有的间隔符是or，所以separator="or" -->
+				<foreach collection="LInt" item="LIntId" open=" and ("
+					close=")" separator="or">
+					id=#{LIntId}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+		引用sql片段
+	<select id="findUserCountByListDynamic"
+		parameterType="pojo.UserVo" resultType="int">
+		<include refid="qouteFindUserCountDynamitic"></include>
+	</select>
+4.在接口中定义相对应的功能
+	/*根据用户的综合查询 */
+	List<User> findUserByList(UserVo UV);
+		<!-- SQL的动态查询 -->
+	<!-- 根据用户的综合查询 -->*/
+	List<UserCustom> findUserByListDynamic(UserVo UV);
+5.使用spring创建对象
+		<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/aop 
+   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+   http://www.springframework.org/schema/tx 
+   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+   http://www.springframework.org/schema/context      
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<bean id="U" class="dao.User"></bean>
+	<bean id="US" class="service.UserService">
+	<property name="IUD" ref="U"></property>
+	</bean>
+	
+	<bean id="UserCustom" class="pojo.UserCustom">
+	<property name="userName" value="z"></property>
+	<property name="userPassword" value="zx12345678"></property>
+	</bean>
+
+	<bean id="UserCustom1" class="pojo.UserCustom">
+	<property name="id" value="2"></property>
+	</bean>
+	
+	
+	<bean id="UserVo" class="pojo.UserVo"> 
+	<property name="UC" ref="UserCustom"></property>
+	<property name="LInt" >
+	<list>
+	<value>6</value>
+	<value>7</value>
+	<value>8</value>
+	<value>9</value>
+	<value>10</value>
+	</list>
+	</property>
+	</bean>
+</beans>
+
+
+
+6.测试：
+	public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			UserVo UV=new UserVo();
+			UserCustom UC=new UserCustom();
+			UC.setUserName("z");
+			UC.setUserPassword("zx12345678");
+			UV.setUC(UC);
+			List<User> LU=UM.findUserByList(UV);
+			if(LU.isEmpty()) {
+				System.out.println("未查询到任何用户");
+			}else {
+				for(User u:LU) {
+					System.out.println(u.toString());
+				}
+			}
+		}
+	}
+
+	测试findUserByListDynamic：
+		public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			ApplicationContext AC = new ClassPathXmlApplicationContext("applicationContext.xml");
+			UserVo UV = (UserVo) AC.getBean("UserVo");
+			List<UserCustom> LUC = UM.findUserByListDynamic(UV);
+			if (LUC == null) {
+				System.out.println("未查询到此人的任何信息");
+			} else {
+				for (UserCustom UC : LUC) {
+					System.out.println(UC.toString());
+				}
+			}
+	}
+	测试quoteFindUserCountByList：
+			public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			UserMapper UM = SS.getMapper(UserMapper.class);
+			ApplicationContext AC = new ClassPathXmlApplicationContext("applicationContext.xml");
+			UserVo UV = (UserVo) AC.getBean("UserVo");
+			List<UserCustom> LUC=UM.findUserByListDynamic(UV);
+			int count=0;
+			count=UM.findUserCountByListDynamic(UV);
+			if(count<1) {
+				System.out.println("未查询到任何的用户");
+			}else {
+				System.out.println("查询到"+count+"条用户数据");
+				int i=1;
+				for(UserCustom UC:LUC) {
+					System.out.println("第"+(i++)+"条用户的数据为"+UC.toString());
+				}
+			}
+	}
+		
+
+		
+													9.多表连接输出查询用户
+1.配置映射文件
+	<!-- namespace要对应Mapper接口的地址 -->
+<mapper namespace="mapper.OrederCustomMapper">
+	<!-- 定义一个SQl片段 ，用于代码重用 -->
+	<sql id="quoteSQL1">
+		SELECT orders.*,user.*
+		FROM orders,user
+		WHERE
+		user.id=orders.id
+	</sql>
+		<resultMap type="pojo.OrderCustom" id="findOrderCustomMap">
+		<!-- 查询结果中的唯一标识（主键就是唯一标识） 查询结果中 column：对应的是sql语句的别名 property：对应的是pojo中属性的名称 -->
+		<id column="id" property="id" />
+		<result column="orderName" property="orderName" />
+		<result column="orederAddress" property="orederAddress" />
+		<association property="UC"
+			javaType="pojo.UserCustom">
+			<id column="id" property="id" />
+			<result column="userName" property="userName" />
+			<result column="userPassword" property="userPassword" />
+			<result column="age" property="age" />
+			<result column="sex" property="sex" />
+		</association>
+	</resultMap>
+	<select id="findOrderCustomResultMap"
+		resultMap="findOrderCustomMap">
+		<include refid="quoteSQL1"></include>
+	</select>
+2.在orderCustom中添加UserCustom属性，并添加get/set方法
+	// 关联用户，为兼容用户信息而创建
+	private UserCustom UC;
+	public UserCustom getUC() {
+		return UC;
+	}
+	public void setUC(UserCustom uC) {
+		UC = uC;
+	}  
+3.使用spring为对象注入属性
+	<bean id="UserCustom2" class="pojo.UserCustom">
+	</bean>
+	<bean id="OrderCustom" class="pojo.OrderCustom">
+		<property name="UC" ref="UserCustom2"></property>
+	</bean>
+4.在orderCustomMapper接口中添加对应的findOrderCustomResultMap方法：
+	//用于多表连接查询
+	List<OrderCustom> findOrderCustomResultMap();
+5.测试findOrderCustomResultMap方法：
+	public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+		try {
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			OrederCustomMapper OCM = SS.getMapper(OrederCustomMapper.class);
+			List<OrderCustom> LOC = OCM.findOrderCustomResultMap();
+			if (LOC.isEmpty()) {
+				System.out.println("未查到有关联用户");
+			} else {
+				for (OrderCustom OC : LOC) {
+					System.out.println(OC.toString());
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+		
+		
+			
+															10.一对多查询（去除重复查询）
+1.先创建一个OrdersDetail来合并orders以及user的主要信息
+	public class OredersDetail {
+	private int id, userId, ordersNumber;
+	private String ordersId;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getOrdersNumber() {
+		return ordersNumber;
+	}
+
+	public void setOrdersNumber(int ordersNumber) {
+		this.ordersNumber = ordersNumber;
+	}
+
+	public String getOrdersId() {
+		return ordersId;
+	}
+
+	public void setOrdersId(String ordersId) {
+		this.ordersId = ordersId;
+	}
+
+	@Override
+	public String toString() {
+		return "OredersDetail [id=" + id + ", userId=" + userId + ", ordersNumber=" + ordersNumber + ", ordersId="
+				+ ordersId + "]";
+	}
+
+}
+2.在ordersCustom设置一个ordersDetail属性，并设置get set方法，但是由于返回结果集是一个集合，所以声明为list的类型：
+	private List<OredersDetail> LOD;
+	
+	public List<OredersDetail> getLOD() {
+		return LOD;
+	}
+
+	public void setLOD(List<OredersDetail> lOD) {
+		LOD = lOD;
+	}
+3.在映射文件编写对应的sql语句
+		</sql>
+		<sql id="quoteSQL2">
+		SELECT orders.*,user.*,ordersDetail.*
+		FROM orders,user,ordersDetail
+		WHERE
+		user.orderId=orders.orderId
+		and orders.orderId=ordersDetail.ordersId
+	</sql>
+	<!-- 一对多查询 -->
+	<select id="oneToMore" resultMap="resultMap1">
+	<include refid="quoteSQL2"></include>
+	</select>
+	<resultMap type="pojo.OrderCustom" id="resultMap1">
+		<!-- 查询结果中的唯一标识（主键就是唯一标识） 查询结果中 column：对应的是sql语句的别名 property：对应的是pojo中属性的名称 -->
+		<id column="id" property="id" />
+		<result column="orderId" property="orderId" />
+		<result column="orderName" property="orderName" />
+		<result column="orederAddress" property="orederAddress" />
+		<association property="UC" javaType="pojo.UserCustom">
+			<id column="id" property="id" />
+			<result column="orderId" property="orderId" />
+			<result column="userName" property="userName" />
+			<result column="userPassword" property="userPassword" />
+			<result column="age" property="age" />
+			<result column="sex" property="sex" />
+		</association>
+		<!-- 使用collection来获取List对象集合
+		 property:对应的是resultMap中type里对应的属性名 ofType:对应的是property自身的对象 
+		 -->
+		<collection property="LOD" ofType="pojo.OredersDetail">
+		<!-- 查询结果中的唯一标识（主键就是唯一标识） 查询结果中 column：对应的是sql语句的别名 property：对应的是pojo中属性的名称 -->
+		<id column="id" property="id" />
+		<result column="userId" property="userId" />
+		<result column="ordersNumber" property="ordersNumber" />
+		<result column="ordersId" property="ordersId" />
+		</collection>
+	</resultMap>
+4.在对应的映射文件接口中写入对应的方法：
+			// Tset3:用于一对多的查询
+	List<OrderCustom> oneToMore();
+5.测试对应的方法：
+	public static void main(String[] args) {
+		// 首先得到mybaties的全局配置文件
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+		try {
+			InputStream IS = Resources.getResourceAsStream(path);
+			// 创建会话工厂
+			SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+			// 创建会话SqlSession
+			SqlSession SS = SSF.openSession();
+			OrederCustomMapper OCM = SS.getMapper(OrederCustomMapper.class);
+			List<OrderCustom> LOC = OCM.oneToMore();
+			if (LOC.isEmpty()) {
+				System.out.println("未查到有关联用户");
+			} else {
+				for (OrderCustom OC : LOC) {
+					System.out.println(OC.toString());
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
+	
+															11.延迟加载功能的实现
+1.<!-- 延迟加载功能的实现 -->
+	<select id="findUserLoading" resultMap="resultMap3">
+		select orders.* from
+		orders
+	</select>
+	<resultMap type="pojo.OrderCustom" id="resultMap3">
+		<!-- 查询结果中的唯一标识（主键就是唯一标识） 查询结果中 column：对应的是sql语句的别名 _____property：对应的是pojo中属性的名称 -->
+		<id column="id" property="id" />
+		<result column="orderName" property="orderName" />
+		<result column="orederAddress" property="orederAddress" />
+		<result column="orderId" property="orderId" />
+		<!-- 延迟加载用户信息 -->
+		<!--property：是指resultMap的type中的一个属性，javaType：对应的是property对应的一个类型 -->
+		<!-- 查询用户的信息，由于之前已经使用过查询用户的信息，所以只需直接调用即可，由于这种查询方法不在同一个映射文件内，所以直接将该映射文件namespace.statementId输入即可 -->
+		<!-- column:对应的是findUserByOrderId对应的参数 -->
+		<!-- 一般默认情况下延迟加载是关闭的-->
+		<association property="UC" javaType="pojo.UserCustom"
+			select="mapper.UserMapper.findUserByOrderId" column="orderId">
+		</association>
+	</resultMap>
+2.打开延迟加载的开关
+	<1>.先在SqlMapConflig.xml中配置
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 先引入配置文件 ,用于加载文件属性 -->
+	<properties resource="db.properties"></properties>
+	//此处才是在延迟加载中打开，以上代码均不是
+	<!-- 打开延迟加载的开关 -->
+	<settings>
+		<!-- 启用延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="false" />
+	</settings>
+						
+							
+								
+										
+											
+												
+													
+														
+												12.OGNL表达式
+sql中的另一种选择语句：OGNL方式：
+1.先创建一个message类来存储message的属性值：
+public class Message {
+	private int id;
+	private String command;
+	private String description;
+	private String content;
+	public Message() {
+		super();
+	}
+	public Message(String command, String description) {
+		super();
+		this.command = command;
+		this.description = description;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getCommand() {
+		return command;
+	}
+	public void setCommand(String command) {
+		this.command = command;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	@Override
+	public String toString() {
+		return "Message [id=" + id + ", command=" + command + ", description=" + description + ", content=" + content
+				+ "]";
+	}
+}
+2.在创建一个servlet类来操作以及设置页面属性
+	package servlet;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspWriter;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import mapper.MessageMapper;
+import pojo.Message;
+import util.JudgeEmptyUtil;
+
+public class ListServlet extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		this.doPost(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// 首先得到mybaties的全局配置文
+		String path = "SqlMapConflig.xml";
+		// 通过mybaties的全局配置文件获取配置文件流
+		InputStream IS = Resources.getResourceAsStream(path);
+		// 创建会话工厂
+		SqlSessionFactory SSF = new SqlSessionFactoryBuilder().build(IS);
+		// 创建会话SqlSession
+		SqlSession SS = SSF.openSession();
+		MessageMapper OCM = SS.getMapper(MessageMapper.class);
+		request.setCharacterEncoding("utf-8");
+		String command = request.getParameter("command");
+		String description = request.getParameter("description");
+		String reCommand = "1";
+		String reDescription = "1";
+		if (command != null && !command.equals("")) {
+			reCommand = command;
+		}
+		if (description != null &&!description.equals("")) {
+			reDescription = description;
+		}
+		List<Message> message = null;
+		Message m = new Message(reCommand, reDescription);
+		message = OCM.findMessageByRequirement(m);
+		if (message.isEmpty()) {
+			System.out.println("未查询到任何信息");
+			message = OCM.fingMessageInfo();
+		}
+		request.setAttribute("message", message);
+
+		request.getRequestDispatcher("/WEB-INF/jsp/list2.jsp").forward(request, response);
+	}
+
+}
+3.在web.xml中设置映射关系
+	<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+	<servlet>
+		<servlet-name>List</servlet-name>
+		<servlet-class>servlet.ListServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>List</servlet-name>
+		<url-pattern>/ListServlet</url-pattern>
+	</servlet-mapping>	
+</web-app>
+4.配置Message.xml文件来操作数据库：
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace就是对SQL进行分类化管理，注：mapper代理开发方式，namespace就有特殊含义 -->
+<mapper namespace="mapper.MessageMapper">
+	<!-- 使用select进行查询数据库 根据Id查询用户的信息 ，表示映射文件的SQL，parameterType是参数id的类型(int ,String等)，resultType是最终返回的类型 
+		此处是输出的类型是User类型 -->
+
+	<select id="fingMessageInfoById" parameterType="int"
+		resultMap="resultmap1">
+		select * from message where id=#{id}
+	</select>
+	<resultMap type="pojo.Message" id="resultmap1">
+		<id column="id" property="id" />
+		<result column="command" property="command" />
+		<result column="description" property="description" />
+		<result column="content" property="content" />
+	</resultMap>
+
+
+
+
+	<!-- 查询列表所有内容 -->
+	<select id="fingMessageInfo" resultMap="resultmap1">
+		select * from message
+	</select>
+
+
+
+	<!-- 条件查询列表中的内容 -->
+	<select id="findMessageByRequirement"
+		parameterType="pojo.Message" resultMap="resultmap1">
+		<!-- 方法1: -->
+		<!-- select * from message where command like '%${command}%' or description 
+			like '%${description}%' -->
+		<!-- 方法2: -->
+		<!-- 注： select * from message where 1=1等价于select * from message -->
+		select * from message where 1=1
+		<if test="command!=null&amp;&amp;!&quot;&quot;.equals(command)">and command like '%${command}%'</if>
+		<if
+			test="description!=null&amp;&amp;!&quot;&quot;.equals(description)">or description like '%${description}%'</if>
+	</select>
+</mapper>
+5.配置sqlmapper.xml来连接数据库：
+	<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 先引入配置文件 ,用于加载文件属性 -->
+	<properties resource="db.properties"></properties>
+	<!-- 打开延迟加载的开关 -->
+	<settings>
+		<!-- 启用延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="true" />
+	</settings>
+
+	<!-- 为了方便开发，所以将很长的包名进行起别名 -->
+	<!-- 别名 -->
+	<typeAliases>
+		<!-- 此后所有的包名为 pojo.User的均可以使用User来代替 -->
+		<typeAlias alias="Message" type="pojo.Message" />
+		<!-- 此后所有的包名为 pojo下的类均可以在使用这个的类的包名时使用类名来代替 -->
+		<package name="pojo"></package>
+	</typeAliases>
+	<!-- 配置驱动环境 -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<!-- 使用el表达式使用properties中的文件属性 -->
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+
+	<!-- 用于映射我们编写的映射文件 ,resource:是映射文件的包名加类名，此处是用于映射到User.xml文件 -->
+	<mappers>
+		<mapper resource="sqlMapper/Message.xml" />
+	</mappers>
+</configuration>
+6.编写主界面：
+	<%@page import="java.util.List"%>
+<%@page import="pojo.Message"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@page isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>List</title>
+<link rel="stylesheet" href="resources/BootStrap/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="resources/BootStrap/css/bootstrap-theme.min.css">
+<script src="resources/BootStrap/js/jquery-3.3.1.min.js"></script>
+<script src="resources/BootStrap/js/bootstrap.min.js"></script>
+</head>
+<body style="padding: 20px;">
+	<form class="form-inline" action="ListServlet" method="post">
+		<div class="form-group">
+			<label for="command">指令</label> <input type="text"
+				class="form-control" id="command" name="command"
+				placeholder="command"/>
+		</div>
+		<div class="form-group">
+			<label for="description">描述</label> <input type="text" class="form-control"
+				id="description" placeholder="description" name="description"/>
+		</div>
+		<input type="submit" class="btn btn-default" id="submit" name="submit" value="提交"></input>
+	</form>
+	<table class="table table-condensed table-striped table-bordered">
+		<tr class="warning">
+			<th>序号</th>
+			<th>指令</th>
+			<th>描述</th>
+			<th>回复</th>
+		</tr>
+		<c:forEach items="${message }" var="mess" varStatus="status">
+			<c:if test="${status.index%2==0 }">
+				<tr class="danger">
+					<td><button class="btn btn-primary" type="button">
+							序号 <span class="badge">${status.index+1 }</span>
+						</button></td>
+					<td><div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">指令</span> <input
+								type="text" class="form-control" placeholder="Username"
+								aria-describedby="basic-addon1" value="${mess.command }"
+								disabled="disabled">
+						</div></td>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">描述</span> <input
+								type="text" class="form-control" placeholder="Username"
+								disabled="disabled" aria-describedby="basic-addon1"
+								value="${mess.description }">
+						</div>
+					</td>
+					<td><div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">回复</span> <input
+								type="text" class="form-control" placeholder="Username"
+								disabled="disabled" aria-describedby="basic-addon1"
+								value="${mess.content }">
+						</div></td>
+				</tr>
+			</c:if>
+			<c:if test="${status.index%2!=0 }">
+				<tr class="active">
+					<td><button class="btn btn-primary" type="button">
+							序号 <span class="badge">${status.index+1 }</span>
+						</button></td>
+					<td><div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">指令</span> <input
+								type="text" class="form-control" placeholder="Username"
+								disabled="disabled" aria-describedby="basic-addon1"
+								value="${mess.command }">
+						</div></td>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">描述</span> <input
+								type="text" class="form-control" placeholder="Username"
+								disabled="disabled" aria-describedby="basic-addon1"
+								value="${mess.description }">
+						</div>
+					</td>
+					<td><div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">回复</span> <input
+								type="text" class="form-control" placeholder="Username"
+								disabled="disabled" aria-describedby="basic-addon1"
+								value="${mess.content }">
+						</div></td>
+				</tr>
+			</c:if>
+		</c:forEach>
+	</table>
+</body>
+</html>
+					
+					
+						
+							
+										13.log4j的使用方法：
+1.先编写log4j.properties:
+	#\u5B9A\u4E49\u8F93\u51FA\u7EA7\u522B
+ log4j.rootLogger=DEBUG,Console,File
+ #\u65E5\u5FD7\u8F93\u51FA\u65B9\u5F0F\uFF1A\u63A7\u5236\u53F0\u8F93\u51FA
+ 
+ log4j.appender.Console=org.apache.log4j.ConsoleAppender
+ log4j.appender.Console.Target=System.out
+ log4j.appender.Console.Encoding=UTF-8
+ 
+ #\u53EF\u4EE5\u7075\u6D3B\u5730\u6307\u5B9A\u5E03\u5C40\u6A21\u5F0F
+ log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+ #log4j.appender.Console.layout.ConversionPattern = %d{yyyy-MM-dd HH:mm:ss.SSS} -%p (%F\:%L)- %m%n
+ #\u6253\u5370\u683C\u5F0F\u6817\u5B50\uFF1A2017-08-11 15:36 -DEBUG (HttpServletBean.java:174)- Servlet 'mvc' configured successfully
+ log4j.appender.Console.layout.ConversionPattern = %d{yyyy-MM-dd HH:mm} -%p (%F\:%L)- %m%n 
+ ### \u6253\u5370SQL ###
+ #log4j.logger.com.ibatis=DEBUG
+ #log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=DEBUG
+ #log4j.logger.com.ibatis.common.jdbc.ScriptRunner=DEBUG
+ #log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=DEBUG
+ log4j.logger.java.sql.Connection=DEBUG
+ log4j.logger.java.sql.Statement=DEBUG
+ log4j.logger.java.sql.PreparedStatement=DEBUG
+ #log4j.logger.java.sql.ResultSet=DEBUG
+2.在pom.xml文件中配置，用于控制输出
+		<!-- 用于显示日志 -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<slf4j.version>1.7.7</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
+	</properties>
+		
+	<dependencies>
+	<!-- 日志文件管理包 -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		</dependencies>
+		配置好以上文件后便可以在控制台进行输出
+		
+		
+		
+		
+		
+														14.js控制删除———删除之前的确认
+1.编写js函数：
+	function del() { 
+		  var msg = "您真的确定要删除吗？\n\n请确认！"; 
+		  if (confirm(msg)==true){ 
+		    return true; 
+		  }else{ 
+		    return false; 
+		  } 
+		} 
+2.调用
+<a href="#"> <span
+class="glyphicon glyphicon-remove" aria-hidden="true" onclick="javascript:return del()">删除</span>
+							</a>

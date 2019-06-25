@@ -1,0 +1,27 @@
+比如说有两个vue组件，app.vue,test.vue
+要在app.vue中使用test.vue组件，则需要在app.vue组件中进行注册：
+	下面举一个简单的例子帮助理解：
+	test.vue:
+		<templete>
+		<div class="test"></div>
+		</templete>
+		<script>
+		export default{name:"test"}
+		</script>
+		<style></style>
+	则在app.vue中的内容为：
+	<templete>
+	<div class="app">
+		<test></test>//此处用于激活组件
+	</div>
+	</templete>
+	<script>
+	import test from 'path/test.vue'(注：path为相对于test.vue的相对路径)//此处用于引入test.vue
+	export default{
+		name:"app",
+		components: {
+			test		//在此处注册
+		}
+	}
+	</script>
+	<style></style>

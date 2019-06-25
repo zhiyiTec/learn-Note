@@ -1,0 +1,46 @@
+1.实现跨域需要vue-resource或者vue-axios，需要在你的脚手架项目里提前安装好
+2.在config/index.js加入：
+	proxyTable: {
+		"/WebService.asmx": {
+			target: "http://localhost:12900/jsnf_service/",
+			logLevel: 'debug',
+			changeOrigin: true
+		}
+	},
+3.直接调用http请求对contoller层进行访问：
+	比如controller层有一个拦截器：
+		@ResponseBody
+	@RequestMapping("/emp")
+	public Msg getEmps(@RequestParam(value = "pn", defaultValue = "1") Integer pn) {
+		// 为了方便快速查询，所以引入PageHelper分页查询
+		// 表示从第pn查，每一页显示5条数据
+		
+		PageHelper.startPage(pn, 5);// 后面紧跟的这个查询就是分页查询
+		List<Emp> lemp = empService.getALlEmpInfo();
+		// 将查询的分页结果进行包装,其中PageInfo中包含了这个页面的所有信息，所以只需要将pageInfo交给页面接受就行了
+		PageInfo page = new PageInfo(lemp, 5);// 5:表示每次只显示5页的导航菜单
+		return Msg.success().add("pageInfo", page);// 返回的不仅有状态消息，其中由于add方法，也将
+	}
+	这个拦截器所在的服务器是http://localhost:8080，对他进行访问的端口是http://localhost:8080/wxservice/emp
+	而我们的vue项目所在的服务器端口是81端口，要实现数据的请求必须要实现跨域所以要在接口处添加response.setHeader("Access-Control-Allow-Origin", "*");
+	这个所谓的接口就是直接在controller层直接进行修改，让它能够接受所有的请求
+	修改之后的controller:
+		@ResponseBody
+	@RequestMapping("/emp")
+	public Msg getEmps(@RequestParam(value = "pn", defaultValue = "1") Integer pn,HttpServletResponse response) {
+		// 为了方便快速查询，所以引入PageHelper分页查询
+		// 表示从第pn查，每一页显示5条数据
+		//此处为新增处
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		PageHelper.startPage(pn, 5);// 后面紧跟的这个查询就是分页查询
+		List<Emp> lemp = empService.getALlEmpInfo();
+		// 将查询的分页结果进行包装,其中PageInfo中包含了这个页面的所有信息，所以只需要将pageInfo交给页面接受就行了
+		PageInfo page = new PageInfo(lemp, 5);// 5:表示每次只显示5页的导航菜单
+		return Msg.success().add("pageInfo", page);// 返回的不仅有状态消息，其中由于add方法，也将
+	}
+	顺便写一下如何使用axios请求数据:
+		this.$http.get("http://localhost:8080/wxservice/emp").then((response)=> {
+			console.log(response);
+			//e.preventDefault();
+		})
+		通过这些设置就尽情的使用vue去搭建页面吧

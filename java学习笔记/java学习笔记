@@ -1,0 +1,126 @@
+一.获取文件的路径
+	<1>.获取文件的绝对路径
+		eg;
+			String path="dir2/dir1/dir0/dir3";
+			File dir=new File(path);
+			String t_R=dir.getAbsolutePath();//此时t_R就是该目录的绝对路径
+	<2>.获取文件的相对路径
+		eg;
+			String path="dir2/dir1/dir0/dir3";
+			File dir=new File(path);
+			String t_A=dir.getPath();//此时t_A就是该目录的相对路径
+
+			
+二.遍历目录
+	eg;
+		 public  static void listFile(File file) {
+		if(file!=null) {
+			if(file.isDirectory()) {
+			//如果是文件就把它放在文件数组中
+				File f[]=file.listFiles();
+				if(f!=null) {
+					for(int i=0;i<f.length;i++) {
+						listFile(f[i]);
+					}
+				}
+			}else {
+			//否则的话就打印输出文件
+			 	System.out.println(file.getName()+"是文件，其绝对路径为："+file.getAbsolutePath()
+				+"\n其相对路径为"+file.getPath()+"\n");
+				
+			}
+		}
+	}
+		调用方法：
+				File  file =new File("src");
+				listFile(file);
+
+				
+三.从磁盘上读取以及写入文件
+	<1>.从硬盘把文件读到内存中
+		eg;
+		方法1：按字节读
+			File file = new File("C:\\Users\\17732\\Desktop\\a.txt");
+			// 再将其放入文件读取的缓冲区中
+			InputStream input = new FileInputStream(file);
+			// 创建一个字符数组来存放缓冲区的字节
+			byte b[] = new byte[(int)(file.length())];
+			// 然后使用read()方法来将输入流中的数据读到byte数组中
+			input.read(b);
+			// 读取完之后在关闭输入流
+			input.close();
+			// new String(b)是将字节数组转化为字符串
+			System.out.println(new String(b,"UTF-8"));//用于指定编码
+		方法2：按字符数读
+			eg;
+				File file=new File("C:\\Users\\17732\\Desktop\\a.txt");
+				Reader reader=new FileReader(file);
+				char c[]=new char[(int)file.length()];
+				reader.read(c);
+				System.out.println(new String(c));
+				reader.close();
+		方法3：
+			eg;
+				Reader reader = new FileReader(file);
+				char c[] = new char[(int) file.length()];
+				int temp = 0;
+				int i = 0;
+				while ((temp = reader.read()) != -1) {
+				c[i++] = (char) temp;
+
+				}
+				System.out.println(new String(c));
+				reader.close();
+	<2>.向文件中写入内容
+		<2>_1.覆盖式,新的内容会把原来的内容覆盖掉
+			eg;
+				// 先获取这个文件
+				File file = new File("C:\\Users\\17732\\Desktop\\a.txt");
+				OutputStream output=new FileOutputStream(file);
+				Scanner sc=new Scanner(System.in);
+				System.out.println("请输入要写入的内容：");
+				String t=sc.next();
+				//由于读入和写入均是字节流，所以需要将字符串转换为字节数组
+				byte b[]=t.getBytes();
+				output.write(b);
+				//关闭输出流
+				output.close();
+		<2>_2.追加式,不会覆盖原来的内容
+			eg;
+				在原来覆盖的基础上把OutputStream output=new FileOutputStream(file);改为
+				OutputStream output=new FileOutputStream(file,true);
+		
+			
+
+四.几种常见的转换
+	<1>.LinkedList转换为数组：
+		eg;
+			LinkedList<String> list=new LinkedList<String>();
+			String s[]=new String[list.size()];
+			list.toArray(s);
+	<2>.数组转化为字符串
+		eg;
+			StringBuffer sb=new StringBuffer();
+			for(int i=0;i<s.length;i++) {
+			sb.append(s[i]);
+			sb.append("\n");
+			}
+			String tempt=sb.toString();
+	<3>.byte[]数组转化为字符类型
+		eg;
+			byte b[] = new byte[(int)(file.length())];
+			System.out.println(new String(b,"UTF-8"));//用于指定编码
+	<4>.将字符串转换为字节数组
+		eg;
+			String t;
+			byte b[]=t.getBytes();
+	<5>.将字符串类型的数字转换为整型的数组
+		eg;
+			String str = "12,34,65,85,45,11";  //定义一个由整型构成的字符串
+			String[] strArr = str.split(",");        //然后使用split方法将字符串拆解到字符串数组中
+			Integer[] intArr = new Integer[strArr.length];  //定义一个长度与上述的字符串数组长度相通的整型数组
+			for(int a=0;a<strArr.length;a++){
+			 intArr[a] = Integer.valueOf(strArr[a]);  //然后遍历字符串数组，使用包装类Integer的valueOf方法将字符串转为整型
+					}
+			
+			

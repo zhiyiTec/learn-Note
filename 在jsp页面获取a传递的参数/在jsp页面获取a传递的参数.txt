@@ -1,0 +1,21 @@
+在jsp页面获取<a>传递的参数：
+	1.${param.参数名}
+	2.${param["参数名"]}
+		例子：<a href="a.jsp?name=张三">点击</a>;在另一个jsp页面获取值${param.name}或者${param["name"]}
+		
+		
+		https://blog.csdn.net/muyeju/article/details/48594377
+		
+	具体代码：
+		test2.jsp:		
+<body>
+	<p id="TZ">跳转</p>
+	<script type="text/javascript">
+	$("p").click(function(){
+		window.location.href = "test3.jsp?name=朱旭";
+	})
+	</script>
+</body>
+		test3.jsp：
+				<p>${param.name}</p>
+	

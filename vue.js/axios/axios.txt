@@ -1,0 +1,19 @@
+1.cd到创建的工程目录
+2.使用指令npm install axios --save-dev
+3.在main.js中定义全局的axios
+	import axios from 'axios'
+	Vue.prototype.$http=axios
+	注：使用axios时如果已经引入了vue-resource则需要把import vueResource from 'vue-resource'以及Vue.use(vueResource)注释掉，否则就不能使用
+4.使用axios时，需要把response.body改为data
+		同时http请求：
+		this.$http.get("http://localhost:3000/users/"+id).then(function(response){
+			console.log(response.data);
+			this.customer = response.data;
+			
+		})
+		更改为：
+		this.$http.get("http://localhost:3000/users/"+id).then((response)=> {
+			console.log(response.data);
+			this.customer = response.data;
+			
+		})

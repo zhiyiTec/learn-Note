@@ -1,0 +1,12 @@
+1.路由的转发:this.$router.push({path:"/Custom"})//直接跳转到Custom
+this.$router.push({path:"/Custom",query:{alert:"用户添加信息成功"}})//转发的时候把query对象传过去,此处必须为query
+接收query的方法：this.$route.query.alert就可以接收alert中的值
+2.路由跳转的时候带着参数进行传递，那么注册的时候需要这样注册：
+	{
+		path: "/Custom/:id",//此处表示拦截所有的user请求
+		component: CustomDetails//注册它时现在头部import对应的vue组件
+	},
+	使用的时候这样使用：
+		<router-link v-bind:to="'/Custom/'+custom.id">点击查看详情</router-link>
+	接受参数的时候需要这样使用：
+		this.$route.params.id，注：此处的id和path: "/Custom/:id"中的id是对应的

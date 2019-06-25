@@ -1,0 +1,825 @@
+										一.
+<1><%! %>：用于定义全局变量
+<2><%  %>:用于定义局部变量
+<3><%= %>:用于在里面输出一个变量或者具体的内容,其作用相当于out.println();
+										二、
+<1>Jsp的注释：<!-- -->用于html的注释，查看源代码的时候可见
+			  <%-- %>用于Jsp的注释
+										三、
+<1>pageContext对象（只在一个页面中保存数据）:
+	1.使用pageContext.setAttribute(name,value):设置两个page范围数据 key->value
+	2.使用pageContext.getAttribute(name):用于获取名字name对应的值;
+		eg;
+			String name = String.valueOf(pageContext.getAttribute("name"));
+<2>Request：只在一个请求中保存数据;
+	1.使用request.setAttribute(name,value):设置两个page范围数据 key->value；
+	2.使用request.getAttribute(name):用于获取名字name对应的值
+	但是与pageContext不同的是获取值得方式是通过forward方法来获取；
+		eg:<jsp:forward page="requestForward.jsp"></jsp:forward>
+<3>Session:只在一次会话范围中保存数据，而且仅仅供单个用户使用
+	1.使用session.setAttribute(name,value):设置两个page范围数据 key->value；
+	2.使用session.getAttribute(name):用于获取名字name对应的值
+										四、
+1.forward用法：<jsp:forward page="name.jsp">用于跳转到名为name的jsp页面中，而且tile不会改变
+										五、
+引入类的方法： <%@ page import="java.util.*" %>
+										六、
+1.获取当前时间的方法：Date myDate=new Date();
+				   myDate.toLocaleString();
+2.使用response动态刷新界面的方法：
+	//每个1s刷新一次页面
+	response.setHeader("refresh", "1");	
+										七、
+1.获取输入框中的内容得方法：document.getElementById("").value("");	
+	eg:document.getElementById("passWord").value="";
+2.重置复选框的方法：var el = document.getElementById('元素ID')
+				   // 设置元素为选中状态
+				   el.checked = true;
+				   // 设置元素为未选中状态
+				   el.checked = false;
+	eg:var checkBox=document.getElementById("remember");
+	   checkBox.checked=false;
+										八、
+1.如果想获取请求体里的内容，是可以在request流里直接读的，读取的方法：request.getParameter("Id的名称");  
+2.html中input按钮怎么添加超链接:
+	比较完整的写法：
+		<a href="链接"> 
+　　		<input type=button onclick="window.location.href('连接')">
+			</a> 
+										九、
+1.设置Cookie的有效期：
+		Cookie nameAndPassWord=new Cookie("name",name+"-"+passWord);
+		nameAndPassWord.setMaxAge(1*60*60*24);//用于设置一天的有效期
+										十、
+1.换行的实现：
+	JSP换行的实现，其实是通过html换行标签<br/>来实现的,这也说明了，JSP页面经服务器转换后
+最终变成了html页面...
+	eg:
+		out.println("Cookie设置成功"+"<hr/>");
+										十一、
+response的用法：
+	1.使用response.setHeader("refresh", "1")方法可以实现动态刷新界面的功能
+		eg:
+			<%
+				//每个1s刷新一次页面
+				response.setHeader("refresh", "1");
+				Date myDate = new Date();
+					%>	
+	2.使用动态response.sendRedirect("index.html")方法可以实现重定位
+		eg:
+			<% 
+	
+				response.sendRedirect("index.html");
+					%>	
+	3.使用response操作cookie应用
+		具体用法参考5.3——response操作cookie应用
+										十二、
+out的用法：
+	1.使用out可以混合输出java和html;
+		eg:
+			<%
+				out.println("<h1>");
+				out.println("out对象测试" + "<hr/>");
+				out.println("</h1>");
+				%>	
+	2.使用out来获取缓冲区的使用情况；
+		<1>.int totalBuffer = out.getBufferSize();//用于获取总共缓冲区的大小
+		<2>.int unUseByffer = out.getRemaining();//用于获取未使用的缓冲区大小
+										十三、
+1.pageContext对象的范围只适用于当前页面范围，即超过这个页面就不能够使用了。所以使用pageContext对象向其它页面传递参数是不可能的。 
+2.request对象的范围是指在一JSP网页发出请求到另一个JSP网页之间，随后这个属性就失效。 
+3.session的作用范围为一段用户持续和服务器所连接的时间，但与服务器断线后，这个属性就无效。比如断网或者关闭浏览器。 
+4.application的范围在服务器一开始执行服务，到服务器关闭为止。它的范围最大，生存周期最长。 
+具体用法：
+	<%
+		//以下操作用于设置值
+		pageContext.setAttribute("name", "pageInformation");
+		request.setAttribute("name1", "requestInformation");
+		session.setAttribute("name2", "sessionInformation");
+		application.setAttribute("name3", "applicationInformation");
+	%>
+	<%
+		//以下操作用于获取值
+		String pageContextValueInformation = (String) pageContext.getAttribute("name");
+		String requestValueInformation = (String) pageContext.getRequest().getAttribute("name1");
+		String sessionValueInformation = (String) pageContext.getSession().getAttribute("name2");
+		String applicationValueInformation = (String) pageContext.getServletContext().getAttribute("name3");
+	%>
+										十四、
+JavaBean的用法：
+	<jsp:useBean id="stu" scope="session" class="model.student"></jsp:useBean>
+		注：
+			<1>其中id相当于 student stu=new student();
+			<2>scope可以取的值有：page(默认状态下就是page)
+			<3>class相当于导入student这个包,java导包：import model.student
+										    jsp导包：<%@ page import="model.student" %>
+										十五、javabean的用法
+javabean的用法：
+	<1>.使用<jsp:useBean id="实例化对象名" scope="保存范围" class="类完整名称"/>来创建javaBean
+		注：scope可以取 page、request、session、application
+		eg:
+			<jsp:useBean id="stu" scope="session" class="model.student"></jsp:useBean>
+	<2>.使用<jsp:setProperty property="属性名称" name="实例化对象名称" value="属性值"  
+	param="参数名称" />	来自动匹配stu类的属性，其中property="*"表示匹配所有属性，
+	value用于给属性赋值
+		eg：
+			<jsp:setProperty property="*" name="stu" />
+	<3>如果不使用自动匹配功能，那么获取表单数据的方式为：
+		request.getParameter(id);
+			eg:
+				<td><input type="text"  id="name" /></td>
+				String name = request.getParameter("name");
+				
+		
+										十六、获取表单提交的数据
+获取表单提交的数据
+	<1>.使用request.getParameter(value);来获取表单提交的数据
+		eg:
+			String name = request.getParameter("name");
+			String age = request.getParameter("age");
+	<2>.			
+										十七、重置功能的实现
+1.直接使用input的reset功能，具体用法：<input type="reset" value="重置"/>
+	eg：
+		<td><input type="reset" value="重置" ></td>
+2.使用js代码实现,具体用法：<input type="button" value="重置" onclick="reset()"/>
+						 <script>function reset(){
+						 	document.getElementById(Id).value("");
+						 }
+						 </script>									
+	eg；
+		<script type="text/javascript">
+		function reset() {
+		document.getElementById("name").value("");
+		document.getElementById("age").value("");
+		}
+			</script>		
+			<td><input type="button" value="重置" onclick="reset()"></td>			
+										十八、获取表单中的数据方法
+<1>.使用request.getParaement(id);
+	eg:
+		<font>您输入的姓名为：<%=request.getParameter("name") %></font>
+<2>.直接使用<jsp:getProperty property=id name=类名/>	
+	eg:
+		<font>您输入的年龄为：<jsp:getProperty property="age" name="stu"/></font>
+<3>.以后设置值全部用<jsp:setProperty property="属性名称" name="实例化对象名称" value="属性值"  
+	param="参数名称" />	来自动匹配stu类的属性
+！！！！！！！切记request要记得用forward来跳转，详情请参考3.1,target,以及student2！！！！！！！！
+										十九、在Servlet中获取request、session和application的值
+<1>.request：
+	requset.setAttribute("requestKey", "requestValue");// 用于给requeset赋值
+	request.getAttribute("requestKey")//用于获取request的值
+<2>.session:
+	HttpSession session = requset.getSession(); // 先定义一个session，request.getSession用于获取seesion值
+	session.setAttribute("sessionKey", "sessionValue");// 用于给session赋值
+	session.getAttribute("sessionKey")//用于获取session的值
+<3>application:
+	ServletContext applicaton = this.getServletContext();// 用于获取application的值
+	applicaton.setAttribute("applicationKey", "applicatonValue");// 用于给requeset赋值	
+	application.getAttribute("applicationKey")//用于获取application的值
+										二十、两种跳转方法
+<1>.客户端跳转的方法：
+	response.sendRedirect("target.jsp");// 客户端跳转
+<2>.服务器跳转的方法：
+	RequestDispatcher rd = requset.getRequestDispatcher("target.jsp");
+	rd.forward(requset, response);//服务器内跳转		
+										二十一、jsp-login登录项目笔记
+<1>.接收jsp页面传回的信息
+	eg:
+		String name = request.getParameter("userName");// 用于接收从jsp页面传回的姓名
+		String password = request.getParameter("password");// 用于接收从jsp页面传回的密码
+<2>.若页面的用户名或者密码输入不对，则将用户名和密码在重新加载到输入框内的方法：
+	eg:
+		<td>用户名</td>
+				<td><input type="text" id="userName" name="userName"
+					value="${userName	} }" /></td>
+				</tr>
+			<tr>
+				<td>密码</td>
+				<td><input type="password" id="password" name="password"
+					value="${password	} }" />
+					</td>
+<3>.在jsp页面显示用户名的方法：
+	eg;
+		<font>当前登录用户：${resultUser.userName }</font>
+<4>.Jsp页面用户登录信息显示乱码的解决方法：
+	方法1：java后端中加入代码：
+	request.setCharacterEncoding("utf-8");
+	response.setCharacterEncoding("utf-8");
+	response.setContentType("text/html;charset=utf-8");
+	方法2：jsp页面中加入代码：
+	<%
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+	%>
+	方法3：最终方法：先转字节流，在转回来
+	byte[] b=xxxxx.getBytes("iso-8859-1");
+	xxxx=new String(b,"utf-8");
+<5>.jdbc驱动器存放的位置在webInt->lib下，并add to path
+<6>.过滤器的web.xml的写法：
+	eg;
+		<filter>
+		<filter-name>loginFilter</filter-name>
+		<filter-class>tool.loginFilter</filter-class>
+		</filter>
+		<filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		</filter-mapping>
+<7>.过滤器的实现：
+	1.引用filter接口，并重写doFilter()函数
+		eg:具体实现过程如下：
+			public class loginFilter implements Filter {
+
+			@Override
+			public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain FilterChain)
+			throws IOException, ServletException {
+			// TODO Auto-generated method stub
+			// 由于每次登陆成功之后均会执行session.setAttribute("resultUser",
+			// resultUser);所以我们通过获取resultUser来判断是否
+			// 将servletRequest强制转换为HttpServletRequest类型
+			HttpServletRequest request = (HttpServletRequest) servletRequest;
+			HttpSession session = request.getSession();
+			Object object = session.getAttribute("resultUser");
+			//用于判断提交的路径方式，若果从login.jsp页面提交的，则路径中必然含有login关键字，否则path.indexOf("login") < 0
+			String path = request.getServletPath();
+
+			if (object == null && path.indexOf("login") < 0) {
+			RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+			rd.forward(servletRequest, servletResponse);// 服务器内跳转
+			} else {
+			FilterChain.doFilter(servletRequest, servletResponse);
+			}
+				}
+
+			@Override
+			public void destroy() {
+			// TODO Auto-generated method stub
+			Filter.super.destroy();
+		}
+
+		@Override
+		public void init(FilterConfig filterConfig) throws ServletException {
+			// TODO Auto-generated method stub
+				Filter.super.init(filterConfig);
+		}
+
+		}
+	2.在web.xml配置：
+		具体配置实现如下（全部通用）：
+				<filter>
+			<filter-name>loginFilter</filter-name>
+			<filter-class>tool.loginFilter</filter-class>
+		</filter>
+		<filter-mapping>
+			<filter-name>loginFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
+<8>web.xml的配置需要特别注意的是url后面的名字才是你跳转页面的地址
+<9>注销功能的实现：
+	public class loginOutServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		this.doPost(request, response);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		// 用于清除session
+		request.getSession().invalidate();
+		response.sendRedirect("login.jsp");
+
+	}
+										二十二、el表达式
+<1>.使用$符号来直接获取值
+	eg:
+		设置值：pageContext.setAttribute("pageContextKey", "pageContextValue");
+		取值：方式1：使用getAttribute来取值;
+					String name = String.valueOf(pageContext.getAttribute("pageContextKey"));
+			  方式2：使用el表达式来获取
+					${pageContextKey}
+<2>.el表达式寻找值的方式：
+	page->request->session->application
+<3>.获取提交表单内容的方式：
+	方式1：使用request.getParameter("id") 来获取，返回的为String类型的值
+			eg:<%
+		String name=request.getParameter("name");  
+		%>
+		<font>2您提交的姓名是=<%=name %></font>
+	方式2:使用${param.name}来获取
+		eg：<font>您提交的姓名是=${param.name }</font>
+<4>.使用${paramValues.name[i]}来获取一组值
+	eg:		
+		<input type="checkbox" name="hobby" id="hobby-java" value="java" />java语言<br />
+		<input type="checkbox" name="hobby" id="hobby-C++" value="C++" />C++语言<br />
+		<input type="checkbox" name="hobby" id="hobby-python" value="python" />python语言<br />
+		获取方式：
+		<font>您选中的爱好有：${paramValues.hobby[0] },${paramValues.hobby[1] },${paramValues.hobby[1] }</font>
+<5>.使用el中的${对象名.id }表达式来获取并使用对象，其中创建的对象必须通过request.setAttribute（"key",创建的对象名）
+	eg:
+		<jsp:useBean id="peo" scope="session" class="model.peopleModel"></jsp:useBean>
+	<%
+		peo.setId(1);
+		peo.setName("张三");
+		peo.setAge(21);
+		//将设置的对象放在request中，只有这样el表达式才能取到值;
+		request.setAttribute("peo", peo);
+	%>
+	<font>编号=${peo.id }</font>
+	<br />
+	<font>姓名=${peo.name }</font>
+	<br />
+	<font>年龄=${peo.age }</font>
+	<br />
+<6>.使用el表达式操作集合元素	注：在操作元素集合之前也必须将集合放入request.setAttribute()中，否则就无法获取
+	eg：
+		<%
+		LinkedList list = new LinkedList();
+		list.add(0, "元素0");
+		list.add(1, "元素1");
+		list.add(2, "元素2");
+		request.setAttribute("list", list);
+	%>
+
+	<font>${list[0]}</font>
+	<br />
+	<font>${list[1]}</font>
+	<br />
+	<font>${list[2]}</font>
+	<br />
+										二十三、标签的处理
+<1>.先创建一个Java标签类
+	eg:
+		public class hellowordTag extends TagSupport {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public int doStartTag() throws JspException {
+		// TODO Auto-generated method stub
+		//先创建一个标签处理对象，这时候才能用out.print();
+		JspWriter out = this.pageContext.getOut();
+		try {
+			out.print("自定义标签测试");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 表示直接跳出并结束标签
+		return TagSupport.SKIP_BODY;
+	}
+<2>.然后在web-Inf目录下创建tld文件
+	eg:
+		<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" 
+"http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd" >
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>hellowordTag</short-name>
+	<tag>
+		<name>hellowordTag</name>
+		<tag-class>tag.hellowordTag</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+</taglib>
+	注：这种配置全部通用，只需要改名字即可
+<3>.创建对应的jsp文件
+	eg:
+			<%@ page language="java" contentType="text/html; charset=utf-8"
+		pageEncoding="utf-8"%>
+	<!-- 导入taglib包文件 -->
+	<%@ taglib prefix="jspTab" uri="/WEB-INF/helloword.tld"%>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+	<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>hellowordTag</title>
+	</head>
+	<body>
+		<!-- 引用创建的标签的方式 -->
+		<jspTab:hellowordTag />
+	</body>
+<4>.在标签中加属性
+	1.先在java类中创建所要添加的属性
+		eg:
+	public class hellowordTag extends TagSupport {
+	private static final long serialVersionUID = 1L;
+	private String name;//这是新添加的属性
+
+	public hellowordTag() {
+
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public int doStartTag() throws JspException {
+		// TODO Auto-generated method stub
+		JspWriter out = this.pageContext.getOut();
+		try {
+			out.print(this.name + "自定义标签测试");//在这儿进行输出
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 表示直接跳出并结束标签
+		return TagSupport.SKIP_BODY;
+	}
+
+}
+	2.在tld文件中新增一个<tag>标签
+	<tag>
+		<name>hellowordTag</name>
+		<tag-class>tag.hellowordTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+		 <name>name</name>
+		 <required>true</required>
+		 <rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	3.jsp文件中,在原有的基础上增name="";也就是给java类中新增的属性进行赋值
+	eg:
+		<jspTab:hellowordTag name="标签属性添加测试——>"/>
+<5>.自定义有属性的标签，下面一个例子是通过标签遍历一个集合来实现的
+	1.先创建一个Java标签类
+		eg:
+			public class iterateTag extends TagSupport {
+	private static final long serialVersionUID = 1L;
+	private String var, items;
+	private Iterator iter;
+
+	public String getVar() {
+		return var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	public String getItems() {
+		return items;
+	}
+
+	public void setItems(String items) {
+		this.items = items;
+	}
+
+	public Iterator getIter() {
+		return iter;
+	}
+
+	public void setIter(Iterator iter) {
+		this.iter = iter;
+	}
+	//这个是标签开始时就会执行
+	@Override
+	public int doStartTag() throws JspException {
+		// TODO Auto-generated method stub
+	//首先获取items的值
+		Object value = this.pageContext.getAttribute(items);
+		//然后判断获取的值是否为空，在通过java的反射机制来判断获取的对象是否是列表元素
+		if (value != null && value instanceof LinkedList) {
+		//将value强制装换为迭代器也就是列表集合
+			this.iter = ((LinkedList) value).iterator();
+			//如果这个列表中有值
+			if (iter.hasNext()) {
+		//就将值传递给var这个参数
+				this.pageContext.setAttribute(var, iter.next());
+				return TagSupport.EVAL_BODY_INCLUDE;
+			} else {
+				return TagSupport.SKIP_BODY;
+			}
+		} else {
+			return TagSupport.SKIP_BODY;
+		}
+	}
+	//这个用于输出，也就是说不停的将值赋给var参数，让其来存储输出
+	@Override
+	public int doAfterBody() throws JspException {
+		if (iter.hasNext()) {
+			this.pageContext.setAttribute(var, iter.next());
+			// 表示在执行一次
+			return TagSupport.EVAL_BODY_AGAIN;
+		}
+		return TagSupport.SKIP_BODY;
+	}
+}
+	2.配置tld文件，具体配置如下:
+		eg:
+			<tag>
+	<name>iterate</name>
+	<tag-class>tag.iterateTag</tag-class>
+	<body-content>JSP</body-content>
+	<attribute>
+	<name>var</name>
+	<required>true</required>
+	<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+	<name>items</name>
+	<required>true</required>
+	<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	</tag>
+	3.写jsp页面
+		eg:
+			<%@ taglib prefix="jspTab" uri="/WEB-INF/helloword.tld"%>//这是导入头文件
+			<%
+	LinkedList people = new LinkedList();
+	people.add("朱旭");
+	people.add("致一");
+	people.add("张三");
+	pageContext.setAttribute("people", people);
+%>
+</head>
+<body>
+<jspTab:iterate items="people" var="p">
+	<font>${p}</font>
+</jspTab:iterate>
+										二十四、JspWriter的用法：
+<1>.在界面上输出内容
+	eg:
+		JspWriter out = this.pageContext.getOut();
+		out.print(this.name + "自定义标签测试");
+										二十五、JSP 标准标签库（JSTL）
+<1>.头文件：
+	  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<2>.c:out用法：主要是用于输出内容
+	eg:
+	<font><c:out value="${people1}" default="不存在该数据"></c:out></font>
+	注：若取到people的数据就正常输出people1的值，若取不到就输出default的值
+<3>.c:set用法:主要是用于设置四种属性范围的值
+	eg:
+	1.设置普通变量的 属性
+	<c:set var="people" value="致一" scope="session"></c:set>
+	<font><c:out value="${people }" default="获取值失败"></c:out></font>
+	2.设置对象的值
+	<jsp:useBean id="peo" scope="session" class="model.peopleModel"></jsp:useBean>
+	<!-- property用于对对象的属性设置值,target用于指向对象名，value就是用于设置对象属性的值 -->
+	<c:set property="id" target="${peo }" value="001"></c:set>	<!-- 用于对id属性设置值 -->
+	<c:set property="age" target="${peo }" value="21"></c:set>	<!-- 用于对age属性设置值 -->
+	<c:set property="name" target="${peo }" value="致一"></c:set>	<!-- 用于对name属性设置值 -->
+	<font>编号：${peo.id }</font><br/><!-- 用于获取id的值 -->
+	<font>姓名：${peo.name }</font><br/><!-- 用于获取name的值 -->
+	<font>年龄：${peo.age }</font><br/><!-- 用于获取age的值 -->
+<4>.c:remove用法：
+	eg:
+	<c:set var="people" value="致一" scope="session"></c:set>
+	<font><c:out value="${people }" default="获取值失败"></c:out></font><br />
+	<!-- 用于移除people对象 -->
+	<c:remove var="people" scope="session" />
+	<font><c:out value="${people }" default="获取值失败"></c:out></font>
+<5>.c:catc:主要是用于处理程序中产生的异常
+	eg:
+	 <c:catch var="errorMessage">
+	<%
+		int a=1/0;
+	%>
+	</c:catch>
+	<font>错误信息：${errorMessage }</font>
+<6>.c:if用法：用于条件判断
+	eg:
+	<c:if test="${peo.name=='致一' }">
+		<font>没错，我就是致一</font><br />
+	</c:if>
+<7>.c:choose:相当于else_if的用法：
+	eg:
+		<c:choose>
+		<c:when test="${peo.age>18 }">
+			<font>大于18岁</font>
+		</c:when>
+		<c:when test="${peo.age==18 }">
+			<font>等于18岁</font>
+		</c:when>
+		<c:otherwise>
+			<font>小于18岁</font>
+		</c:otherwise>
+	</c:choose>
+<8>.c:foreach:用于遍历数组或者集合
+	eg:
+		1.	<%
+		LinkedList<String> list = new LinkedList<String>();
+		list.add("java");
+		list.add("python");
+		list.add("c");
+		list.add("c++");
+		list.add("c#");
+		//一下操作适用于将list转化为数组
+		String language[] = new String[list.size()];
+		list.toArray(language);
+		int i = 1;
+		pageContext.setAttribute("language", language);
+	%>
+	<%-- 先使用items="${language }"来取到所遍历的对象,每次遍历所产生的对象放在var中来储存 --%>
+	<font>所有的计算机语言有：</font>
+	<c:forEach var="la" items="${language }">
+		<font>${la } </font>
+		<%
+			if (i <= 4) {
+					out.print(",");
+					i++;
+				}
+		%>
+	</c:forEach>
+	2.<font> 每隔两步输出一次的结果为：</font>
+	<c:forEach var="la1" items="${language }" step="2">
+		<font>${la1 } </font>
+		<%
+			if (i1 <=leng / 2) {
+					out.print(",");
+					i1++;
+				}
+		%>
+	</c:forEach>
+	3.<font> 从指定位置开始遍历,到指定位置结束：</font>
+	<%
+	i1=1;
+	%>
+	<c:forEach var="la1" items="${language }" begin="1" end="3">
+		<font>${la1 } </font>
+		<%
+			if (i1 < leng-1 ) {
+					out.print(",");
+					i1++;
+				}
+		%>
+	</c:forEach>
+	4，使用for_each操作对象集合
+		<%
+		i = 1;
+		LinkedList<peopleModel> peoList = new LinkedList<peopleModel>();
+		peoList.add(new peopleModel(1, 21, "致一"));
+		peoList.add(new peopleModel(2, 22, "致二"));
+		peoList.add(new peopleModel(2, 23, "致三"));
+		pageContext.setAttribute("peoList", peoList);
+	%>
+	<table>
+		<tr>
+			<th>编号</th>
+			<th colspan="2">姓名</th>
+			
+			<th>年龄</th>
+		</tr>
+		<c:forEach var="pL" items="${peoList }">
+			<tr>
+				<td>${pL.id }</td>
+				<td colspan="2">${pL.name }</td>
+				<td>${pL.age }</td>
+			</tr>
+		</c:forEach>
+	</table>
+	5.使用c_input来导入页面,可以同时导入多个界面
+	eg:
+	<c:import url="http://localhost:8080/jspLearn/jsp/c_forToken.jsp"></c:import>
+	6.c_url:用于生成一个url地址
+	eg;
+	<c:url value="https://www.baidu.com/" var="百度">
+		<c:param name="name" value="致一"></c:param>
+		<c:param name="age" value="21"></c:param>
+	</c:url>
+	<a href="${百度 }">百度界面</a>
+	6.c:redirct:用于客户端跳转
+	eg：
+		
+	 
+										二十六、常用的CSS字体名称
+宋体 SimSun	黑体 SimHei	微软雅黑 Microsoft YaHei	微软正黑体 Microsoft JhengHei
+新宋体 NSimSun	新细明体 PMingLiU	细明体 MingLiU	标楷体 DFKai-SB	仿宋 FangSong
+楷体 KaiTi	仿宋_GB2312 FangSong_GB2312	楷体_GB2312 KaiTi_GB2312	
+Windows的一些：
+新細明體：PMingLiU	細明體：MingLiU	標楷體：DFKai-SB	黑体：SimHei	新宋体：NSimSun
+仿宋：FangSong	楷体：KaiTi	仿宋_GB2312：FangSong_GB2312	楷体_GB2312：KaiTi_GB2312
+微軟正黑體：Microsoft JhengHei	微软雅黑体：Microsoft YaHei
+装Office会生出来的一些：
+隶书：LiSu	幼圆：YouYuan	华文细黑：STXihei	华文楷体：STKaiti	华文宋体：STSong
+华文中宋：STZhongsong	华文仿宋：STFangsong	方正舒体：FZShuTi	方正姚体：FZYaoti
+华文彩云：STCaiyun	华文琥珀：STHupo	华文隶书：STLiti	华文行楷：STXingkai	
+华文新魏：STXinwei	
+英文字体：
+Arial			Helvetica			Tahoma			Verdana	Lucida Grande	
+Times New Roman			Georgia			PmingLiu			Impact			Book Antiqua
+Century Gothic			Courier New			sans-serif			
+
+
+
+
+												
+												
+													
+1.获取表单提交的数据：
+	html文件：
+		<form action="jsp内置对象.jsp" method="post">
+		<table border="1">
+			<tr>
+				<td><input type="text" value="请输入用户名" name="userName"
+					id="userName" /></td>
+				<td><input type="password"  name="password"
+					id="password" /></td>
+			</tr>
+			<tr>
+				<td><input type="submit" name="submit" value="提交" id="submit"></td>
+			</tr>
+		</table>
+	</form>
+	jsp文件：
+		<font>提交的用户名=<%=request.getParameter("userName") %></font><br/>
+		<font>提交的密码=<%=request.getParameter("password") %></font>
+	注：为了解决获取的数据出现乱码问题上面的jsp文件改为：
+		<font><span style="font-size: 18px;">
+			<%
+				request.setCharacterEncoding("UTF-8");
+			%>
+	</span>提交的用户名=<%=request.getParameter("userName")%></font>
+	<br />
+	<font>提交的密码=<%=request.getParameter("password")%></font>
+2.其他使用request获取提交数据的信息
+	/* 获取表单提取的数据 */
+	String name=request.getParameter("userName");
+	String password=request.getParameter("password");
+	/* 获取用户提交的通信协议 */
+	String poetMethod=request.getProtocol();
+	//获取用户请求的Jsp页面文件的目录
+	String servletPath=request.getServletPath();
+	//获取用户请求的当前web服务目录
+	String contextPath=request.getContextPath();
+	//获取用户提交的整个信息长度
+	int contentLength=request.getContentLength();
+	//获取用户提交的方式
+	String postMethod=request.getMethod();
+	//获取用户的浏览器版本号
+	String version=request.getHeader("user-agent");
+	//获取头名字的一个枚举
+	request.getHeaderNames();
+	//获取用户IP地址
+	String remoteAddress=request.getRemoteAddr();
+	//获取用户机的名称（如果获取不到就获取Ip地址）
+	String remoteHost=request.getRemoteHost();
+	//获取服务器名称
+	String sereverName=request.getServerName();
+	//获取服务器端口号
+	int sereverPort=request.getServerPort();
+										
+											
+												
+												jsp内置对象
+1.request对象：封装了用户提交的信息，使用request对象调用相应的方法可以获取封装的信息，即获取用户提交的信息
+	eg:
+		<form action="jsp内置对象.jsp" method="post">
+		<table border="1">
+			<tr>
+				<td><input type="text" value="请输入用户名" name="userName"
+					id="userName" /></td>
+				<td><input type="password"  name="password"
+					id="password" /></td>
+			</tr>
+			<tr>
+				<td><input type="submit" name="submit" value="提交" id="submit"></td>
+			</tr>
+		</table>
+	</form>
+	获取表单中的数据方法
+		String name=request.getParameter("userName");
+		String password=request.getParameter("password");
+2.改变requeset获取乱码的方法：在获取信息之前将request的获取编码设置为utf-8
+		eg：
+			request.setCharacterEncoding("utf-8");
+			
+			
+			
+			
+							
+							
+								
+								
+									
+														Jsp页面的动态跳转
+1.response.setHeader("refresh", "1;url=Progress");：1：表示每隔一秒刷新一次，url=Progress:表示跳转的界面或者Servlet页面
+接收值的方法：
+	只能使用session进行接收和传值
+					
+									
+													12.application的用法：
+1.先对application进行值得声明
+	ServletContext application;
+2.调用servlet:
+	application=getServletContext();
+	注：applicatoin作用域可以让多个用户使用

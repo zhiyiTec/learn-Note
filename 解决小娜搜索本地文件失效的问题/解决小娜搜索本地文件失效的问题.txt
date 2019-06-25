@@ -1,0 +1,6 @@
+需要重装小娜，步骤如下
+1. 打开命令提示符管理员模式
+2. 在里面输入 start powershell
+3. 在powershell输入 ：
+                    Get-AppXPackage -Name Microsoft.Windows.Cortana | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+等待30秒即可

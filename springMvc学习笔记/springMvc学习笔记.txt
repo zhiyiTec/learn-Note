@@ -1,0 +1,634 @@
+																1.创建springMvc的配置
+1.先创建一个springMvc.xml文件
+	<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	<!-- 用于扫描包 ,并须将注解所在的包能够让扫描器扫描到 -->
+	<context:component-scan
+		base-package="org.springMvc"></context:component-scan>
+	<!-- 配置视图解析器(过滤器，拦截器，监听器) 
+	此处会将控制器拦截的字符串进行拼接拦截，也就是说会在拦截器之前加上/jsp/+str+.jsp
+	-->
+	<bean id="InternalResourceViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+		</bean>
+
+</beans>
+2.在web.xml中对springMvc进行配置和声明
+	<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="3.1"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+  
+  <!-- spring mvc配置 -->
+  <servlet>
+    <servlet-name>springDisPatcherServlet</servlet-name>
+    <servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+	</servlet-class>
+	<!-- 为了告诉程序springMvc.xml文件在哪个位置 -->
+	<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springMvc.xml</param-value>
+	</init-param>
+	<!--会在程序启动是就会启动-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springDisPatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>
+3.在handler层中，创建拦截器进行处理
+	package org.springMvc.handler;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class SpringMvcHandler {
+	// 拦截所有目标地址为welcome的请求，并作出相应的响应
+	// method=RequestMethod.POST:表示只可以拦截post请求
+	// params= {"name=23"}：只能接受name值为23的数据
+	@RequestMapping(value = "wlecome", method = RequestMethod.POST, params = { "name=23" })
+	public String welcome() {
+		return "success";
+	}
+
+	@RequestMapping(value = "welcome1/info", method = RequestMethod.POST)
+	public String welcome1() {
+		return "info";
+	}
+
+	// ant/*/test：表示只要符合ant/*/test这种命名方式的均会被拦截
+	@RequestMapping(value = "welcome2/ant/*/test", method = RequestMethod.POST)
+	public String welcome2() {
+		return "ant";
+	}
+
+	// ant/**/test：表示**:表示任意目录
+	@RequestMapping(value = "welcome3/ant/**/test", method = RequestMethod.POST)
+	public String welcome3() {
+		return "ant";
+	}
+
+	// ant/a?c/test：表示a?c:?表示单个字符
+	@RequestMapping(value = "welcome4/ant/a?c/test", method = RequestMethod.POST)
+	public String welcome4() {
+		return "ant";
+	}
+
+	//将会把welcome5/后面的值接收并处理转化为字符串的方式
+	@RequestMapping(value = "welcome5/{name}", method = RequestMethod.POST)
+	public String welcome5(@PathVariable("name") String name) {
+		System.out.println(name);
+		return "ant";
+	}
+}
+
+4.创建一个jsp文件进行测试
+	<html>
+<body>
+	<h2>index</h2>
+
+	<form action="wlecome" method="post">
+		name:<input type="text" name="name" />
+		<button type="submit">success</button>
+	</form>
+	<form action="info" method="post">
+
+		<button type="submit">info</button>
+	</form>
+
+
+	<form action="ant/fdsf/test" method="post">
+
+		<button type="submit">welcome2</button>
+	</form>
+	
+	
+	<form action="ant/src/main/test" method="post">
+
+		<button type="submit">welcome3</button>
+	</form>
+	
+	
+		<form action="welcome4/ant/abc/test" method="post">
+
+		<button type="submit">welcome4</button>
+	</form>
+	
+	
+	<form action="welcome5/zx" method="post">
+
+		<button type="submit">welcome5</button>
+	</form>
+</body>
+</html>
+
+注：此处href=welcome，控制拦截到这个请求，从而将返回的字符串进行拼接，进而进行跳转
+													
+													
+													
+													
+													
+														
+														2.mvc实现put/post请求
+1.在web.xml中增加过滤器
+	<!-- 过滤器，主要是将get/post请求转换为浏览器不能识别的delete或者put -->
+  <!-- 给普通浏览器增加put和delete方法 -->
+  <filter>
+  <filter-name>HiddenHttpMethodFilter</filter-name>
+  <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  
+  
+  <filter-mapping>
+  <filter-name>HiddenHttpMethodFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+  </filter-mapping>
+ 2.通过隐藏域让过滤器识别
+	<!-- 只有添加一个<input type="hidden" name="_method" value="DELETE"/> 才会被拦截器所拦截，进而转换为Delete
+	而且method方法必须是post
+	-->
+	<form action="testRest/123456" method="post">
+		<input type="hidden" name="_method" value="DELETE" />
+		<button type="submit" name="delete" value="删">testDelete</button>
+	</form>
+	<!-- 只有添加一个<input type="hidden" name="_method" value="PUT"/> 才会被拦截器所拦截，进而转换为put-->
+	<form action="testRest/123456" method="post">
+		<input type="hidden" name="_method" value="PUT" />
+		<button type="submit" name="update" value="改">testChange</button>
+	</form>
+
+	<form action="testRest/123456" method="get">
+
+		<button type="submit" name="select" value="查">testGet</button>
+	</form>
+3.在handler层中,处理
+	
+	@RequestMapping(value = "testRest/{id}", method = RequestMethod.POST)
+	public String testAdd(@PathVariable("id") String name) {
+		System.out.println("post:增" + name);
+		return "ant";
+	}
+
+	@RequestMapping(value = "testRest/{id}", method = RequestMethod.DELETE)
+	public String testDelete(@PathVariable("id") String name) {
+		System.out.println("post:删" + name);
+		return "ant";
+	}
+
+	@RequestMapping(value = "testRest/{id}", method = RequestMethod.PUT)
+	public String testChange(@PathVariable("id") String name) {
+		System.out.println("post:改" + name);
+		return "ant";
+	}
+	
+	
+	@RequestMapping(value = "testRest/{id}", method = RequestMethod.GET)
+	public String testGet(@PathVariable("id") String name) {
+		System.out.println("post:查" + name);
+		return "ant";
+	}
+	注：当映射名相同时可以通过method的请求方式来区别
+	
+	
+	
+						
+										3.使用@RequestParam来获取页面传回的值
+1.	编写运行界面
+	<form action="testParam/123456" method="get">
+			<input type="text" name="name" value="zx" id="name"/>
+		<button type="submit" name="select" value="查">testGet</button>
+	</form>
+2.	编写handler层
+	
+	@RequestMapping(value = "testParam/*", method = RequestMethod.GET)
+	//@RequestParam(value="name",required=false,defaultValue="zx":
+	//required=false:表示这个参数不一定是必须的，前台传回的数据如果没有他也可以
+	//defaultValue="zx":表示前台传回的数据如果没有他，就会默认给出一个数据，这个数据就是zx
+	public String testParam(@RequestParam(value="name",required=false,defaultValue="zx") String name) {
+		System.out.println("testParam:" +name);
+		return "ant";
+	}
+	
+	
+	
+	
+										4.获取服务器请求头的协议
+1.	编写运行界面
+<a href="testHeader">testHeader</a>
+2.	编写handler层
+@RequestMapping(value = "testHeader")
+	public String testHeader(@RequestHeader ("Accept-Language") String acceptLan) {
+		System.out.println("testHeader:" + acceptLan);
+		
+		return "ant";
+	}
+										
+										
+													
+													5.自动传输对象的值
+1.先创建一个student对象
+		package org.springMvc.pojo;
+
+
+public class Student {
+	private int id;
+	private String name;
+	private Address address;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", name=" + name + ", address=" + address + "]";
+	}
+
+}
+2.在创建一个adderss对象
+		package org.springMvc.pojo;
+
+public class Address {
+	private String homeAddress;
+	private String schoolAddress;
+	public String getHomeAddress() {
+		return homeAddress;
+	}
+	public void setHomeAddress(String homeAddress) {
+		this.homeAddress = homeAddress;
+	}
+	public String getSchoolAddress() {
+		return schoolAddress;
+	}
+	public void setSchoolAddress(String schoolAddress) {
+		this.schoolAddress = schoolAddress;
+	}
+	
+}
+3.编写运行界面
+	<!-- 注：name中的值必须与对象中的属性相对应 -->
+	<form action="testProperties" method="post">
+		id:<input type="text" name="id" value="1" id="id" /> name:<input
+			type="text" name="name" value="zx0" id="name" /> homeAddress:<input
+			type="text" name="address.homeAddress" value="zx1" id="Address" /> schoolAddress:<input
+			type="text" name="address.schoolAddress" value="zx2" id="Address" />
+		<button type="submit" name="select" value="查">testGet</button>
+	</form>
+4.编写handler层：
+	
+	@RequestMapping(value = "testProperties", method=RequestMethod.POST)
+	public String testProperties(Student stu) {
+		System.out.println(stu.toString());
+		
+		return "ant";
+	}
+			
+								
+													6.多种既传输对象又传输视图的方式
+1.编写handler层：
+		@RequestMapping(value = "testModelAndView", method = RequestMethod.POST)
+	// 这种方法返回的既有数据又有视图
+	public ModelAndView ModelAndView() {
+		// ModelAndView MV=new ModelAndView("ant");中的ant是要返回的视图页面
+		ModelAndView MV = new ModelAndView("ant");
+		Student stu = new Student(1, "zx");
+		// MV.addObject("Student",stu);相当于request.setAttribute();
+		MV.addObject("Student", stu);
+		return MV;
+	}
+
+	@RequestMapping(value = "testModelMap", method = RequestMethod.POST)
+	// 这种方法返回的既有数据又有视图
+	public String ModelMap(ModelMap MM) {
+		Student stu = new Student(2, "zx2");
+		// MV.addObject("Student",stu);相当于request.setAttribute();
+		MM.put("Student", stu);// 将student放在request域
+		return "ant";
+	}
+
+	@RequestMapping(value = "testModel", method = RequestMethod.POST)
+	// 这种方法返回的既有数据又有视图
+	public String Model(Model Mo) {
+		Student stu = new Student(3, "zx3");
+		// MV.addObject("Student",stu);相当于request.setAttribute();
+		Mo.addAttribute("Student", stu);// 将student放在request域
+		return "ant";
+	}
+
+	@RequestMapping(value = "testMap", method = RequestMethod.POST)
+	// 这种方法返回的既有数据又有视图
+	public String Map(Map<String, Object> Ma) {
+		Student stu = new Student(4, "zx4");
+		Ma.put("Student", stu);// 将student放在request域
+		return "ant";
+	}
+2.编写运行界面：
+		<form action="testModelAndView" method="post">
+		<button type="submit" name="select" value="查">testModelAndView</button>
+	</form>
+	
+	
+	<form action="testModelMap" method="post">
+		<button type="submit" name="select" value="查">testModelMap</button>
+	</form>
+	
+	
+	<form action="testModel" method="post">
+		<button type="submit" name="select" value="查">testModel</button>
+	</form>
+	
+	
+	<form action="testMap" method="post">
+		<button type="submit" name="select" value="查">testMap</button>
+	</form>
+	
+	
+	注：如果要将对象放在session中，咋把对象放在@SessionAttribute（"Object"）注解中；
+					
+										
+														7.@ModelAttribute注解的用法：
+1.通过@ModelAttribute修饰，会在每次请求之前执行，并且该方法的参数map.put()方法可以将对象放入即将查询的参数，
+但是在声明对象调用时，map定义的key就是对象的首字母小写
+
+
+
+														8.jstl定义国际标准语言
+1.在springMvc中配置处理
+		<!-- 加载国际化资源 文件
+		只有在springMvc响应时再会介入国际化
+		id只能是messageSource
+		-->
+		<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!-- basename:基名 -->
+		<property name="basename" value="i18n_zh_CN"></property>
+		
+		</bean>
+2.编写properties文件
+	resource.welcome=\u4F60\u597D
+resource.exit=\u9000\u51FA
+3.在springMvc中配置处理:
+		@RequestMapping(value = "testI18in")
+	public String testI18in() {
+		return "ant";
+	}
+4.编写主界面
+
+		<form action="testI18in" method="post">
+		<button type="submit" name="select" value="查">testI18in</button>
+	</form>
+	注：在使用jstl是需要引入头文件：
+		 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%> 
+		 
+		 
+		 
+		 
+		 
+																9.springMvc视图解析器
+1.配置springMvc.xml文件：
+	
+<!-- vie-name:也同样会被增加上前缀和后缀 
+直接从path的请求映射地址到vie-name的映射页面
+这种视图解析器会屏蔽掉所有的@RequestMapping拦截器，进而将请求导入视图解析器进行解析
+-->
+	<mvc:view-controller
+		path="handler/testMVCViewController" view-name="ant"/>
+		<!-- 只有介入这个注解才会让@RequestMapping与mvc:view-controller共存-->
+		<mvc:annotation-driven>
+				
+		</mvc:annotation-driven>	
+2.编写主界面：
+			<a href="handler/testMVCViewController">testMVCViewController</a>
+			
+			
+			
+			
+			
+															10.mvc处理静态资
+1.在springMvc.xml中配置处理
+			<!-- mvc处理静态资源 ：这种方式会让mvc在没有对应的@requestMapping时，将该请求交给服务器默认的servlet去处理-->
+			<mvc:default-servlet-handler/>
+			
+			
+			
+			
+			
+														11.自定义类型转换器
+1.编写自定义转换的类：
+	package org.springMvc.converter;
+
+import org.springMvc.pojo.Student;
+import org.springframework.core.convert.converter.Converter;
+
+public class MyConvert implements Converter<String, Student>{
+
+	@Override
+	public Student convert(String source) {
+		// TODO Auto-generated method stub
+		//接收前端传回的字符串
+		String s[]=source.split("-");
+		Student stu=new Student(Integer.valueOf(s[0]),s[1]);
+		
+		return null;
+	}
+
+}
+2.配置：将MyConvert加到Spring Mvc中
+		<!-- 将自定义容器纳入springIoc容器 -->
+	<bean id="MyConvert" class="org.springMvc.converter.MyConvert"></bean>
+	<!-- 将 MyConvert纳入springMvc 提供的转换器bean -->
+	<bean id="ConversionServiceFactoryBean"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<ref bean="MyConvert" />
+			</set>
+		</property>
+	</bean>
+	<!-- 将 ConversionServiceFactoryBean注册到annotation-driven中 -->
+	<!-- 只有介入这个注解才会让@RequestMapping与mvc:view-controller共存 -->
+	<mvc:annotation-driven
+		conversion-service="ConversionServiceFactoryBean"></mvc:annotation-driven>
+3.测试界面：
+	<form action="testConverter" method="post">
+		name:<input type="text" name="student2"/>
+		<button type="submit" name="select" value="查">testConverter</button>
+	</form>
+	
+	
+	
+	
+	
+													12.自定义日期的格式
+1.先在student类中对日期添加注解
+	package org.springMvc.pojo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class Student2 {
+	private int id;
+	private String name;
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date birthday;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	@Override
+	public String toString() {
+		return "Student2 [id=" + id + ", name=" + name + ", birthday=" + birthday + "]";
+	}
+
+}
+2.在handler层中，进行处理
+@@RequestMapping(value = "testFormat",method=RequestMethod.POST)
+	//如果格式化结果不符合，将错误信息打印到控制台
+	public String testFormat(Student2 s2,BindingResult BR,Map m) {
+		System.out.println(s2.toString());
+		if(BR.getErrorCount()>1) {
+			for(FieldError error:BR.getFieldErrors()) {
+				System.out.println(error.getDefaultMessage());
+				//将错误信息传到request域
+				m.put("errors",BR.getFieldError());
+			}
+		}
+		return "ant";
+	}
+3.测试界面：
+		<form action="testFormat" method="post">
+		name:<input type="text" name="name"/>
+		id:<input type="text" name="id"/>
+		<!-- 注：日期格式如果输入不正确，就会产生错误 -->
+		birthday:<input type="text" name="birthday"/>
+		<button type="submit" name="select" value="查">testFormat</button>
+	</form>
+4.取值页面：
+	<c:forEach items="${requestScope.errors}" var="error">
+	${error.getDefaultMessage() }
+	</c:forEach>
+	
+	
+	
+	
+	
+														13.使用ajax进行界面的异步传输
+1.在handler层中配置springMvcHandler.xml文件：
+	//加上@ResponseBody注解之后就可以使用ajax进行调用，并且告诉springmvc，此时返回的不是一个字符串，而是一个ajax调用的返回值
+	@ResponseBody
+	@RequestMapping(value = "handler/testJson",method=RequestMethod.POST)
+	//如果格式化结果不符合，将错误信息打印到控制台
+	public List<Student2> testJson() {
+		Student2 s1=new Student2(1,"z1");
+		Student2 s2=new Student2(2,"z2");
+		Student2 s3=new Student2(3,"z3");
+		List<Student2>LS2=new ArrayList<Student2>();
+		LS2.add(s1);
+		LS2.add(s2);
+		LS2.add(s3);
+		return LS2;
+	}
+2.在前段进行接收
+	<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@page isELIgnored="false"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>welcome</title>
+<script type="text/javascript" src="resources/js/jquery-1.12.3.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#testJson").click(function() {
+			//通过ajax请求springmvc
+			$.post(
+			//请求服务器地址
+			"handler/testJson",
+			//json格式的赋值，意思是请求handler/testJson，并且带两个参数
+			{
+				"name" : "zx",
+				"id" : "1"
+			},
+			//服务端处理完毕之后的回调函数
+			function(result) {
+				for (var i = 0; i < result.length; i++) {
+					alert(result[i].id + "-" + result[i].name)
+				}
+			});
+		});
+	});
+</script>
+</head>
+<body>
+	<button type="button" name="testJson" id="testJson">testJson</button>
+</body>
+</html>

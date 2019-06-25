@@ -1,0 +1,13 @@
+1.cd到对应的工程目录，使用npm install vue-resource -save
+		2.在mian.js中import刚刚安装好的resource模块：import vueResource from 'vue-resource'
+		3.使用vue.use()来进行引用：Vue.use(vueResource)
+		4.使用htttpresource:在对应的vue组件中使用，比如在users.vue中使用：
+			这里需要用一个钩子函数：created:（注：这个函数的位置一般放在methods后面）也就是页面创建完成之后进行调用的函数都要放在里面：
+				created:{function(){}};
+		5.使用httpResponse:
+		created:function(){
+		this.$http.get("https://jsonplaceholder.typicode.com/users").then(function(response){
+			console.log(response.data);
+			this.users=response.data
+		})
+	},

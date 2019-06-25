@@ -1,0 +1,13 @@
+filterBy:function(customs,fileInput){
+				return customs.filter(function(custom){
+					return custom.name.match(fileInput);//如果匹配，就返回整个对象，而不是一个名字
+				})
+			}
+			上面是一个小的Demo，我来解释一下每句话的含义：
+			customs是我们要遍历的对象，
+			fileInput是我们需要匹配的字段
+			filter是一个过滤件数，来面执行的函数是遍历customs，并且把每一个遍历的结果赋给custom
+			match是匹配规则，返回的是一个custom对象
+			custom.name.match(fileInput):表示先获取custom的name的值，让它来给fileInput进行比对，比对成功就返回
+			一个custom对象，否则就返回空值
+				但是filter一旦获取空值，就返回原有的列表内容值

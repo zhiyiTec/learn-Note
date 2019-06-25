@@ -1,0 +1,2536 @@
+															1.创建和使用Vue框架
+1.先创建js文件
+2.动态的引用js文件;
+	在html中引用vue方法：
+	<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	或者：
+	<!-- 生产环境版本，优化了尺寸和速度 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+3.在使用vue之前一定要进行实例化vue对象
+	new Vue({
+  
+})
+通过这些步骤就可以使用vue了
+
+
+
+
+
+															2.vue的数据和方法的使用
+1.在vue中编写的内容:
+//在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+        name:"zx", 
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用greet来进行调用
+     * 使用this获取当前容器的内容
+    * this.name：就是指先找到当前容器的data然后在找到name对应的属性
+     */
+    methods: {
+        greet:function(name){
+            return 'Hello Word' + name + "   " + this.name;
+        },
+       
+    }
+})
+2.在html中编写的内容：
+	<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+        <!--使用两对花括号来获取app.js中data存储的数据name对应的值-->
+        <h1>{{ name }}</h1>
+        <p>{{greet('朱旭')}}</p>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+															3.vue属性的绑定
+1.在vue中编写的内容:
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+        name:"zx",
+        website:"https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png", 
+        webTag: <a href=' https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png'>谷歌</a>, 
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用greet来进行调用
+     * 使用this获取当前容器的内容
+    * this.name：就是指先找到当前容器的data然后在找到name对应的属性
+     */
+    methods: {
+        greet:function(name){
+            return 'Hello Word' + name + "   " + this.name;
+        },
+       
+    }
+})
+2.在html文件中编写：
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+        <!--v-bind:用于绑定属性-->
+        <a v-bind:href="website">百度</a>
+        <input type="text" v-bind:value="name">
+        <!--v-html:用于插入标签-->
+        <p v-html:"webTag"></p>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															4.vue的的点击事件点击绑定
+1.js内容：
+ //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+       age:30,
+       x:0,
+       y:0,
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用greet来进行调用
+     * 使用this获取当前容器的内容
+    * this.age：就是指先找到当前容器的data然后在找到name对应的属性
+     */
+    methods: {
+        add:function(){
+            this.age=age+1;
+        },
+          substract: function () {
+            this.age--;
+        },
+        addUseParameter:function(n){
+               this.age+=n; 
+        },
+          substrtractUseParameter: function (n) {
+            this.age -= n;
+        },
+        updateXY: function (event) {
+           this.x=event.offsetX;
+            this.y = event.offsetY;
+        }
+    }
+})
+2.html内容：
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+      <h1>Events</h1>
+     <!--使用v-on来绑定点击事件
+    @和v-on的作用一样
+    -->
+      <button @click:="add">加一岁</button>
+      <!--此处是单击事件-->
+    <button v-on:click:="substract">减一岁</button>
+  
+    <!--此处是双击事件-->
+    <button v-on:dblclick:="substract">减一岁</button>
+    <button v-on:dblclick:="substract">加岁</button>
+    <p>my Age:{{age}}</p>
+    <div  v-on:mousemove="updateXY">
+        {{x}},{{y}}
+    </div>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															5.vue事件修饰符
+1.js文件：
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+       age:30,
+       x:0,
+       y:0,
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用greet来进行调用
+     * 使用this获取当前容器的内容
+    * this.age：就是指先找到当前容器的data然后在找到name对应的属性
+     */
+    methods: {
+        updateXY: function (event) {
+           this.x=event.offsetX;
+            this.y = event.offsetY;
+        },
+        alert: function () {
+        alert("aaaaaaaaaa");
+        }
+    }
+})
+2.html文件：
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+    <div  v-on:mousemove="updateXY">
+        {{x}},{{y}}
+        <!--鼠标放在此处就不会被识别-->
+        <span v-on:mousemove.stop="">stopMoving</span>
+    </div>
+    <!--注：鼠标的点击事件是click-->
+    <!--先触发点击事件在跳转-->
+    <a @click="alert()" href="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png" >
+    aaaaa
+    </a><br/>
+    <!--先触发点击事件,但是由于有prevent所以他不会在跳转-->
+    <a @click.prevent="alert()" href="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png">
+        bbbbbbbbb
+    </a>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															6.vue键盘事件以及键值事件修饰符
+1.js文件： 
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+     
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     */
+    methods: {
+        logName:function(){
+            alert("你正在输入名字");
+        },
+        logAge: function () {
+            alert("你正在输入名年龄");
+        }
+
+    }
+})
+2.html内容：
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+   <h1>键盘事件</h1>
+   <label for="name">姓名</label>
+   <input type="text" id="name" name="name" @keyup="logName()">
+    <label for="age">年龄</label>
+    <input type="text" id="age" name="age" @keyup="logAge()">
+    <hr/>
+    <label for="name">姓名</label>
+    <!--用于监听键盘事件，但是由于有.enter，所以只有在触发enter键的时候才会触发-->
+    <input type="text" id="name" name="name" @keyup.enter="logName()">
+    <label for="age">年龄</label>
+    <!--用于监听键盘事件，但是由于有.alt.enter，所以只有在触发alt+enter键的时候才会触发-->
+    <input type="text" id="age" name="age" @keyup.alt.enter="logAge()">
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															7.vue双向数据绑定
+1.js文件：
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+        name1:"",
+        age1:"",
+        name2: "",
+        age2: "",
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     */
+    methods: {
+        logName:function(){
+            //使用$refs.name. value就可以获取ref所指向的name对应的值
+           this.name1=this.$refs.name.value;
+        },
+        logAge: function () {
+            this.age1 = this.$refs.age.value;
+        }
+
+    }
+})
+2.html内容：
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+   <h1>双向事件绑定</h1>
+   <h2>方法1</h2>
+   <label for="name">姓名</label>
+   <input type="text" id="name" name="name" @keyup.enter="logName()" ref="name">
+   <p>{{name1}}</p>
+    <label for="age">年龄</label>
+    <input type="text" id="age" name="age" @keyup="logAge()" ref="age">
+    <p>{{age1}}</p>
+   <hr/>
+    <h2>方法2</h2>
+    <label for="name">姓名</label>
+    <!--v-model:用于双向绑定，将name的值绑定到对应的value，同时value对应的值也会修改v-mmodel所关联的值-->
+    <input type="text" id="name" name="name" @keyup.enter="logName()" v-model="name2">
+    <p>{{name2}}</p>
+    <label for="age">年龄</label>
+    <input type="text" id="age" name="age" @keyup="logAge()" v-model="age2">
+    <p>{{age2}}</p>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															8.vue计算属性computed（对应vue.js文档中的“计算属性和侦听器”）
+1.js内容：
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+       a:0,
+       b:0,
+       age:20,
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     */
+    methods: {
+       addA:function(){
+           this.a=this.a+1;
+       },
+       addB: function () {
+            this.b = this.b + 1;
+        },
+        /**
+         * 这种方法比较耗费性能
+         */
+        AgeAndA:function(){
+            return this.age+this.a;
+        },
+          AgeAndB: function () {
+            return this.age + this.b;
+        }
+
+    },
+    computed:{
+        AgeAndA_1:function(){
+            return this.age + this.a;
+        },
+          AgeAndB_1:function () {
+            return this.age + this.b;
+        }
+    }
+})
+2.html内容：
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+<body>
+   
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+   <h1>computed计算属性</h1>
+   <h2>这种方法比较耗费性能</h2>
+  <button v-on:click="addA()">Add to A</button>
+  <button v-on:click="addB()">Lower to B</button>
+        <p>A-{{a}}</p>
+        <p>B-{{b}}</p>
+        <p>Age+a={{AgeAndA()}}</p>
+        <p>Age+b={{AgeAndB()}}</p>
+        <hr>
+        <h2>这种方法使用computed属性</h2>
+        <button v-on:click="addA()">Add to A</button>
+        <button v-on:click="addB()">Lower to B</button>
+        <p>A-{{a}}</p>
+        <p>B-{{b}}</p>
+        <!--找到属性名为AgeAndA_1，然后在加入DOm结点-->
+        <p>Age+a={{AgeAndA_1}}</p>
+        <p>Age+b={{AgeAndB_1}}</p>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+															9.vue动态绑定css样式（对应vue.js文档中的“Class 与 Style 绑定”）
+1.内容不太懂，应该重新学习
+
+
+
+
+
+															9.vue指令V-if语句（对应vue.js文档中的“条件渲染”）
+ 1.js文件：  
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el:"#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data:{
+    error:false,
+        success:false
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+    Error:function(){
+        this.error= !this.error;
+    },
+        Success: function () {
+            this.success= !this.success;
+        }
+
+    },
+    computed:{
+       
+    }
+})
+2.html内容：
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+
+<body>
+
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+        <h1>v-if 条件</h1>
+        <!--button的作用就是将error的属性值转换-->
+        <button v-on:click="Error()">Turn Error</button>
+        <button v-on:click="Success()">Turn Success</button>
+        <!--这句话的功能就是先判断error的属性值，如果为true就将这个p标签加进去，否则就不加入 -->
+        <p v-if="error"> <span style="color:red;background-color: white">404错误</span> </p>
+        <p v-else-if="success"><span style="color:greenyellow;background-color: white">200success</span> </p>
+        <h2>v-show的使用</h2>
+        <!--v-show的功能不会消除p标签，只是将p标签的display属性进行修改-->
+        <p v-show="error"> <span style="color:red;background-color: white">404错误</span> </p>
+        <p v-show="success"><span style="color:greenyellow;background-color: white">200success</span> </p>
+
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+															10.vue指令V-for语句（对应vue.js文档中的“条件渲染”）
+1.js文件：
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el: "#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+        characters: ["a", "b", "c"],
+        users: [{
+                name: "aa",
+                age: 21
+            },
+            {
+                name: "bb",
+                age: 22
+            },
+            {
+                name: "cc",
+                age: 23
+            }
+        ]
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+
+    },
+    computed: {
+
+    }
+})
+2.html内容：
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+
+<body>
+
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+        <h1>v-for</h1>
+        <ul>
+            <!--使用这种形式会生成数组长度个li-->
+            <li v-for="character in characters">
+                {{character}}
+            </li>
+        </ul>
+
+        <table>
+            <!--这种是不含有下标的-->
+            <tr v-for="user in users">
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+            </tr>
+        </table>
+        <table>
+            <!--这种是含有下标的-->
+            <tr v-for="(user,index) in users">
+                <td>{{index+1}}.</td>
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+            </tr>
+        </table>
+        <!--这种方法会创建多个div容器-->
+        <div v-for="(user,index) in users">
+            <p>{{index}}. {{user.name}} .年龄：{{user.age}}</p>
+        </div>
+        <!--这种方法只会创建一个div容器-->
+        <template v-for="(user,index) in users">
+                <p>{{index}}. {{user.name}} .年龄：{{user.age}}</p>
+            </template>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+															11.vue实战DEMO（对应vue.js文档中的“条件渲染”）
+1.css文件：
+    #bag {
+    width: 200px;
+    height: 500px;
+    margin: 0 auto;
+    background: url(../images/5.jpg) center no-repeat;
+    background-size: 80%;
+}
+
+#bag-health {
+    width: 200px;
+    border: 2px #070707 solid;
+    margin: 0 auto 20px auto;
+}
+
+#bag-health div {
+    height: 20px;
+    background: crimson;
+}
+
+#controls {
+    width: 200px;
+    margin: 0 auto;
+}
+
+
+/*意思是在bag下面创建一个子类，具有bag所有的样式，但是覆盖了background-image样式*/
+
+#bag.burst {
+    background-image: url(../images/14.jpg);
+}
+
+#controls button {
+    margin-left: 20px;
+}
+2.js文件：
+    //在使用vue之前必须实例化vue对象
+new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el: "#vue-app",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+        health: 100,
+        ended: false
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+        punch: function() {
+            this.health = this.health - 10;
+            if (this.health <= 0) {
+                this.ended = true;
+            }
+        },
+        restart: function() {
+            this.health = 100;
+            this.ended = false;
+        }
+    },
+    computed: {
+
+    }
+})
+3.html文件： 
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+
+<body>
+
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app">
+        <!--图片-->
+        <div id="bag" v-bind:class="{burst:ended}"></div>
+        <!--进度情况-->
+        <div id="bag-health">
+            <!--使用v-bind之后可以直接获取js文件中文件的属性-->
+            <div v-bind:style="{width:health + '%'} "></div>
+        </div>
+        <!--控制按钮 -->
+        <div id="controls">
+            <!--v-show用于设置按钮的display属性-->
+            <button v-on:click="punch()" v-show="!ended">点击开始</button>
+            <button v-on:click="restart()">重新开始</button>
+        </div>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+															12.vue实例化多个vue对象
+1.js文件： 
+    //在使用vue之前必须实例化vue对象
+//如果要操作多个element对象，就必须要实例化多个vue对象
+var one = new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作 
+*/
+
+    el: "#vue-app-one",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+        title: "app one的内容"
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+
+    },
+    computed: {
+        greet: function() {
+            return "hello App One";
+        }
+    }
+})
+var two = new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el: "#vue-app-two",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+        title: "app two的内容"
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+        chagetitle: function() {
+            one.title = "这是改变之后的titleOne的值";
+        }
+    },
+    computed: {
+        greet: function() {
+            return "hello App Two";
+        }
+    }
+})
+2.html文件：   
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+
+<body>
+    <h1>实例化多个vue对象</h1>
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app-one">
+        <hr> {{title}}
+        <br>{{greet}}
+    </div>
+    <div id="vue-app-two">
+        <hr>{{title}} <br>{{greet}}
+        <button v-on:click="chagetitle()">改变One的title</button>
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+															13.vue组件的应用
+1.js文件：
+    //使用这种方式调用时请参考html文件如何调用
+Vue.component("greeting", {
+    template: '<p>hello everyone {{name}}<button v-on:click="changeName()" v-show="!singnal">改名</p>',
+    data: function() {
+        return {
+            name: "My name is zhiyi",
+
+            age: 20,
+
+        }
+    },
+    methods: {
+        changeName: function() {
+
+            this.name = "zx";
+
+
+        },
+
+    }
+})
+
+//在使用vue之前必须实例化vue对象
+//如果要操作多个element对象，就必须要实例化多个vue对象
+var one = new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作 
+*/
+
+    el: "#vue-app-one",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+
+    },
+    computed: {
+
+    }
+})
+var two = new Vue({
+    /*el:指element  需要获取的元素，一定是html中根容器元素
+        以后所有的操作均是在这个根容器中进行操作
+    */
+    el: "#vue-app-two",
+    /*
+    data:用于数据的存储，用来写属性
+        以key-value的值进行存储
+    */
+    data: {
+
+    },
+    /**
+     * 使用method来存储方法，
+     * 使用this获取当前容器的内容
+     * 注意点：方法名不要和属性名一样，否则会造成识别错误或者无法识别
+     */
+    methods: {
+
+    },
+    computed: {
+
+    }
+})
+2.html文件：    
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+    <!-- 用于在线引用vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引用css文件 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+</head>
+
+<body>
+
+    <!--vue-app就是我们的根容器，vue均是对vue操作-->
+    <div id="vue-app-one">
+        <!--自定义的组件标签，就会输出该标签中所有的内容-->
+        <greeting></greeting>
+
+    </div>
+    <div id="vue-app-two">
+
+    </div>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+															14.vue搭建脚手架cli
+1.先安装node.js
+    安装方法参考网址：https://www.jianshu.com/p/03a76b2e7e00;
+    检验安装配置成功的方法：node -v
+                          npm -v
+2.在cmd中安装vue 安装指令：npm install -g vue-cli
+                判断是否安装成功的方法：vue --versoin 或者vue -V
+    提示：如果提示vue不是内部指令，就在环境配置中将对应路径进去（再加进去之前先把npm更新到最新版本：npm install -g npm）
+    查找对应路径的方法：将node的安装目录下的node_global文件夹加入环境变量中；
+3.安装vue成功之后，创建第一vue工程：
+    <1>先创建一个目录，就是存放vue工程的目录，然后使用cd指令切换到这目录下
+    <2>在这个目录下vue init webpack vue-playlist(注：vue-playlist是目录名，可以任意)
+    <3>接下来会提示你编写目录名，工程描述，作者，以及Vue build：选择第一项（for most users）;
+    <4>install vue-router:Y;
+    <5>Use ESLint to your code:n;
+    <6>Setep unit test with Karma +Mocha:n;
+    <7>Setep e2e test with  Nightwatch:n
+4.以上创建完成之后，在cd到你所创建的目录之下 npm install ->npm run dev ->在浏览器打开对应的端口
+
+
+
+
+
+															15.vue——src文件流程以及根组件APP以及组件的嵌套
+1.index.html->main.js->App.vue
+    也就是说index.html所展示的内容只有App.vue中的内容，让子组件在App.vue中显示的方法：
+2.在components文件中创建一个自定的Vue:users.vue
+    <!--1.模板：html结构-->
+<template>
+
+
+  <div class="users">
+   <ul>
+   <!--此处可能会有错误是因为没有绑定秘钥，但不是致命的错误 具体解析参考：
+    https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-v-for-key.md
+    解决方案参考：https://www.cnblogs.com/zhouyangla/p/7081077.html-->
+     <li v-for="user in users" ：key = 'todo.id'  >
+       {{user}}
+     </li>
+   </ul>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  name: 'users',
+  data () {
+    return {
+      users:["zx1","zx2","zx3"]
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<style scoped>
+
+</style>
+3. 全局注册组件：只有注册了全局组件才能使用我们所创建的uesr组件
+        先导入Vue组件：import Users from './components/Users'
+        注册组件：Vue.component("users", Users);//以后就只可以使用<users></users>标签
+4.在App.vue组件中调用我们的user.vue子组件
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <h1>{{title}}</h1>
+    <users></users>
+  </div>
+</template>
+5.但是一般我们都是使用局部的组件调用
+    使用局部注册组件的方法有两种：
+        1.在App.vue中这样写;
+            <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <h1>{{title}}</h1>
+    <users></users>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是我的第一个Vue脚手架项目"
+    }
+  },
+  components: {
+    "users":Users
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style>
+
+</style>
+        2.在App.vue中这样写;
+            <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <h1>{{title}}</h1>
+    <usus></usus>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是我的第一个Vue脚手架项目"
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复
+    "usus":Users
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style>
+
+</style>
+
+
+
+
+
+															16.vue组件-css作用域
+1.只要记住一句话即可：不加scope，css样式就会作用于全局，加了只会作用于自己，子组件的css样式会覆盖App.vue中的css样式
+
+
+
+
+
+															17.vue实战——组件的嵌套
+1.Header.vue中的内容：
+    <!--1.模板：html结构-->
+<template>
+  <div class="app-Header">
+   <h1>{{title}}</h1>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  //这个name与App.vue中注册组件中的key相对应
+  name: 'app-Header',
+  data () {
+    return{
+      title:"vue-Header"
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.app-Header{
+  background: lightgreen;
+  padding:10px;
+}
+h1{
+  color:#141010;
+  text-align: center;
+}
+</style>
+2.User.vue中的内容： 
+    <!--1.模板：html结构-->
+<template>
+  <div class="users">
+    <h1>Hello Users</h1>
+   <ul>
+    <!--此处有错误是因为没有绑定秘钥，但不是致命的错误 具体解析参考：
+    https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-v-for-key.md
+    解决方案参考：https://www.cnblogs.com/zhouyangla/p/7081077.html-->
+     <li v-for="user in users" v-on:click="user.show=!user.show">
+       <h2> {{user.name}}</h2>
+       <h3 v-show="user.show"> {{user.position}}</h3>
+     
+     </li>
+   </ul>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  name: 'users',
+  data () {
+    return {
+      users:[
+        {name:'zx1',position:'web1',show:false},
+        {name:'zx2',position:'web2',show:false},
+        {name:'zx3',position:'web3',show:false}
+      ]
+    }
+  },
+ 
+
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.users{
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  /*
+  设置的顺序为上右下左，如果只写两个，就表示上下一样，左右一样
+  */
+  padding:0 20px;
+}
+ul{
+  /*
+  让现实结果显示在一行
+  */
+  display: flex;
+  flex-wrap: wrap;/*让li都在容器里，并且不会超出容器的范围*/
+  list-style-type: none;
+  padding: 0;
+}
+li{
+  flex-grow: 1;/*表示如果只有一个元素，就让一个元素充满整行，如果有两个元素，就让两个元素充满整行*/
+  flex-basis: 200px;
+  text-align: center;
+  padding:30px;
+  border:1px solid #222;
+  margin: 10px;
+}
+</style>
+3.Footer.vue中的内容： 
+    <!--1.模板：html结构-->
+<template>
+  <div class="app-Footer">
+    <footer> <p>{{copyingRight}}</p></footer>
+  
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  //这个name与App.vue中注册组件中的key相对应
+  name: 'app-Footer',
+  data () {
+    return{
+      copyingRight:"@致一科技 copyingRight 2017 vue footer"
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.app-Footer{
+  background: #222;
+  padding:6px;
+}
+p{
+  color:lightgreen;
+  text-align: right;
+}
+</style>
+4.App.vue中的内容：
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <app-Header></app-Header>
+    <usus></usus>
+    <app-Footer></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是我的第一个Vue脚手架项目"
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+5.index.html中的内容：
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vue-playlist</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
+
+
+
+
+
+															18.vue-属性传值Props
+1.App.vue文件：
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <app-Header></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是我的第一个Vue脚手架项目",
+        users:[
+        {name:'zx1',position:'web1',show:false},
+        {name:'zx2',position:'web2',show:false},
+        {name:'zx3',position:'web3',show:false}
+      ]
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+2.Users.vue文件：
+    <!--1.模板：html结构-->
+<template>
+  <div class="users">
+    <h1>Hello Users</h1>
+   <ul>
+    <!--此处有错误是因为没有绑定秘钥，但不是致命的错误 具体解析参考：
+    https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-v-for-key.md
+    解决方案参考：https://www.cnblogs.com/zhouyangla/p/7081077.html-->
+     <li v-for="user in users" v-on:click="user.show=!user.show">
+       <h2> {{user.name}}</h2>
+       <h3 v-show="user.show"> {{user.position}}</h3>
+     
+     </li>
+   </ul>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  name: 'users',
+  //用于接收在App.vue中传回的属性值,此处的users是v-bind后面自定义的属性名字
+  props: {
+    users:{
+      type:Array,//声明users是数组类型
+      required:true//声明users只有传回的情况下才能获取
+    }
+  },
+  data () {
+    return {
+    
+    }
+  },
+ 
+
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.users{
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  /*
+  设置的顺序为上右下左，如果只写两个，就表示上下一样，左右一样
+  */
+  padding:0 20px;
+}
+ul{
+  /*
+  让现实结果显示在一行
+  */
+  display: flex;
+  flex-wrap: wrap;/*让li都在容器里，并且不会超出容器的范围*/
+  list-style-type: none;
+  padding: 0;
+}
+li{
+  flex-grow: 1;/*表示如果只有一个元素，就让一个元素充满整行，如果有两个元素，就让两个元素充满整行*/
+  flex-basis: 200px;
+  text-align: center;
+  padding:30px;
+  border:1px solid #222;
+  margin: 10px;
+}
+</style>
+
+
+
+
+
+															18.vue-传值和引用
+传值：String number boolean
+引用：array object
+1.Header文件：
+    <!--1.模板：html结构-->
+<template>
+  <div class="app-Header">
+   <h1>{{title1}}</h1>
+   <h2 v-on:click="changeTitle()">{{title}}</h2>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  //这个name与App.vue中注册组件中的key相对应
+  name: 'app-Header',
+  props: {
+    title:{
+      type:String,
+      required:true
+    }
+  },
+  data () {
+    return{
+      title1:"vue-Header"
+    }
+  },
+  methods: {
+    changeTitle:function(){
+      this.title="changed";
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.app-Header{
+  background: lightgreen;
+  padding:10px;
+}
+h1{
+  color:#141010;
+  text-align: center;
+}
+</style>
+2.App.vue文件：
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <app-Header v-bind:title="title"></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer v-bind:title="title"></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是一个字符串",
+        users:[
+        {name:'zx1',position:'web1',show:false},
+        {name:'zx2',position:'web2',show:false},
+        {name:'zx3',position:'web3',show:false}
+      ],
+
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+
+
+
+
+
+															18.vue-事件传值（子to父）
+过程：在子组件的点击事件中注册一个事件(Header.vue中文件)：
+     methods: {
+    changeTitle: function() {
+      //用于注册事件
+      /*
+      *titleChanged：注册事件的名字
+      * "子向父传值"：注册事件的内容
+      */
+      this.$emit("titleChanged", "子向父传值");
+    }
+  }
+一旦触发changeTitle这个事件，就会执行 this.$emit("titleChanged", "子向父传值");这个注册事件
+注册完成之后，就会向父组件找这个titleChanged事件（App.vue文件：）
+    <template>
+  <div id="app">
+    <!--v-on的事件名字要和注册的事件名字一致-->
+    <app-Header v-on:titleChanged="updateTitle($event)" v-bind:title="title"></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer v-bind:title="title"></app-Footer>
+  </div>
+</template>
+找到titleChanged事件就会触发updateTitle事件，进而执行updateTitle事件
+      methods: {
+    updateTitle(tit){
+      this.title=tit;
+    }
+  },
+所有的代码如下：
+    1.Header文件： 
+        <!--1.模板：html结构-->
+<template>
+  <div class="app-Header">
+   <h1>{{title1}}</h1>
+   <h2 v-on:click="changeTitle()">{{title}}</h2>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  //这个name与App.vue中注册组件中的key相对应
+  name: "app-Header",
+  props: {
+    title: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      title1: "vue-Header"
+    };
+  },
+  methods: {
+    changeTitle: function() {
+      //用于注册事件
+      /*
+      *titleChanged：注册事件的名字
+      * "子向父传值"：注册事件的内容
+      */
+      this.$emit("titleChanged", "子向父传值");
+    }
+  }
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.app-Header {
+  background: lightgreen;
+  padding: 10px;
+}
+h1 {
+  color: #141010;
+  text-align: center;
+}
+</style>
+    2.App.vue文件：
+        <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <!--v-on的事件名字要和注册的事件名字一致
+    updateTitle（）中的参数必须为$event
+    -->
+    <app-Header v-on:titleChanged="updateTitle($event)" v-bind:title="title"></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer v-bind:title="title"></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是一个字符串",
+        users:[
+        {name:'zx1',position:'web1',show:false},
+        {name:'zx2',position:'web2',show:false},
+        {name:'zx3',position:'web3',show:false}
+      ],
+
+    }
+  },
+  methods: {
+    updateTitle(tit){
+      this.title=tit;
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+
+
+
+
+
+															19.vue生命周期（钩子函数）
+几种常见的状态：
+    //在组件实例化之前就会执行这个函数
+  beforeCreate:function () {
+    alert('组件实例之前');
+  },
+   //在组件实例化完成之后就会执行这个函数，但是页面还未显示
+  created:function () {
+    alert('组件实例完成之后，但是页面还未显示');
+  },
+   //在组件挂载之前就会执行这个函数，页面还未显示，但是虚拟DOM已经配置
+  beforeMount :function () {
+    alert('组件挂载之前，页面还未显示,但是虚拟DOM已经配置');
+  },
+   //在组件挂载之后就会执行这个函数，此方法执行之后页面就会显示
+  mounted :function () {
+    alert('组件挂载之后，此方法执行之后页面就会显示');
+  },
+   //在组件更新之前就会执行这个函数，页面还未更新，但是虚拟DOM已经配置
+  beforeUpdate  :function () {
+    alert('组件更新之前，页面还未更新,但是虚拟DOM已经配置');
+  },
+   //在组件更新之后就会执行这个函数，此方法执行之后页面就会显示
+  updated :function () {
+    alert('组件更新之后，此方法执行之后页面就会显示');
+  },
+   //组件销毁之前执行
+  beforeDestroy  :function () {
+    alert('组件销毁之前');
+  },
+   //组件销毁
+  destroyed :function () {
+    alert('组件销毁');
+  }
+  代码详情：
+    Header.vue文件：   
+        <!--1.模板：html结构-->
+<template>
+  <div class="app-Header">
+   <h1>{{title1}}</h1>
+   <h2 v-on:click="changeTitle()">{{title}}</h2>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  //这个name与App.vue中注册组件中的key相对应
+  name: "app-Header",
+  props: {
+    title: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      title1: "vue-Header"
+    };
+  },
+  methods: {
+    changeTitle: function() {
+      //用于注册事件
+      /*
+      *titleChanged：注册事件的名字
+      * "子向父传值"：注册事件的内容
+      */
+      this.$emit("titleChanged", "子向父传值");
+    }
+  },
+  //在组件实例化之前就会执行这个函数
+  beforeCreate:function () {
+    alert('组件实例之前');
+  },
+   //在组件实例化完成之后就会执行这个函数，但是页面还未显示
+  created:function () {
+    alert('组件实例完成之后，但是页面还未显示');
+  },
+   //在组件挂载之前就会执行这个函数，页面还未显示，但是虚拟DOM已经配置
+  beforeMount :function () {
+    alert('组件挂载之前，页面还未显示,但是虚拟DOM已经配置');
+  },
+   //在组件挂载之后就会执行这个函数，此方法执行之后页面就会显示
+  mounted :function () {
+    alert('组件挂载之后，此方法执行之后页面就会显示');
+  },
+   //在组件更新之前就会执行这个函数，页面还未更新，但是虚拟DOM已经配置
+  beforeUpdate  :function () {
+    alert('组件更新之前，页面还未更新,但是虚拟DOM已经配置');
+  },
+   //在组件更新之后就会执行这个函数，此方法执行之后页面就会显示
+  updated :function () {
+    alert('组件更新之后，此方法执行之后页面就会显示');
+  },
+   //组件销毁之前执行
+  beforeDestroy  :function () {
+    alert('组件销毁之前');
+  },
+   //组件销毁
+  destroyed :function () {
+    alert('组件销毁');
+  },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--3.样式：解决样式-->
+<!--添加scope之后css的作用域就只能在自己身上，否则会作用全局-->
+<style scoped>
+.app-Header {
+  background: lightgreen;
+  padding: 10px;
+}
+h1 {
+  color: #141010;
+  text-align: center;
+}
+</style>
+2.App.vue文件：
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <!--v-on的事件名字要和注册的事件名字一致
+    updateTitle（）中的参数必须为$event
+    -->
+    <app-Header v-on:titleChanged="updateTitle($event)" v-bind:title="title"></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer v-bind:title="title"></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './components/Users'
+import Header from './components/Header'
+import Footer from './components/Footer'
+export default {
+  name: 'App',
+  data(){
+    return{
+      title:"这是一个字符串",
+        users:[
+        {name:'zx1',position:'web1',show:false},
+        {name:'zx2',position:'web2',show:false},
+        {name:'zx3',position:'web3',show:false}
+      ],
+
+    }
+  },
+  methods: {
+    updateTitle(tit){
+      this.title=tit;
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+
+
+
+
+
+															20.vue路由和http
+1.路由：只会进行跳转不会进行页面的刷新
+    <1>先安装路由模块：
+    <2>先cd到对应的工程目录：使用npm install vue-router --save-dev
+    <3>在main.js中进行引用：import VueRouter from 'vue-router'
+    引入之后注册路由：Vue.use(VueRouter)
+           配置路由：
+            const router = new VueRouter({
+    routes: [
+        path是路由的地址，也就拦截所有根路径为/的请求，然后跳转到component指定的位置
+        { path: "/", component: Home },
+        {
+            path: "/HelloWord",
+            component: HelloWord
+        },
+
+    ],
+    //配置之后不会显示http://localhost:8080/#/
+    mode: "history",
+});
+    <4>.引入路由对应的组件：
+        import HelloWord from './components/HelloWorld'
+        import Home from './components/Home'
+    <5>.在components文件中创建对应的组件Home.vue以及HelloWorld.vue
+    <6>.创建完成之后只有在main.js文件中引入对应的vue组件才能使用：
+        import HelloWord from './components/HelloWorld'
+        import Home from './components/Home'
+    <7>.在全句注册组件中使用router组件：
+        new Vue({
+    router,
+    el: '#app',
+    components: { App },
+    template: '<App/>'
+})
+    <8>.由于根组件是App.vue，所以要使用router，必须在App.vue中体现：
+        <router-link to="/">Home_router-link</router-link>//此处在template中使用的
+2.http的使用：
+    <1>.使用http，必须要有vue-resource组件：
+        在cmd安装vue-resource组件:1.cd到对应的工程目录；
+                                 2.使用命令：npm install vue-resource --save-dev
+    <2>.在main.js中导入：import VueResource from 'vue-resource'
+    <3>.引入之后注册Http：Vue.use(VueResource)
+    <4>.网络引用数据：在Home.vue中
+        created () {
+            //此处就是在线引用user中的数据
+    this.$http.get("https://jsonplaceholder.typicode.com/users")
+    .then((data)=>{
+      console.log(data);
+      //this.users:就是data里面定义的数组
+      this.users=data.body;
+    })
+  }
+对应的详细代码：
+    js文件：
+        // The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import App from './App'
+import VueRouter from 'vue-router'
+//应用vue-resorce之前必须先进行引用
+import VueResource from 'vue-resource'
+import HelloWord from './components/HelloWorld'
+import Home from './components/Home'
+//import Users from './components/Users'
+Vue.config.productionTip = false
+    //引用路由组件
+Vue.use(VueRouter)
+Vue.use(VueResource)
+    //配置路由
+const router = new VueRouter({
+    routes: [
+        { path: "/", component: Home },
+        {
+            path: "/HelloWord",
+            component: HelloWord
+        },
+
+    ],
+    //配置之后不会显示http://localhost:8080/#/
+    mode: "history",
+});
+	
+//全局注册组件
+//Vue.component("users", Users);
+/* eslint-disable no-new */
+// index.html->main.js->App.vue
+new Vue({
+    router,
+    el: '#app',
+    components: { App },
+    template: '<App/>'
+})
+App.vue文件：   
+    <!--1.模板：html结构-->
+<template>
+  <div id="app">
+    <ul>
+      <li>
+        <a href="/">Home_a</a>
+        <br>
+        <router-link to="/">Home_router-link</router-link>
+      </li>
+       <li>
+         <!--/HelloWord路径必须要与main.js中配置的路径一致-->
+        <a href="/HelloWord">HelloWord_a</a>
+        <br>
+        <router-link to="/HelloWord">HelloWord_router-link</router-link>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+export default {
+  name: "App",
+  data() {
+    return {};
+  },
+  methods: {},
+  components: {}
+};
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1 {
+  color: purple;
+}
+</style>
+Home.vue文件：
+    <!--1.模板：html结构-->
+<template>
+  <div id="home">
+    <!--v-on的事件名字要和注册的事件名字一致
+    updateTitle（）中的参数必须为$event
+    -->
+    <app-Header v-on:titleChanged="updateTitle($event)" v-bind:title="title"></app-Header>
+    <!--要想将值传递给子组件，必须在此处的接口处将值绑定-->
+    <!--v-bind:users="users":第一个users名字是自定义的，第二个是data里面的属性‘
+    usus对应的组件取值方法请参考Users.vue中的属性配置
+    -->
+    <usus v-bind:users="users"></usus>
+    <app-Footer v-bind:title="title"></app-Footer>
+  </div>
+</template>
+<!--2.行为：处理逻辑-->
+<script>
+//局部注册组件 
+import Users from './Users'
+import Header from './Header'
+import Footer from './Footer'
+export default {
+  name: 'home',
+  data(){
+    return{
+      title:"这是一个字符串",
+        users:[
+          
+      ],
+    }
+  },
+  methods: {
+    updateTitle(tit){
+      this.title=tit;
+    }
+  },
+  components: {
+    //所起的名字不能与特殊定义的标签重复，而且key对应export中的name值相对应，value与对应的vue的名字相对应
+    "usus":Users,
+    "app-Header":Header,
+    "app-Footer":Footer
+  },
+  created () {
+    this.$http.get("https://jsonplaceholder.typicode.com/users")
+    .then((data)=>{
+      console.log(data);
+      //this.users:就是data里面定义的数组
+      this.users=data.body;
+    })
+  }
+}
+</script>
+<!--3.样式：解决样式-->
+<style scoped>
+h1{
+  color:purple;
+}
+</style>
+
+
+
+
+
+															21.vue-cli3.0项目搭建
+1.安装全局的3.0项目：
+    npm install -g @vue/cli
+    查看是否更新成功：vue -V 如果出现 3.0以上的版本就说明安装成功；
+2.创建工程：先cd到对应的你要创建的工程所在的目录;
+    使用vue create vue3(vue3名字是你的工程名，可以任意自定义)
+3.进入Manualy select features选择对应的要添加的东西（使用空格键进行选定或者取消）；
+4.保存方式：In package,json
+5.如果出现 cd vue3  
+          npm run serve      就说明你安装成功
+          
+
+
+
+
+															22.vue-cli3.0独立运行的.vue文件
+1.在根目录中创建一个.vue文件
+2.使用命令vue serve Hello.vue(Hello.vue就是我们刚刚创建的veu文件)在全句中声明这个vue文件，但是如果项目的目录中没有全局的cli-service-global声明，就会出现提示你安装
+使用npm install -g @vue/cli-service-global 安装完成之后，在继续执行vue serve Hello.vue就会出现Hello.vue页面的内容
+
+
+
+
+
+															23.vue-cli3.0图形界面构建项目
+1.在控制台运行 vue ui
+运行之后就会跳转到图形化界面
+2.在图像化界面点击创建->输入项目文件夹->git(初始化默认仓库)->手动->勾选Babel /Progressive Web App(PWA)
+3.在任务界面——>serve->run
+经过以上步骤整个项目就创建好了
+
+
+
+
+
+															24.vue-cli3.0配置基础的路径
+1.在根目录下创建一个js文件：vue.config.js
+2.在vue.config.js文件中配置：
+	module.exports = {
+    baseUrl: '/', //根路径
+    outputDir: 'dist', //构建输出目录
+    assetsDir: 'assets', //静态资源输出目录（js，css, img,fonts等）
+    lintOnSave: false, //是否开启eslint保存检测 有效值包含：true false error
+};
+3.使用命令 npm run build运行创建对应的目录以及文件
+
+
+
+
+
+															25.vue-cli3.0配置跨域
+1.在根目录下创建一个js文件：vue.config.js
+2.在vue.config.js文件中配置：
+	module.exports = {
+    baseUrl: '/', //根路径
+    outputDir: 'dist', //构建输出目录
+    assetsDir: 'assets', //静态资源输出目录（js，css, img,fonts等）
+    lintOnSave: false, //是否开启eslint保存检测 有效值包含：true false error
+    devServer: {
+        //open的作用就是运行项目是否会自己打开浏览器显示
+        open: false,
+        host: 'localhost',
+        //可以在此处修改端口号
+        port: 8080,
+        //一般使用false，否则在访问时会提示你不安全
+        https: false,
+        hotOnly: false, //热更新
+        //用于跨域
+        proxy: {
+            //配置跨域
+            '/api': {
+                target: 'http//localhost:5000/api',
+                ws: true,
+                changeOrign: true,
+                pathRwrite: {
+                    '^/api': ''
+                }
+            },
+            //在所有服务之前来执行
+            before(){
+			
+            }
+        }
+    }
+};
+
+
+
+
+
+															26.vue-cli3.0加载美团
+1.vue.config.js文件：
+	//导入data中的数据
+const goods = require('./data/goods.json');
+const ratings = require('./data/ratings.json');
+const seller = require('./data/seller.json');
+module.exports = {
+    baseUrl: '/', //根路径
+    outputDir: 'dist', //构建输出目录
+    assetsDir: 'assets', //静态资源输出目录（js，css, img,fonts等）
+    lintOnSave: false, //是否开启eslint保存检测 有效值包含：true false error
+    devServer: {
+        //open的作用就是运行项目是否会自己打开浏览器显示
+        open: false,
+        host: 'localhost',
+        //可以在此处修改端口号
+        port: 8080,
+        //一般使用false，否则在访问时会提示你不安全
+        https: false,
+        hotOnly: false, //热更新
+        //用于跨域
+        proxy: {
+            //配置跨域
+            '/api': {
+                target: 'http//localhost:5000/api',
+                ws: true,
+                changeOrign: true,
+                pathRwrite: {
+                    '^/api': ''
+                }
+            },
+            //在所有服务之前来执行
+            before(app) {
+                app.get("/api/gods", (req, res) => {
+                    res.json(goods);
+                });
+                app.get("/api/ratings", (req, res) => {
+                    res.json(ratings);
+                });
+                app.get("/api/seller", (req, res) => {
+                    res.json(seller);
+                });
+
+            }
+        }
+    }
+};
+
+
+
+
+
+															二.vue第二阶段（对应改bug的文档参考vue_2_Bug.docx）
+													1.创建并使用vue脚手架
+1.前提是已经安装配置好node.js（具体配置自行百度查询）
+2.打开cmd ，切换到你要放工程的目录；
+3.使用指令：npm install -g vue-cli来搭建脚手架环境
+3.使用指令：vue init webpack vue2来创建项目名为vue2的项目
+4.cd 到刚刚创建的vue2的工程目录，使用指令npm install 来安装对应的插件
+5.使用指令npm run dev来运行你创建的脚手架
+									2.vue语法基础
+1.在compont文件夹下新建一个.vue文件
+2.vue文件符合三层设计：
+	<template></template>//用于存放html代码
+	<script></script>//用于存放js代码
+	<style></style>//用于存放css样式
+	eg:
+		<template>
+</template>
+<script>
+export default {
+  name: "test"
+};
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!--scope只会影响到当前组件的样式-->
+<style scoped>
+</style>
+3.要想使用刚刚创建的vue组件，必须先在App.vue中的<script></script>层中导入这个组件
+	import Test1 from './components/Test1.vue'
+4.引用之后在注册，在<script>层的export default中，添加components
+	components:{
+    Test1
+  }
+5.注册之后在<template>层中激活：
+	<template>
+  <div id="app">
+   <Test1></Test1>
+  </div>
+</template>	
+	对应的详细代码参考Demo1.docx文档
+	
+	
+
+													2.v-if语句与v-else的使用
+1.直接在标签中嵌套使用，为真就显示，否则就不显示
+	eg:
+		<p v-if="judge"></p>
+2.v-else：就是v-if的对立面,也就是说当条件为false的时候才会显示，用法和v-if一样，但是需要注意的是v-if必须先存在
+3.v-for:v-for主要是用于遍历数组，一般用于自动生成列表或者表格
+	eg:
+		<table>
+		<tr>
+		<td v-for="item in items"></td>
+		</tr>
+		</table>
+具体代码参靠Demo2.docx
+
+
+													3.v-on的绑定事件使用&Computed计算属性&props属性
+1.v-on语句的使用：
+	先在<script>层中的export default里面定义一个methods标签：
+		 methods:{}
+	使用v-on绑定按钮事件，在methods中定义相对应的方法：
+		 <button v-on:click="greet()">Say Greeting</button>
+		methods:
+			 greet:function(){
+      alert("Hello Word")
+    }
+	下面来看一下v-on有哪些用法：
+		话不多说直接看例子：
+			<h4>监听键盘事件</h4>
+    <input type="text" v-on:keyup="pressKeybord" id="input"/>
+     <h4>监听键盘指定单个按钮事件——输入Enter进行监听</h4>
+  <input type="text" v-on:keyup.enter="pressKeybord_enter" id="input_enter"/>
+  <h4>监听键盘指定多个按钮事件——输入Alt+Enter进行监听</h4>
+  <input type="text" v-on:keyup.alt.enter="pressKeybord_alt_enter" id="input_alt_enter"/>
+2.Computed计算属性：
+	这种属性的用法与methods的用法类似，但是绑定的方法不同，它和绑定属性的方法一样，使用v-model来进行绑定；
+	定义的方法：
+		 computed:{
+    nameAndaddress:function(){
+      return this.user.name+"   "+this.user.address
+    }
+  }
+  使用绑定的方法：
+	 <input type="text" class="form-control" id="exampleInputPassword1" v-model="nameAndaddress">
+3.props属性:
+		在<script>层中直接定义：
+			 props:{
+			  msg: {
+      type: String,
+      default: "默认就是当前内容"
+    }
+			 }
+			 使用：
+				<h3>props属性</h3>
+				<h4>{{msg}}</h4>
+				可以在App.vue中进行修改msg的内容；
+				<Test1 msg="这是新的属性"></Test1>
+				详情参考：Demo3.docx
+							 
+							 
+							 
+							 
+							 
+																					4.简单的用户管理1
+	1.新学习的就只有两个：
+		form表单的v-on:submit=""		事件：一旦点击提交按钮，就会触发这个事件；
+		v-model事件的升级使用，v-model="newUser.name":这时候新创建一个data：
+			newUser:{}
+			此时会默认给newUser添加一个name属性
+			详情请参考Demo4.docx
+
+
+
+
+
+																				5.简单的用户管理2	
+1.从数组中删除一个元素：请参考：vue从数组中删除元素.txt(这种删除方式适用于任何js数组)
+2.路由的使用：具体请参考vue路由的配置以及使用.txt以及vue路由的配置以及使用.docx
+3.vue使用Http请求：
+		1.cd到对应的工程目录，使用npm install vue-resource
+		2.在mian.js中import刚刚安装好的resource模块：import vueResource from 'vue-resource'
+		3.使用vue.use()来进行引用：Vue.use(vueResource)
+		4.使用htttpresource:在对应的vue组件中使用，比如在users.vue中使用：
+			这里需要用一个钩子函数：created:（注：这个函数的位置一般放在methods后面）也就是页面创建完成之后进行调用的函数都要放在里面：
+				created:{function(){}};
+		5.使用httpResponse:
+		created:function(){
+		this.$http.get("https://jsonplaceholder.typicode.com/users").then(function(response){
+			console.log(response.data);
+			this.users=response.data
+		})
+	},
+	具体代码请参考Demo5.docx
+	
+	
+	
+	
+	
+	
+	
+																					三.vue第三阶段——————在线翻译
+1.先创建一个脚手架项目，创建方法：npm init webpack 项目名
+2.引入Bootstrap等样式
+3.在components中创建必要的vue组件：TranslateForm.vue   TranslateOutput.vue
+4.在App,vue组件中进行注册
+		import HelloWorld from './components/HelloWorld'
+		import TranslateForm from './components/TranslateForm'
+		export default {
+		  name: 'App',
+		  components: {
+		    HelloWorld,TranslateForm
+		  },
+5.接下来就是编写对应的样式，此处略过，请参考详细代码
+6.接下来重点讲一下事件的注册：
+	methods:{
+		formSubmit:function(e){
+		this.$emit("formSubmit",this.textToTranslate);//用于事件注册
+		e.preventDefault();//此处是为了防止点击提交而进行刷新界面
+		}
+	}
+	上面的this.$emit("formSubmit",this.textToTranslate):作用就是将formSubmit作为一个参数，以后直接在绑定事件的时候如果想和formSubmit
+	事件同步进行可以直接这样绑定：v-on:formSubmit="formSubmit"
+					然后在<script>层中进行编写对应的方法，而且这样用的好处是this.textToTranslate可以直接获取
+					formSubmit:function(text){
+						alert(text)
+					}//此处的text就是this.textToTranslate对应的内容；
+	详情参考 Demo6.docx
+	
+	
+	
+	
+	
+																						在线翻译2
+1.要想实现翻译功能，必须借助官方的Api,先进入一个官方的翻译文档：https://translate.yandex.com
+2.通过http请求这个网址来实现翻译功能：
+		http需要vue resource,所以先安装并配置vue-resource，详情请参考vue.js笔记（简单的用户管理2	/3.vue请求http）
+3.具体使用在线翻译的功能请参考   ‘在线翻译_api的使用’
+4.对在线翻译的一些主要功能讲解：
+		App.vue获取的值传向TranslateOutput.vue
+			在App.vue上定义的<TranslateOutput v-text="translatedText"></TranslateOutput>
+			使用v-text就可以实现对data里面的数据的绑定（v-model也可以），但是必须在TranslateOutput.vue组件中有与之相对应的props
+					props:[
+						"translatedText"
+					],
+5.下拉列表中的值的绑定与获取：
+	直接使用v-model ,然后在data里面定义一个属性，就可以实现绑定
+		<select v-model="language" >
+			<option value="start">点击选择语言</option>
+			<option value="en">English</option>
+			<option value="ru">Russia</option>
+			<option value="ko">Kora</option>
+			<option value="ja">Japanese</option>
+		</select>
+		详情参考Demo7.docx
+		
+		
+		
+		
+		
+		
+		
+																四.vue第四阶段——————vue创建用户管理系统
+												1.配置使用json server
+1.cd到要存放工程的工程目录，然后创建vue脚手架：
+		npm install -g vue-cli
+		vue init webpack usermanage
+2.cd到刚刚创建的usermanage工程目录
+3.安装json-server:npm install  json-server --save
+4.安装好之后配置package.json
+	scripts里面加入  "json_server":"json-server --watch db.json"
+			注：json_server这个名字任意
+5.在根目录下创建db.json，里面主要是放一些数据
+	{
+		"users":[
+			{
+				"name":"Hneery",
+				"phone":"333-444-555",
+				"email":"henry@gmail.com",
+				"id":1,
+				"age":30,
+				"companyId":1
+			},
+		],
+		"companies":[
+			{"id":1,"name":"Apple","description":"Apple is good"},
+			{"id":2,"name":"Google","description":"Google is good"},
+			{"id":3,"name":"Micrsoft","description":"Micrsoft is good"}
+		]
+	}
+6.下面介绍一下几种请求数据的方式：
+	<1>get请求
+		http://localhost:3000/users/1                               获取用户id=1的所有信息
+		http://localhost:3000/companies/1                           获取companiesid=1的所有信息
+		http://localhost:3000/companies/1/users                     获取companiesid=1的所有用户信息
+		http://localhost:3000/companies?_pages=1&_limit=2           获取companies所有信息，但是只显示第一页，而且每一页的数量=2
+		http://localhost:3000/companies?_src=name&_order=asc        获取companies所有信息，并且按name来排序，排序规则为升序
+																																																注：desc：降序
+		http://localhost:3000/users?age_gte=32                      获取所有年龄在32以及32以上的用户信息
+		http://localhost:3000/users?age_lte=32                      获取所有年龄在32以及32以下的用户信息
+		http://localhost:3000/users?age_gte=32&age_lte=40           获取所有年龄在32以上以及40以下的用户信息
+	<2>.下面的几个请求则需要借助一个工具叫做postman    具体参考   使用postman教程       发送post(增) delete(删) patch(改)请求
+	<3>下面继续学习一下获取别人已经封装好的数据：
+		修改package.json:
+			在scripts中加入："json_server_remote":"json-server http://jsonplaceholder.typicode.com/db"
+			请求的方式：npm run json_server_remote
+
+
+																				2.搭建导航
+	直接看源码：Demo8.docx
+	
+	
+																				3.获取并展示用户信息
+	直接参考Demo9.docx， 在参考之前先配置好vue-http服务
+	
+	
+																				4.用户管理——添加用户
+1.新知识：
+	<1>.声明一个可传输的json字符串：
+		let newCustom={
+			name:this.custom.name,
+			phone:this.custom.phone,
+			email:this.custom.email,
+			profile:this.custom.profile
+		}
+	<2>.http的post请求：
+		this.$http.post("http://localhost:3000/users",newCustom).then(function(response){
+			console.log(response);
+		})
+	<3>.路由的跳转：
+		this.$router.push({path:"/Custom"})
+		详细代码参考Demo10.docx
+			
+			
+																		5.用户管理——弹窗提醒的实现
+1.此处引用的弹窗是bootstrap中的组件里的警告框
+2.新建一个AlertMessage.vue组件
+3.由于这个组件是在Custom界面上面显示的，所以需要在custom页面对这个组件进行注册，注册方法参考在   vue页面中引入其他vue组件.txt
+4.为了能够让AlertMessage.vue中能够进行两个组件正常的传值，所以在AlertMessage.vue的<script>层中添加props属性，使用的时候就可以使用v-bind绑定
+		props:["message"]
+5.为了让Custom.vue能够正常的显示所提示的信息，所以给它的data里面添加一个data值：alertMessage="",然后把message和alertMessage绑定在一起
+	v-bind:message="alertMessage"
+6.我们可以通过转发路由的时候一起把值传回来 详情参考:   vue路由的常用用法.txt	
+7.在新建一个Customs.vue,为了能够跳转跳转到Customs.vue，要在main.js中进行路由注册
+		import CustomDetails from './components/CustomDetails.vue'
+		{
+			path: "/Custom/:id",//此处表示拦截所有的user请求
+			component: CustomDetails//注册它时现在头部import对应的vue组件
+		},
+																																					path: "/Custom/:id"   这样的话就就可以带着参数传过去了
+	怎么传参数，请接着往下看：
+		<router-link v-bind:to="'/Custom/'+custom.id">点击查看详情</router-link>
+		详情参考:   vue路由的常用用法.txt	
+		所有代码参考Demo11.docx
+		
+		
+																	6.用户管理————编辑，删除的实现 
+	主要讲一下添加，删除的实现，其他的内容直接参考 Demo12.docx
+	1.编辑的实现：
+	this.$http.put("http://localhost:3000/users/"+this.$route.params.id,udateCustom).then(function(response){
+		console.log(response);
+		this.$router.push({path:"/Custom",query:{alert:"用户更新信息成功"}});
+	})
+	2.删除的实现：
+	this.$http.delete("http://localhost:3000/users/"+this.$route.params.id,udateCustom).then(function(response){
+		console.log(response);
+		this.$router.push({path:"/Custom",query:{alert:"用户更新信息成功"}});
+	})
+	注：无论是删除还是添加功能的实现均要满足

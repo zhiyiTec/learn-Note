@@ -1,0 +1,6 @@
+1.前提是已经安装配置好node.js（具体配置自行百度查询）
+2.打开cmd ，切换到你要放工程的目录；
+3.使用指令：npm install -g vue-cli来搭建脚手架环境
+3.使用指令：vue init webpack vue2来创建项目名为vue2的项目
+4.cd 到刚刚创建的vue2的工程目录，使用指令npm install 来安装对应的插件
+5.使用指令npm run dev来运行你创建的脚手架

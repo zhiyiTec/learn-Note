@@ -1,0 +1,19 @@
+1.先cd到你创建的工程目录，然后使用npm install jquery指令安装jquery
+2.然后修改build/webpack.base.conf.js两个地方：
+其一：加入var webpack = require(“webpack”)；
+
+其二：在module.exports的里面加入
+
+plugins: [
+new webpack.optimize.CommonsChunkPlugin(‘common.js’),
+new webpack.ProvidePlugin({
+jQuery: “jquery”,
+$: “jquery”
+})
+]
+加到最后就好。
+2.具体使用的方法：
+	在对应的vue的<script>层里添加：
+		import $ from 'jquery'
+		具体情况参考：vue引用jquery.docx
+		

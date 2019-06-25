@@ -1,0 +1,9 @@
+在进行的操作之前添加：long startTime=System.currentTimeMillis();
+在进行的操作之后添加：long endTime=System.currentTimeMillis();
+那么耗费的时间就是：long spendTime=endTime-startTime;			
+            注意：单位是毫秒
+            举一个例子：
+                long startTime=System.currentTimeMillis();
+				listDicTory(file);//此处就是进行的操作，来计算这个操作所耗费的时间
+				long endTime=System.currentTimeMillis();
+				long spendTime=endTime-startTime;	

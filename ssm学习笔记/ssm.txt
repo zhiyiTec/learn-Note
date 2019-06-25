@@ -1,0 +1,215 @@
+												1.ssm整合：
+1.spring mybatis的整合：将sqlsessionFactory 交给spring来处理
+2.spring springmvc整合：各自配置各自的即可
+												2.建立ssm的架构：
+1.先创建一个applicationContext.xml文件
+2.配置web.xml文件
+<display-name>Archetype Created Web Application</display-name>
+  <!-- 启动spring容器 ,项目已启动就会加载applicationContext.xml配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+3.在继续配置applicationContext.xml文件：
+		<!-- 数据源，mapper.xml -->
+	<!-- springMvc配置文件，包含跳转逻辑的控制， -->
+	<context:component-scan base-package="com.ssm">
+		<!-- 只扫描控制器 -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+	<!-- = ===================================数据源的配置=========================================================== -->
+	<!-- 使用spring的配置文件，主要是配置业务和逻辑有关的事务处理 -->
+	<!-- 数据源，事务控制 -->
+	<!-- 此处用于加载 dbconflig.properties配置文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	<bean id="dataSource"
+		class="org.apache.tomcat.dbcp.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClass}"></property>
+		<property name="url" value="${jdbc.jdbcUrl}"></property>
+		<property name="username" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	
+	<!-- =====================================myBatis与spring的整合====================================================== -->
+	<!-- 配置和myBatis与spring的整合 -->
+	<!-- 配置sqlSessionFacotory ，因为mybatis 是通过sqlSessionFactory 来创建sqlSession 
+		来执行statement 语句的。 现在mybatis交由spring管理，所以需要在这里配置。 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 配置MyBaties全局配置文件:mybatis-config.xml ,加载mybatis的配置文件-->
+		<property name="configLocation"
+			value="classpath:mybatis-config.xml" />
+			<!-- 加载mapper.xml的路径 
+			value="classpath:mapper/*":加载mapper目录下的所有文件
+			-->
+			<property name="mapperLocations" value="classpath:mapper/*"></property>
+	</bean>
+4.使用spring 整合myBatis
+	扫描包：
+	<!-- 以下步骤就是将sqlSessionFactiory交给spring来处理 -->
+	<!-- 配置扫描器，将mybatis接口的实现 加到Ioc容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 注入sqlSessionFactory -->
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory" />
+		<!-- 给出需要扫描Dao接口包 ，加入ioc容器 
+		property name="basePackage" value="com.ssm.mapper":作用是将mapper中的所有的接口产生与之动态代理的对象
+		对象名就是接口首字母小写的接口名：
+		IStudentMapper:对应的对象名就是iStudentMapper
+		-->
+		<property name="basePackage" value="com.ssm.mapper" />
+	</bean>
+5.使用spring整合myBatis：
+	将sPringMvc加入项目即可	
+6.配置springMvc
+	配置springMvc.xml文件
+	
+	
+	
+	
+	
+	
+																3.具体使用框架
+1.先创建一个控制器也就是在controller层创建控制器：
+	
+@Controller
+@RequestMapping("controller")
+public class StudentController {
+	// 控制器依赖于service
+  }
+2.将控制器加入Ioc容器（在applicationContext中注入）：
+		<!-- 如果想要实现控制器，必须将控制器所在的包添加至扫描器中也就是IOC容器中 -->
+	<context:component-scan
+		base-package="com.ssm.controller.StudentController"></context:component-scan>
+3.编写控制器：
+	@Controller
+@RequestMapping("controller")
+public class StudentController {
+	// 控制器依赖于service
+	
+	@RequestMapping("queryStudentById/{id}")
+	public String queryStudentById(@PathVariable("id") Integer id,Map<String, Object>map) {
+		
+		
+		
+		return "success";
+	}
+  }
+  接收对象：
+	@ResponseBody
+	@RequestMapping(value = "feeinfo", method = RequestMethod.POST)
+	public String feeinfo(@RequestParam(value = "season", required = false) String season,
+			@RequestParam(value = "no", required = true) String no, Map<String, Object> map) {
+		MultipleParameters m ;
+		
+		if(season==null||season.equals("")) {
+			 m = new MultipleParameters(no);
+		}else {
+			m = new MultipleParameters(no, season);
+		}
+		 
+		List<SeasonInfoes> lSeasonInfoes = seasonInfoesService.getClientInfoByNoAndSeason(m);
+		map.put("SeasonInfoes", lSeasonInfoes);
+		return "success";
+	}
+}
+4.创建service接口来实现方法：
+	public interface StudentService {
+	Student queryStudentById(int id);
+}
+5.创建具体的service来实现具体的方法：
+public class StudentServiceImpl implements StudentService{
+	//service依赖于Dao
+	StudentMapper studentMApper;
+	
+	public StudentMapper getStudentMApper() {
+		return studentMApper;
+	}
+
+	public void setStudentMApper(StudentMapper studentMApper) {
+		this.studentMApper = studentMApper;
+	}
+
+	@Override
+	public Student queryStudentById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
+6.在applicationContext中注入studentMApper这个属性值：
+		<!-- 依赖注入service中的Dao -->
+		<bean id="StudentServiceImpl" class="com.henangengyun.gxrl.service.impl.StudentServiceImpl">
+		<!-- mapper的动态代理对象就是对应的mapper对象名的首字母小写 -->
+		<property name="studentMApper" value="studentMApper"></property>
+		</bean>
+7.注入完成之后就可以继续使用注入的属性以及方法了
+	public class StudentServiceImpl implements StudentService{
+	//service依赖于Dao
+	StudentMapper studentMApper;
+	public StudentMapper getStudentMApper() {
+		return studentMApper;
+	}
+	public void setStudentMApper(StudentMapper studentMApper) {
+		this.studentMApper = studentMApper;
+	}
+	@Override
+	public Student queryStudentById(int id) {
+		// TODO Auto-generated method stub
+		return studentMApper.findStudentById(id);
+	}
+}
+8.接下来在controller调用service:
+	public class StudentController {
+	// 控制器依赖于service
+	StudentService studentService;
+	public StudentService getStudentService() {
+		return studentService;
+	}
+	public void setStudentService(StudentService studentService) {
+		this.studentService = studentService;
+	}
+	@RequestMapping("queryStudentById/{id}")
+	public String queryStudentById(@PathVariable("id") Integer id,Map<String, Object>map) {
+		return "success";
+	}
+  }
+9.给service注入属性，使用applicationContext注入属性：
+	<!-- 给Controller注入service -->
+		<bean id="StudentController" class="com.henangengyun.gxrl.controller.StudentController">
+		<property name="studentService" ref="StudentServiceImpl"></property>
+		</bean>
+10.接着回到Controller层继续调用：
+	
+@Controller
+@RequestMapping("controller")
+public class StudentController {
+	// 控制器依赖于service
+	StudentService studentService;
+	
+	public StudentService getStudentService() {
+		return studentService;
+	}
+
+	public void setStudentService(StudentService studentService) {
+		this.studentService = studentService;
+	}
+
+	@RequestMapping("queryStudentById/{id}")
+	public String queryStudentById(@PathVariable("id") Integer id,Map<String, Object>map) {
+		Student student=studentService.queryStudentById(id);
+		map.put("student", student);
+		return "success";
+	}
+  }
+ 11.在springMvc.xml中将添加注解的添加到视图解析器：
+	
