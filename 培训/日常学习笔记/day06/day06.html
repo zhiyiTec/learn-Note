@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>day06</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h3>10. 对站点状态数据进行初步的分析</h3>
+<h4>10.1 数据分析</h4>
+<p>数据分析是指用适当的统计分析方法对收集来的大量数据进行分析，提取有利于商业决策的信息。</p>
+<p>大家学习的是如何为数据分析师提供一个分析的平台和环境。</p>
+<p>需求：分析一条station_status.json数据，得到以下信息</p>
+<pre><code>1. 该数据中有多少个站点
+
+    select count(*) from tb_status;
+
+2. 所有的`num_bikes_avaliable`的总和
+
+    select sum(nba) from tb_status;
+
+3. `num_bikes_avaliable`最多的站点的id
+
+    select id from tb_status where nba=(select max(nba) from tb_tatus);
+
+4. `abi`在0.5以下的站点数量占总站点数量的比例
+</code></pre>
+
+<p>步骤：将一条statation_status.json数据存入数据库</p>
+<ul>
+<li>
+<p>安装一个数据库</p>
+<pre><code>1. 从doc.tedu.cn下载MariaDB5.5安装包
+
+2. 在本机安装MariaDB5.5
+
+    之前电脑中如果已经安装过Mysql，那么电脑中会有一个服务叫Mysql，在安装MariaDB时，使用的默认的服务名Mysql就会有冲突，因此需要将服务名改成MariaDB
+
+    如果当前电脑中Mysql数据库正在运行，则会占用3306端口，安装MariaDB默认配置的也是3306端口，会冲突，因此无法继续安装。可以关闭当前电脑在运行的Mysql服务，解除它对3306端口的占用。
+
+3. 配置MariaDB5.5到环境变量中
+</code></pre>
+
+</li>
+<li>
+<p>建库建表</p>
+<pre><code>-- 建库
+create database nybikedb;
+
+-- 使用库
+use nybikedb;
+
+-- 创建 tb_status
+create table tb_status(
+id int auto_increment,
+sid int comment '站点id',
+nba int comment '可用车数',
+nbd int comment '损坏车数',
+nda int comment '可用桩数',
+ndd int comment '损坏桩数',
+primary key (id)
+)default charset utf8;
+</code></pre>
+
+</li>
+<li>
+<p>基于JSON解析工具，将statation_status.json数据转变成结构化的数据</p>
+<p>在项目中引入fastjson的jar包，可以通过<code>http://maven.tedu.cn</code>搜索对应的依赖该怎么写</p>
+<p>maven的运行原理是从远程库中下载对应的jar包，下载完成后，不会进行文件完整性校验，可能出现项目列表中对应的jar包，结构也是完整的，但是一些类就是导不进来的情况。遇到这类情况，可以到本次的maven文件夹中(.m2)，找到对应的jar包的文件夹，直接删掉。在项目中使用<code>maven update</code>重新下载该jar包。</p>
+</li>
+<li>
+<p>将数据存入数据库</p>
+<p>在项目中添加dbcp-1.4.jar的依赖</p>
+<p>将<code>DBUtils.java</code>拷贝到<code>cn.tedu.nybike.util</code>包下</p>
+<p>从ftp上下载<code>jdbc.properties</code>文件，拷贝到项目的<code>src/main/resources</code>文件夹下</p>
+<p>在<code>DBUtils.java</code>中添加一个<code>main</code>方法，通过<code>ds</code>获取一个连接对象，并输出，测试连接是否正常</p>
+<p>将JSON解析得到的数据以对象的形式来封装，使用的类是<code>cn.tedu.nybike.pojo.StationStatusDO</code></p>
+<p><code>parseObject(String text, TypeReference&lt;T&gt; type, Feature... features)</code>可以对一个JSON字符串进行解析，并将解析到的数据自动封装成<code>TypeReference&lt;T&gt;</code>指定的类型</p>
+<p>JSON -&gt; 变量 -&gt; 使用T对应的对象封装变量 -&gt;方法返回T的对象，里面就是封装好的数据</p>
+</li>
+<li>
+<p>使用SQL对数据库中的数据进行分析</p>
+</li>
+</ul>
+<p>需求：<code>abi</code>在0.5以下的站点数量占总站点数量的比例</p>
+<ol>
+<li>
+<p>通过JDBC将分析的结果从数据库查询出来，并显示在控制台</p>
+</li>
+<li>
+<p>自学Echarts(数据可视化工具)，网址是<code>https://www.echartsjs.com/zh/index.html</code></p>
+</li>
+</ol>
+<h3>11. 数据可视化</h3>
+<p>以图形的形式来展示数据，使人类可以更好的读懂和理解数据</p>
+<p>例：2016年程序员中的男女比例是91:9</p>
+<p>当前行业中有很多成熟的实现数据可视化的工具，适用于不同的应用场景。</p>
+<p>传统：excel</p>
+<p>浏览器端： Echarts(html+css+js)</p>
+<p>编程语言自带可视化插件：R，Python</p>
+<p>商用：BI(商业智能)</p>
+<h4>11.1 第一个可视化图标</h4>
+<ul>
+<li>
+<p>在页面中引入echarts.js</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;js/echarts.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+</li>
+<li>
+<p>在页面中声明一个图表的容器</p>
+<pre><code>&lt;div id=&quot;div1&quot; style='height: 400px;width: 600px' &gt;&lt;/div&gt;
+</code></pre>
+
+</li>
+<li>
+<p>通过js设定图标的样式</p>
+<pre><code>1. 声明一个图表对象，绑定容器
+
+    var myChart = echarts.init(
+        document.getElementById('div1'));
+
+2. 声明一个图表样式对象`option`
+
+    可以从官方示例中下载
+
+3. 将样式对象绑定到图表对象上，显示图表
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</code></pre>
+
+</li>
+</ul>
+<h3>--------------------------</h3>
+<h3>数据库连接池(pool)</h3>
+<p>概念：提供一个容器来管理连接，在连接池初始化之后一次性创建指定数量的连接，用户使用连接时，从连接池获取，用户使用完毕时，不关闭连接，而是将连接归还给连接池</p>
+<p>工具：以上逻辑不需要开发者自己写，可以使用成熟的第三方jar包(c3p0.jar/dbcp.jar)</p>
+<h3>try with close</h3>
+<p>语法：</p>
+<pre><code>try(变量声明){
+
+}catch(Exception e){
+    处理异常
+}
+</code></pre>
+
+<p>当<code>try-catch</code>语句块执行完毕后，系统会默认调用所有在<code>try()</code>中声明的变量的<code>close()</code>方法，自动关闭这些资源。</p>
+<p>限制：在<code>try()</code>中声明的变量必须实现<code>AutoCloseable</code>接口</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
