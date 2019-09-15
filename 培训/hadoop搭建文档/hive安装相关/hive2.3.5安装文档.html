@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>hive2.3.5安装文档</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Hive2.3.5安装文档</h1>
+<h2>Centos7安装Mariadb（如已安装，可跳过）</h2>
+<h3>1. 上传离线安装包(mariadb.tar.gz)</h3>
+<pre><code>rz -y 
+</code></pre>
+
+<h3>2. 解压缩</h3>
+<pre><code>tar zxvf /opt/mariadb.tar.gz -C /opt
+</code></pre>
+
+<h3>3. 安装</h3>
+<pre><code>yum install /opt/mariadb/*
+</code></pre>
+
+<h3>4. 设置MariaDB</h3>
+<pre><code>启动MariaDB
+systemctl start mariadb
+
+设置开机启动
+systemctl enable mariadb
+
+MariaDB初始化配置
+mysql_secure_installation
+
+密码验证，初次直接敲回车
+Enter current password for root (enter for none):&lt;–初次运行直接回车
+
+设置root用户密码-教学这里使用root
+Set root password? [Y/n] &lt;– 是否设置root用户密码，输入y并回车或直接回车
+New password: &lt;– 设置root用户的密码
+Re-enter new password: &lt;– 再输入一次你设置的密码
+
+其他配置：
+Remove anonymous users? [Y/n] &lt;– 是否删除匿名用户，回车
+Disallow root login remotely? [Y/n] &lt;–是否禁止root远程登录,回车,
+Remove test database and access to it? [Y/n] &lt;– 是否删除test数据库，回车
+Reload privilege tables now? [Y/n] &lt;– 是否重新加载权限表，回车
+
+登录MariaDB:
+mysql -uroot -proot
+</code></pre>
+
+<h2>Hive2.3.5安装</h2>
+<h3>1. 主节点获取Hive安装包</h3>
+<pre><code>方式一：从Windows主机上传(xshell)
+
+    rz -y
+
+方式二：主节点直接从网上下载安装包
+
+    cd /opt
+    wget https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-2.3.5/apache-hive-2.3.5-bin.tar.gz
+</code></pre>
+
+<h3>2. 解压缩</h3>
+<pre><code>tar zxvf /opt/apache-hive-2.3.5-bin.tar.gz -C /opt/
+
+修改文件夹名称
+mv /opt/apache-hive-2.3.5-bin /opt/hive-2.3.5
+</code></pre>
+
+<h3>3. 配置环境变量</h3>
+<pre><code>编辑文件
+vim /etc/profile
+添加
+export HIVE_HOME=/opt/hive-2.3.5
+export PATH=$HIVE_HOME/bin:$HIVE_HOME/conf:
+
+让配置生效
+source /etc/profile
+</code></pre>
+
+<h3>4. 配置Hive</h3>
+<ol>
+<li>
+<p>配置hive-env.sh</p>
+<pre><code>复制模板
+cd /opt/hive-2.3.5/conf
+cp hive-env.sh.template hive-env.sh
+
+编辑文件    
+vim /opt/hive-2.3.5/conf/hive-env.sh
+
+在最末尾添加
+export HADOOP_HOME=/opt/hadoop-2.6.5
+export HIVE_HOME=/opt/hive-2.3.5
+export HIVE_CONF_DIR=/opt/hive-2.3.5/conf
+export JAVA_HOME=/opt/jdk1.8.0_161
+export HIVE_AUX_JARS_PATH=/opt/hive-2.3.5/lib
+</code></pre>
+
+</li>
+<li>
+<p>配置hive-site.xml</p>
+<pre><code>编辑文件
+vim hive-site.xml
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;
+        &lt;value&gt;jdbc:mysql://master:3306/hive?createDatabaseIfNotExist=true&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;
+        &lt;value&gt;com.mysql.cj.jdbc.Driver&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;
+        &lt;value&gt;hadoop&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;
+        &lt;value&gt;hivepwd&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;hive.metastore.warehouse.dir&lt;/name&gt;
+        &lt;value&gt;hdfs://master:8020/hive/warehouse&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;hive.exec.local.scratchdir&lt;/name&gt;
+        &lt;value&gt;/opt/hive/exec&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;hive.downloaded.resources.dir&lt;/name&gt;
+        &lt;value&gt;/hive/downloadedsource&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;hive.querylog.location&lt;/name&gt;
+        &lt;value&gt;/hive/logs&lt;/value&gt;
+    &lt;/property&gt; 
+&lt;/configuration&gt;
+</code></pre>
+
+</li>
+<li>
+<p>配置Hive的日志目录</p>
+<pre><code>拷贝文件
+cp hive-log4j2.properties.template hive-log4j2.properties
+
+编辑文件
+vim hive-log4j2.properties
+
+property.hive.log.dir = /opt/hive/log
+</code></pre>
+
+</li>
+<li>
+<p>拷贝Mysql连接jar包到lib目录下</p>
+<pre><code>上传jar包
+rz -y
+
+cp /opt/mysql-connector-java-8.0.13.jar /opt/hive-2.3.5/lib/
+</code></pre>
+
+</li>
+<li>
+<p>解决SLF4J重复问题</p>
+<pre><code>rm /opt/hive-2.3.5/lib/log4j-slf4j-impl-2.6.2.jar
+</code></pre>
+
+</li>
+</ol>
+<h3>5. Hive元数据库配置</h3>
+<pre><code>进入MariaDB
+mysql -uroot -proot
+
+建库
+create database hive;
+
+配置权限
+grant all on hive.* to hadoop@'master' identified by 'hivepwd';
+
+使配置生效
+flush privileges;
+</code></pre>
+
+<h3>6. 启动hive并测试</h3>
+<pre><code>首次启动前，初始化hive元数据库
+schematool -dbType mysql -initSchema
+
+启动hive
+hive
+
+测试Hive
+create database testdb;
+use testdb;
+create table student(id int,name string);
+insert into student values(1,'Tom');
+select * from student;
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

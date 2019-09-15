@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hadoop集群搭建文档</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Hadoop集群搭建文档</h1>
+<h3>1. 准备3台虚拟机</h3>
+<h4>1) 配置好主机名及IP地址</h4>
+<pre><code>主机名     ip地址                内存
+master      192.168.56.101      2G
+slave1      192.168.56.102      1G
+slave2      192.168.56.103      1G
+
+相关命令：
+
+1. 配置hostname： hostnamectl set-hostname master
+2. 配置ip地址： vim /etc/sysconfig/network-scripts/ifcfg-enp0s3
+</code></pre>
+
+<h4>2)准备</h4>
+<p>关闭防火墙</p>
+<pre><code>systemctl stop firewalld.service            #停止firewall
+systemctl disable firewalld.service        #禁止firewall开机启动
+</code></pre>
+
+<p>安装JDK</p>
+<p>配置JDK环境变量</p>
+<p>配置/etc/hosts文件</p>
+<pre><code>127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.56.101  master192.168.56.102    slave1
+192.168.56.103  slave2
+</code></pre>
+
+<h3>2. 配置SSH免密登录</h3>
+<ol>
+<li>
+<p>master生成密钥</p>
+<pre><code>ssh-keygen -t rsa (四个回车)
+cd .ssh
+cp id_rsa.pub authorized_keys 
+</code></pre>
+
+</li>
+<li>
+<p>将密钥发送给slave1和slave2</p>
+<pre><code>ssh-copy-id root@slave1
+ssh-copy-id root@slave2
+</code></pre>
+
+</li>
+<li>
+<p>测试master到slave1和slave2的ssh免密登录正常</p>
+<pre><code>ssh root@slave1
+ssh root@slave2
+</code></pre>
+
+</li>
+</ol>
+<h4>3. 上传hadoop安装包到/opt目录下</h4>
+<ol>
+<li>使用xshell ssh 连接master主机</li>
+<li>进入/opt目录下</li>
+<li>使用 rz -y 命令上传文件: hadoop-2.6.5.tar.gz</li>
+</ol>
+<h4>4. 安装Hadoop</h4>
+<ol>
+<li>
+<p>将hadoop2.6.5 解压到 /opt目录下</p>
+<pre><code>tar zxvf /opt/hadoop-2.6.5.tar.gz -C /opt/
+</code></pre>
+
+</li>
+<li>
+<p>配置环境变量</p>
+<pre><code>vim /etc/profile
+
+export JAVA_HOME=/opt/jdk1.8.0_161
+export HADOOP_HOME=/opt/hadoop-2.6.5
+export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME/bin:$PATH:$HOME/bin
+
+使配置生效-仅当前shell有效-全部生效需要重启电脑
+source /etc/profile
+</code></pre>
+
+</li>
+<li>
+<p>对Hadoop进行配置</p>
+<p>1) 修改hadoop-env.sh文件，添加jdk</p>
+<pre><code>vim /opt/hadoop-2.6.5/etc/hadoop/hadoop-env.sh
+
+export JAVA_HOME=/opt/jdk1.8.0_161
+</code></pre>
+
+<p>2) 修改core-site.xml</p>
+<pre><code>vim /opt/hadoop-2.6.5/etc/hadoop/core-site.xml
+
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+        &lt;value&gt;/opt/hadoop/tmp&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;fs.defaultFS&lt;/name&gt;
+        &lt;value&gt;hdfs://master:8020&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>3) 修改hdfs-site.xml</p>
+<pre><code>vim /opt/hadoop-2.6.5/etc/hadoop/hdfs-site.xml
+
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.replication&lt;/name&gt;
+        &lt;value&gt;1&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>4) 配置mapred-site.xml</p>
+<pre><code>复制模板文件并配置
+
+cp /opt/hadoop-2.6.5/etc/hadoop/mapred-site.xml.template /opt/hadoop-2.6.5/etc/hadoop/mapred-site.xml
+
+配置文件内容
+
+vim /opt/hadoop-2.6.5/etc/hadoop/mapred-site.xml
+
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+        &lt;property&gt;yarn&lt;/property&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>5) 配置yarn-site.xml</p>
+<pre><code>vim /opt/hadoop-2.6.5/etc/hadoop/yarn-site.xml
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+        &lt;value&gt;master:8032&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+        &lt;value&gt;master:8031&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+        &lt;value&gt;master:8030&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+        &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>6) 配置从节点</p>
+<pre><code>vim /opt/hadoop-2.6.5/etc/hadoop/slaves
+
+slave1
+slave2
+</code></pre>
+
+</li>
+<li>
+<p>将配置好的hadoop拷贝到从节点</p>
+<pre><code>scp -r /opt/hadoop-2.6.5 root@slave1:/opt
+scp -r /opt/hadoop-2.6.5 root@slave2:/opt
+</code></pre>
+
+</li>
+<li>
+<p>将环境变量拷贝到从节点</p>
+<pre><code>scp -r /etc/profile root@slave1:/etc/profile
+scp -r /etc/profile root@slave2:/etc/profile
+</code></pre>
+
+</li>
+<li>
+<p>格式化hdfs</p>
+<pre><code>hdfs namenode -format
+
+注：如果不是首次进行格式化，需要删除本地hadoop的tem目录下的所有内容，再进行格式化
+</code></pre>
+
+</li>
+<li>
+<p>启动hadoop</p>
+<pre><code>start-dfs.sh
+start-yarn.sh
+</code></pre>
+
+</li>
+<li>
+<p>查看hadoop运行情况</p>
+<ol>
+<li>每个主机使用jps命令查询</li>
+<li>浏览器访问 http://master:50070</li>
+</ol>
+</li>
+</ol>
+<h4>5. 测试Hadoop运行</h4>
+<ol>
+<li>
+<p>创建一个临时文件hello</p>
+<pre><code>vim hello
+
+hello world
+hello hadoop
+hadoop
+</code></pre>
+
+</li>
+<li>
+<p>将文件上传到hdfs上</p>
+<pre><code>hdfs dfs -put hello /
+</code></pre>
+
+</li>
+<li>
+<p>查看文件是否正确上传</p>
+<pre><code>hdfs dfs -ls /
+</code></pre>
+
+</li>
+<li>
+<p>对文件进行词频统计</p>
+<pre><code>hadoop jar /opt/hadoop-2.6.5/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.5.jar wordcount /hello /out
+</code></pre>
+
+<p>查看词频统计结果</p>
+<pre><code>hdfs dfs -cat /out/part-r-00000
+</code></pre>
+
+</li>
+<li>
+<p>删除本例用的hello文件和out文件夹</p>
+<pre><code>hdfs dfs -rm /hello
+hdfs dfs -rm -r /out
+</code></pre>
+
+</li>
+</ol>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
