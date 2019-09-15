@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>day02</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>实现纽约市地图服务功能</h2>
+<h3>1. 分析</h3>
+<p>当拿到一个复杂的需求时，应该按照“由易到难”的顺序将需求进行拆分。</p>
+<pre><code>1. 显示纽约市地图
+2. 在地图上显示一个指定的标注
+3. 在地图上显示纽约市的站点
+4. 使用不同的图标去显示站点
+5. 当缩放级别改变时，修改站点图片的样式
+6. 当点击一个站点时，弹出一个信息窗
+7. 当点击一个站点时，显示站点的实时信息
+</code></pre>
+
+<h3>2. 显示纽约市地图</h3>
+<p>在html上显示地图，一般使用第三方提供的地图服务，也称为地图插件。常用的地图服务有 <strong>百度地图</strong>， <strong>高德地图</strong>, <strong>腾讯地图</strong>，本次实训中使用<strong>百度地图</strong>。</p>
+<ul>
+<li>
+<p>开发者如何使用百度地图？
+百度官方提供了教程页面，在<code>http://lbsyun.baidu.com/index.php?title=jspopular3.0</code>可以学习</p>
+</li>
+<li>
+<p>申请称为百度地图开发者，创建应用，获取对应的密钥(AK)</p>
+<p>xyHbWbqlRvxIMj9jytG5HknuA3pwygA5</p>
+</li>
+</ul>
+<h4>2.1 开发第一个地图用例</h4>
+<p>在Eclipse中创建一个maven项目，打包方式选择<code>war</code>包，项目名为<code>nybike</code></p>
+<p>点击自动生成<code>WEB-INF/web.xml</code></p>
+<p>在<code>webapp</code>下创建<code>firstmap.html</code></p>
+<p>将官方的Hello World示例代码复制到<code>firstmap.html</code>中，替换所有内容，并添加自己的密钥</p>
+<p>将<code>firstmap.html</code>拖拽到浏览器页面上，查看能否正常显示地图</p>
+<h4>2.2 代码解释</h4>
+<p>想要在页面上显示一个地图，需要满足几个条件：</p>
+<ul>
+<li>
+<p>页面上引入了百度地图的js文件</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;http://api.map.baidu.com/api?v=3.0&amp;ak=xyHbWbqlRvxIMj9jytG5HknuA3pwygA5&quot;&gt;
+//v3.0版本的引用方式：src=&quot;http://api.map.baidu.com/api?v=3.0&amp;ak=您的密钥&quot;
+&lt;/script&gt;
+</code></pre>
+
+</li>
+<li>
+<p>在页面上声明一个地图的容器，一般是<code>&lt;div&gt;</code>，通过控制该容器在页面上的位置和样式，可以控制地图显示的位置和样式</p>
+<pre><code>&lt;div id=&quot;container&quot;&gt;&lt;/div&gt; 
+</code></pre>
+
+</li>
+<li>
+<p>通过js调用百度地图API，生成地图</p>
+<pre><code>// 创建地图实例，关联容器的id
+// BMap是百度地图API所有类的外部类，用于和其他API进行区分，例如高德地图API的所有类的外部类为AMap
+var map = new BMap.Map(&quot;container&quot;);
+
+// 创建点坐标，先经度，后纬度
+var point = new BMap.Point(116.404, 39.915);
+
+// 初始化地图，设置中心点坐标和地图级别  
+map.centerAndZoom(point, 15);
+</code></pre>
+
+</li>
+</ul>
+<h4>2.3 显示纽约市地图</h4>
+<p>需求：在<code>webapp</code>目录下创建<code>nymap1.html</code>，在页面上显示纽约市地图，以纽约市帝国大厦为中心点，缩放级别使用14</p>
+<p>代码实现：</p>
+<pre><code>// 创建地图实例  
+var map = new BMap.Map(&quot;container&quot;);
+
+// 创建点坐标，先经度，后纬度 40.7482100000,-73.9856350000
+var point = new BMap.Point(-73.985635,40.748210);
+
+// 初始化地图，设置中心点坐标和地图级别  
+map.centerAndZoom(point, 14);
+</code></pre>
+
+<h4>2.4 开启滚轮缩放并添加平移缩放控件</h4>
+<p>需求1：在<code>nymap1.html</code>上开启地图的“滚轮缩放”功能，并添加“平移缩放控件”</p>
+<p>需求2：将“平移缩放控件”在地图的右下角显示</p>
+<p>代码如下：</p>
+<pre><code>// 开启鼠标滚轮缩放
+map.enableScrollWheelZoom(true);
+
+// JSON opts =options
+var opts = {
+            offset: new BMap.Size(15, 30),
+            anchor: BMAP_ANCHOR_BOTTOM_RIGHT
+            }
+
+// 开启平移缩放控件
+map.addControl(new BMap.NavigationControl(opts));
+</code></pre>
+
+<h3>3. 在地图上显示一个指定的标注</h3>
+<h4>3.1 在地图上显示一个指定的标注</h4>
+<p>需求1：在帝国大厦位置添加一个默认标注(Marker)</p>
+<p>代码如下：</p>
+<pre><code>// 创建标注    
+var marker = new BMap.Marker(point); 
+// 将标注添加到地图中
+map.addOverlay(marker);
+
+var marker2=new BMap.Marker(new BMap.Point(-73.9870, 40.7479));
+map.addOverlay(marker2);
+</code></pre>
+
+<p>需求2：在显示marker时使用的是自定义的图片(<code>img/bi_0.png</code>)</p>
+<p>从 <strong>2前端组件及素材包</strong> 文件夹中拷贝 <strong>img</strong> 文件夹到项目的<code>webapp</code>目录下，<strong>img</strong> 文件夹中是本项目中可能用到的一些图片资源。</p>
+<p>代码如下：</p>
+<pre><code>function addMarker(point){  // 创建图标对象   
+    var imgUrl = &quot;img/bi_0.png&quot;; // 图片的url
+    var iconSize = new BMap.Size(41, 50); // Icon的大小
+    var opts={
+            anchor: new BMap.Size(20, 50), // Marker定位点相对于Icon左上角的偏移量
+            imageSize : iconSize // Icon内部图片的大小
+                };
+
+    var myIcon = new BMap.Icon(imgUrl,iconSize,opts);
+
+    // 创建标注对象并添加到地图   
+    var marker = new BMap.Marker(point, {icon: myIcon});    
+    map.addOverlay(marker);    
+} 
+
+addMarker(point);
+</code></pre>
+
+<h4>3.2 提高代码规范性</h4>
+<p>复制<code>nymap1.html</code>，生成<code>nymap2.html</code></p>
+<p>在<code>webapp</code>目录下创建<code>js/nymap.js</code>，在该文件中保存页面中用到的js方法</p>
+<p>从<code>nymap2.html</code>中剪切<code>addMarker()</code>方法的代码，粘贴到
+<code>js/nymap.js</code>中，然后对方法进行修改，将其中所有写死的变量以参数的形式传进来，代码如下：</p>
+<pre><code>// 在地图上添加一个marker的方法
+// point marker在地图上的位置
+// imgUrl Icon使用的图片的url
+// iconSize Icon的大小，即可视区域大小
+// anchorSize point相对于Icon左上角的偏移量
+function addMarker(point,imgUrl,iconSize,anchorSize){  // 创建图标对象   
+    var opts={
+            anchor: anchorSize,
+            imageSize : iconSize // Icon内部图片的大小
+                };
+    var myIcon = new BMap.Icon(imgUrl,iconSize,opts);
+    // 创建标注对象并添加到地图   
+    var marker = new BMap.Marker(point, {icon: myIcon});    
+    map.addOverlay(marker);    
+}
+</code></pre>
+
+<p>在<code>nymap2.html</code>中引用<code>js/nymap.js</code>文件</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;js/nymap.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>修改<code>nymap2.html</code>中的代码，调用信息的<code>addMarker()</code>方法</p>
+<pre><code>addMarker(point,&quot;img/bi_0.png&quot;,new BMap.Size(41,50),new BMap.Size(20,50));
+</code></pre>
+
+<h3>4 在地图上显示纽约市的站点</h3>
+<p>想要显示所有的纽约市站点，需要获取所有站点的经纬度信息，纽约市在网上公开了这部分信息，具体的网址是<code>https://www.citibikenyc.com/system-data</code>，数据说明介绍网站为<code>https://github.com/NABSA/gbfs/blob/master/gbfs.md#station_informationjson</code>，各类数据url列表为<code>http://gbfs.citibikenyc.com/gbfs/gbfs.json</code></p>
+<p>已经知道目标数据的url，希望在页面上动态请求数据，并且在获取到数据后，可以基于js动态改变html页面的样式，传统的请求方式无法满足这一需求，通用的解决方案是 <strong>AJAX</strong></p>
+<h4>AJAX</h4>
+<p>AJAX是异步的JS和XML，用于在浏览器上发送异步请求，并在获取到结果之后实现页面的布局刷新。</p>
+<p>AJAX并不是一项新的技术或者独立的语言，是引用已有技术实现的解决方案。</p>
+<ul>
+<li>
+<p>异步请求</p>
+</li>
+<li>
+<p>布局刷新</p>
+</li>
+</ul>
+<h4>JSON</h4>
+<p>JSON是现在非常流行的一种数据格式，用于保存具有结构性的数据，也用于在JS中作为对象存在</p>
+<h3>作业</h3>
+<p>需求：选择一个你旅行去过的地点，在地图上显示，并且在该地点显示你自己的照片</p>
+<h4>-------------------------------------</h4>
+<h4>maven</h4>
+<ul>
+<li>
+<p>解压缩</p>
+</li>
+<li>
+<p>配置</p>
+<ol>
+<li>本地库的路径</li>
+<li>镜像：达内内网镜像+阿里云镜像</li>
+</ol>
+</li>
+</ul>
+<h4>ftp</h4>
+<p>用于下载每天的笔记和其他内容的地方
+操作方法：
+- windows文件夹地址栏中输入：ftp://10.6.6.2/</p>
+<ul>
+<li>
+<p>文件夹空白处右键-&gt; 登录 -&gt; 输入用户名和密码
+老师和学生通用：
+账号：admin
+密码：tedu.cn</p>
+</li>
+<li>
+<p>本次实训所有资料在<code>1洛阳理工</code>文件夹下
+每天的笔记、图片、代码会以<code>dayXX</code>压缩文件存放，如<code>day01.zip</code></p>
+</li>
+</ul>
+<p>注：因公用一个账号，都有修改和删除权限，请同学们仅下载资料，不要修改或删除任何ftp上的文件</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>day04</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h3>7. 当点击一个站点时，弹出一个信息窗</h3>
+<p>为实现该功能，应该为每个<code>marker</code>添加一个点击事件，在点击事件中弹出信息窗。</p>
+<p>根据百度地图API，在<code>marker</code>上显示信息窗一共分3步：</p>
+<ul>
+<li>
+<p>以字符串的形式声明信息窗内部的样式，该字符串中可以包含html的标签，这些标签在显示时会以html的形式来显示。同时，也可以通过css为这些html标签指定样式</p>
+<pre><code>var sContent=&quot;&lt;h4&gt;这是自定义信息窗&lt;/h4&gt;&quot;;
+</code></pre>
+
+</li>
+<li>
+<p>创建一个信息窗对象，绑定第一步声明的信息窗样式</p>
+<pre><code>var infoWindow=new BMap.InfoWindow(sContent);
+</code></pre>
+
+</li>
+<li>
+<p>为<code>marker</code>添加一个点击事件，在被单击之后，弹出信息窗</p>
+<pre><code>marker.addEventListener(&quot;click&quot;, function(){          
+    this.openInfoWindow(infoWindow);
+});
+</code></pre>
+
+</li>
+</ul>
+<p>需求：为地图上所有的站点<code>marker</code>添加点击事件，被单击时弹出一个信息窗，内容是：XXX的信息窗</p>
+<p>注：<code>marker.addEventListener()</code>代码必须在<code>map.addOverlay(marker)</code>之前调用，不然会有BUG（所有的<code>marker</code>会绑定完全一致的信息窗）</p>
+<p>为了提高代码的可维护性，将为<code>marker</code>添加点击事件的逻辑封装到一个单独的方法中<code>addMarkerInfoWindow()</code>，然后在<code>addMarker()</code>中调用该方法。</p>
+<p>为简化学习流程，我们提供了一个<code>mapbox.html</code>，其中是仿照官方的信息窗写的简化版的信息窗，同时提供了配套的<code>page.css</code>文件。可以将这2个文件拷贝到项目中。</p>
+<p>需求：点击信息窗时，弹出类似官方的信息窗，其中的数据目前可以是写死的</p>
+<p>具体操作：</p>
+<ul>
+<li>
+<p>在<code>nymap2.html</code>中引入page.css文件</p>
+<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;css/page.css&quot;&gt;
+</code></pre>
+
+</li>
+<li>
+<p>将<code>mapbox.html</code>中和信息窗相关的<code>div</code>复制到<code>nymap.js</code>的<code>addMarkerInfoWindow(marker)</code>方法中，作为<code>sContent</code>变量的值，这里注意添加必要的<code>&quot;</code>和<code>&quot;+</code>，将所有标签拼接成一个字符串:</p>
+<pre><code>var sContent=&quot;&lt;div class='mapbox-content'&gt;&quot;+
+    &quot;&lt;div class='mapbox-content-top'&gt;&quot;+
+        &quot;&lt;span class='window_lastUpdate'&gt; 0 ms ago &lt;/span&gt; &quot; +
+        &quot;&lt;span class='window_info_button'&gt;&lt;/span&gt;&quot;+
+    &quot;&lt;/div&gt;&quot;+
+    &quot;&lt;div class='mapbox-content-header'&gt;&quot;+
+        &quot;&lt;h1 class='mapbox-content-header-stationName'&gt;info_stationName&lt;/h1&gt;&quot;+
+    &quot;&lt;/div&gt;&quot;+
+    &quot;&lt;div class='mapbox-content-detail'&gt;&quot;+
+        &quot;&lt;div class='mapbox-content-detail-bikes-available'&gt;&quot;+
+            &quot;&lt;span class='mapbox-content-detail-bikes-available-val'&gt; 20 &lt;/span&gt;&quot;+
+            &quot;&lt;span class='mapbox-content-detail-bikes-available-lbl'&gt;Bikes&lt;/span&gt;&quot;+
+        &quot;&lt;/div&gt;&quot;+
+        &quot;&lt;div class='mapbox-content-detail-docks-available'&gt;&quot;+
+            &quot;&lt;span class='mapbox-content-detail-docks-available-val'&gt; 6 &lt;/span&gt; &quot; +
+            &quot;&lt;span class='mapbox-content-detail-docks-available-lbl'&gt;Docks&lt;/span&gt;&quot; +
+        &quot;&lt;/div&gt;&quot;+
+    &quot;&lt;/div&gt;&quot;+
+    &quot;&lt;div class='mapbox-content-footer'&gt;&quot;+
+        &quot;&lt;span class='mapbox-content-footer-shortName'&gt; Bike station:&quot;+
+            &quot;info_shortName &lt;/span&gt;&quot;+
+    &quot;&lt;/div&gt;&quot;+
+&quot;&lt;/div&gt;&quot;;
+</code></pre>
+
+</li>
+</ul>
+<h3>8. 当点击一个站点时，显示站点的实时信息</h3>
+<p>首先，需要在<code>nymap.js</code>中声明一个函数<code>StationDetail</code>，用来模拟封装站点详情的类。</p>
+<pre><code>function StationDetail(){}
+</code></pre>
+
+<p>在<code>nymap2.html</code>中声明一个全部变量<code>detailMap</code>，是<code>Map</code>类型的，用于保存站点的<code>id</code>和<code>StationDetail</code>对象的对应关系。</p>
+<p>在获取到站点状态数据的函数中，遍历站点状态数据，创建<code>StationDetail</code>的对象，封装该站点的<code>nba</code>和<code>nda</code>，并将<code>StationDetail</code>的对象保存到<code>detailMap</code>中。</p>
+<pre><code>var sDetail=new StationDetail();
+sDetial.nba=nda;
+</code></pre>
+
+<p>在获取到站点信息数据的函数中，遍历站点信息数据，使用站点<code>id</code>从<code>detailMap</code>中获取对应的<code>StationDetail</code>对象，向其中添加站点的<code>name</code>和<code>short_name</code>属性的值。</p>
+<p>修改<code>addMarker()</code>和<code>addMarkerInfoWindow()</code>2个方法的参数列表，新添加一个id参数。</p>
+<p>在<code>addMarkerInfoWindow()</code>方法中，使用参数<code>id</code>从<code>detailMap</code>中查询对应的<code>StationDetail</code>对象，将获取到的数据拼接生成<code>infoWindow</code>的内容。</p>
+<h3>小总结</h3>
+<p>目前基于百度地图实现了纽约市官方的共享单车地图服务。</p>
+<ul>
+<li>
+<p>将复杂的问题拆分成可实现的步骤</p>
+</li>
+<li>
+<p>学习第三方插件及API的能力</p>
+</li>
+<li>
+<p>百度地图API
+给自己命题可以掌握的更好</p>
+</li>
+<li>
+<p>对纽约市提供的站点信息数据和站点状态数据有了解</p>
+</li>
+</ul>
+<h3>9. 基于JavaEE，对请求第三方数据的过程进行优化，提高地图响应速度</h3>
+<p>分析：可以在web应用中添加功能，当服务器启动后，自动请求第三方的数据接口，获取站点信息数据和站点状态数据，并缓存在内存中。用户在页面上发送AJAX访问数据时，不再请求官方数据接口，而是请求web应用提供的数据接口，从缓存数据中读取数据，可以将约1000ms的耗时缩短为约20ms。</p>
+<p>具体实现：</p>
+<ul>
+<li>
+<p>当前Web应用被加载后，自动周期性的发送http请求，获取站点信息数据和站点状态数据</p>
+<pre><code>ServletContextListener
+</code></pre>
+
+</li>
+<li>
+<p>将获取到的数据使用JavaEE提供的标准组件缓存起来</p>
+<pre><code>page/request/session/application
+</code></pre>
+
+</li>
+<li>
+<p>Web应用需要对外提供一个url，供页面请求站点信息和站点状态数据</p>
+<pre><code>Servlet
+</code></pre>
+
+</li>
+<li>
+<p>考虑并发读写缓存的线程安全问题</p>
+<pre><code>同步代码库
+</code></pre>
+
+</li>
+</ul>
+<h3>答辩必选的功能1</h3>
+<p>在地图上实现可用桩的信息提示。</p>
+<h3>-----------------------------</h3>
+<h3>URL</h3>
+<p>统一资源定位符，用于定位互联网上的一个资源</p>
+<p>URL的语法：</p>
+<pre><code>协议://域名(ip)：端口号/项目路径/资源路径
+
+http://localhost:8080/nybike/nymap2.html
+
+jdbc:mysql://localhost:3306/mydb1
+
+ftp://10.6.6.2
+
+https://
+
+file://
+</code></pre>
+
+<p>id和域名的关系：
+浏览器在访问一个互联网上的主机时，使用的是对方的ip地址，但是ip地址对人类来说非常难记，因此人们发明了域名。一个域名对应1到多个ip地址。</p>
+<p>常用的域名和ip:</p>
+<pre><code>127.0.0.1   localhost   本机
+0.0.0.0                 本机
+</code></pre>
+
+<p>人类在记网站时，记住域名就可以<code>www.baidu.com</code>，浏览器会使用 <strong>DNS解析</strong> 服务，将域名转换成对应的ip地址，再访问网络</p>
+<p><strong>DNS解析</strong>就是将域名转变成对应的ip地址的服务</p>
+<p><strong>DNS解析</strong>首先提供服务的是本机的缓存和<code>hosts</code>文件</p>
+<p>端口号：</p>
+<p>用于区别一台主机对外提供服务的不同的程序。</p>
+<p>常见的端口号：</p>
+<pre><code>8080:Tomcat
+
+3306:Mysql
+
+80：当前主机的默认端口，当Url中不包含端口号时，默认访问的就是80端口
+</code></pre>
+
+<h3>项目的搜索/查询速度如何优化？</h3>
+<p>从2000条数据中快速查询某条数据</p>
+<pre><code>List&lt;Student&gt; list=new ArrayList();
+//...
+
+for(Student st:list){
+    if(st.getName().equals(&quot;张三&quot;)){
+        ...
+    }
+}
+
+优化：创建一个Map集合&lt;String name, Student st&gt;
+一次遍历，将name和Student存入map集合
+后续多次查询，直接从map中获取
+
+Map map=new HashMap();
+</code></pre>
+
+<h3>缓存</h3>
+<p>将需要频繁使用的数据保存在内存中</p>
+<h3>JavaEE提供的监听器</h3>
+<p>监听者模式</p>
+<p>23种软件设计模式之一，可以实现事件监听与事件处理逻辑的分离。事件的监听往往需要底层组件的支持，开发难度较大。因此通过运用监听者模式，对于事件的监听一般由平台或者组件来实现(大神帮你写完了)，开发者仅需要提供具体事件的处理逻辑就行了。</p>
+<pre><code>&lt;button id=&quot;bt1&quot; value=&quot;点我！&quot;&gt;
+
+&lt;script&gt;
+    $(&quot;#bt1&quot;).click(function(){
+        alert(666);
+    });
+&lt;/script&gt;
+</code></pre>
+
+<p>JavaEE提供了多种监听器(Listener)，号称是JavaEE的三大组件之一。这些监听器可以监听一个Web应用在运行过程中的各类事件，例如：</p>
+<ul>
+<li>
+<p>特殊对象的创建和销毁：</p>
+<pre><code>ServletRequestListener：监听Request对象被创建和销毁
+
+HttpSessionListener：监听session对象被创建和销毁
+
+ServletContextListener：监听ServletContext对象被创建和销毁
+</code></pre>
+
+</li>
+<li>
+<p>特殊对象中添加了值、更新了值和删除了值：</p>
+<pre><code>ServletRequestAttributeListener
+
+HttpSessionAttributeListener
+
+ServletContextAttributeListener
+</code></pre>
+
+</li>
+</ul>
+<p>JavaEE监听器的开发步骤：</p>
+<ul>
+<li>
+<p>自定义一个类，并实现对应的监听器接口</p>
+</li>
+<li>
+<p>实现接口中定义的所有抽象方法，在对应的方法中添加事件发生之后的处理逻辑</p>
+</li>
+<li>
+<p>在web.xml中配置该监听器</p>
+<pre><code>&lt;!-- 配置监听器 --&gt;
+  &lt;listener&gt;
+    &lt;listener-class&gt;cn.tedu.nybike.listener.SCListener&lt;/listener-class&gt;
+  &lt;/listener&gt;
+</code></pre>
+
+</li>
+</ul>
+<p>面试题：简述ServletContext的生命周期(创建，活多久，销毁)</p>
+<p>ServletContext代表的是一个Web应用，当Tomcat启动后，每加载完成一个Web应用，就会创建一个ServletContext对象，唯一代表该Web应用。ServletContext对象被创建后，会一直驻留在内存中，直到当前服务器关闭或者当前Web应用被移出容器时。</p>
+<ul>
+<li>简述线程的生命周期</li>
+<li>简述Servlet的生命周期</li>
+<li>简述Request的生命周期</li>
+<li>简述Session的生命周期</li>
+</ul>
+<p>Java提供了3个版本，JavaSE(桌面应用程序,java..)，JavaEE(Web应用程序,javax..)，JavaME(很少用)</p>
+<h3>复习</h3>
+<p>实现纽约市地图的服务功能</p>
+<ul>
+<li>
+<p>显示纽约市地图</p>
+<ol>
+<li>引入百度地图的js文件，使用密钥</li>
+<li>页面上提供一个地图的容器<code>&lt;div&gt;</code></li>
+<li>
+<p>百度地图API</p>
+<p>var map=new BMap.Map(&quot;container&quot;);</p>
+<p>var point=new BMap.Point(经度，纬度);</p>
+<p>map.centerAndZoom(point,15);</p>
+</li>
+</ol>
+</li>
+<li>
+<p>在地图上显示所有的纽约市站点</p>
+<ol>
+<li>通过AJAX请求站点信息<code>station_infomation.json</code>数据</li>
+<li>通过js获取json中的<code>stations</code>数组，遍历该数据，获取每个站点的经纬度</li>
+<li>调用百度地图API，创建Marker,并且将marker显示在地图上</li>
+</ol>
+<p>var marker=new BMap.Marker(point,...);</p>
+</li>
+<li>
+<p>使用不同图标显示纽约市站点</p>
+<ol>
+<li>通过AJAX请求站点状态数据<code>station_status.json</code></li>
+<li>通过js获取<code>stations</code>数组</li>
+<li>遍历该数组，获取每个站点的<code>nba</code>和<code>nda</code>，然后计算该站点的<code>bikeLevel</code></li>
+<li>将站点的id和<code>bikeLevel</code>保存到一个Map集合中</li>
+<li>在生成站点标注时，根据id获取<code>bikeLevel</code>，动态拼接成imgUrl</li>
+</ol>
+</li>
+<li>
+<p>在地图缩放时，修改站点的图标</p>
+<ol>
+<li>当地图缩放级别大于14且正在使用小图标时，将图标换为大图标<code>img/bi_N.png</code></li>
+<li>当地图缩放级别小于15且正在使用大图标时，将图标换为小图标<code>img/si_N.png</code></li>
+<li>
+<p>在页面上添加一个缩放级别改变的监听,在监听器中获取当前页面缩放级别，判断是否需要改变图标，如果需要，调用<code>switchIcon()</code>方法修改图标</p>
+<p>map.addEventListener(&quot;zoomend&quot;,function(){</p>
+<p>})</p>
+</li>
+<li><code>switchIcon()</code>中需要先判断是将大图标改成小图标，还是相反</li>
+</ol>
+<p>遍历所有的marker,获取它的Icon的imageUrl，替换成对应的图标的imageUrl，生成新的Icon，并调用marker的setIcon()方法，设置新Icon</p>
+</li>
+</ul>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
