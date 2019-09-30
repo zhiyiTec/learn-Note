@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>day08</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h3>12 走进大数据</h3>
+<h4>12.1 数据</h4>
+<p>数据(data)是事实或观察的结果，是对客观事物的逻辑归纳，是用于表示客观事物的未经加工的的原始素材。</p>
+<p>数据是进行决策的重要依据。</p>
+<p>信息技术和各类终端的普及。</p>
+<h4>12.2 大数据</h4>
+<p>大数据的本质也是数据。</p>
+<p><strong>大数据指的是数据量规模大到使用常规的工具，无法在合理的时间内，实现数据的抓取，存储，分析和管理的数据量</strong>。</p>
+<p>常规的工具：mysql，Excel，普通的服务器和程序...</p>
+<p>合理的时间内：因具体场景而不同</p>
+<h4>12.3 大数据3V</h4>
+<p>大数据相对于数据的3个核心特点：</p>
+<p>volumes(大量)：大数据的数据量非常大，一般从TB级到PB不等，当前一些企业对大数据的数据量的起点约定是100TB</p>
+<p>velocity(高速)：数据量的增长会带来处理时间上的消耗，对大数据的处理时间是有要求的，需要大大快于传统数据</p>
+<p>variety(多样)：</p>
+<ul>
+<li>结构化数据：像excel表一样的数据</li>
+<li>半结构化数据：像json一样的数据</li>
+<li><strong>非结构化数据</strong>：视频、音频、图像等等</li>
+</ul>
+<p>IBM又提出一个V(真实、有效)</p>
+<h4>12.4 大数据带来的挑战</h4>
+<p>主要的挑战来自于硬件，硬盘的读取速度没有随着数据量同比增长。</p>
+<p>解决大数据挑战的核心思想是<strong>分布式</strong>。</p>
+<p>真正使用分布式来解决问题时，会需要很多具体的挑战，例如数据的合理拆分、数据的备份、任务的并发执行、数据一致性的问题。</p>
+<p>在当前的行业中，存在非常成熟的分布式解决方案，可以帮助使用者实现数据的分布式存储和数据的分布式计算。</p>
+<p>这个解决方案就是以<strong>hadoop</strong>为核心的大数据平台。</p>
+<p>开发者学习的是如何搭建和使用<strong>hadoop</strong>平台，来解决具体的大数据方法的挑战。</p>
+<h3>13 Hadoop</h3>
+<h4>13.1 基本概念</h4>
+<p>当前最流行的开源大数据处理平台，由Apache基金会维护。</p>
+<p>hadoop2.x版本由3个核心组件构成：HDFS，MapReduce，YARN</p>
+<ul>
+<li>
+<p>HDFS：Hadoop的分布式文件系统，实现大数据的分布式存储，思想来自于google的GFS，相当于GFS的Java开源实现版本</p>
+</li>
+<li>
+<p>MapReduce：一个分布式计算引擎，由计算模型和计算库构成，可以实现海量数据的分布式计算(离线)，思想同样来自于google。</p>
+</li>
+<li>
+<p>YARN：Hadoop集群的资源调度平台，负责对集群的计算资源(cup和内存)进行管理，并对分布式计算任务进行管理。YARN大大提高了Hadoop的可扩展性，使得HDFS可以和各类的计算引擎(Tez, Spark)来配合。Hadoop2.x版本才有的</p>
+</li>
+</ul>
+<p>hadoop擅长做数据的离线分析</p>
+<p>例如：猫眼票房，每天早上9点30分，公布截止到该时间的所有票房情况，今天后续的数据，不会自动添加到这个票房情况中</p>
+<h4>13.2 基本概念</h4>
+<p>搭建hadoop平台的前提是安装Linux虚拟机。</p>
+<p>学习中使用的是<code>centos7</code>版本，虚拟机软件使用<code>Virtual Box</code></p>
+<p>为节省时间，教学提供了一个.vdi文件，是已经最小化安装的<code>centos7</code>的硬盘文件，其中安装了<code>jdk1.8</code>和<code>mariadb5.5</code>，没有可视化界面，主机名为<code>master</code>，主机ip为<code>192.168.56.101</code>。学习中可以直接使用该.vid文件恢复一台虚拟机。</p>
+<p>步骤：</p>
+<ul>
+<li>
+<p>安装VirtualBox</p>
+<p>将VirtualBox使用默认配置安装到本地电脑</p>
+</li>
+<li>
+<p>创建一台虚拟机</p>
+<p>在d盘或e盘根目录下创建vfile文件夹，将smaster.vdi文件拷贝进去
+在VirtualBox中选择新建创建虚拟机，名字为master,位置选择d:/vfile或e:/vfile，类型是linux，版本是redhat(64)，内存设置2048MB，硬盘选择一个已有盘片，在右侧文件夹选项中选择注册vfile文件夹下的smaster.vdi</p>
+<p>启动该虚拟机，并登录用户，用户名和密码都是root</p>
+</li>
+<li>
+<p>配置虚拟机网络</p>
+<p>将虚拟机网络类型使用 host-only</p>
+<p>将主机的网络共享给主机上的virtualBox网卡</p>
+<p>将virtualBox网卡的ip地址调整正确：从192.168.137.1改为192.168.56.1</p>
+</li>
+<li>
+<p>安装shell工具，通过shell工具远程访问虚拟机</p>
+<p>安装xshell</p>
+<p>在xshell中新建连接，通过ssh协议远程访问虚拟机</p>
+</li>
+<li>
+<p>安装hadoop</p>
+<p>hadoop有3种部署方式：</p>
+<pre><code>1. 单机模式：使用一个进程模拟所有进程，一般不用
+2. 伪分布：使用一台主机，同时充当主节点和从节点
+3. 完全分布：使用多台主机，分别充当主节点和从节点(商业应用)
+</code></pre>
+
+<p>hadoop安装步骤：</p>
+<pre><code>1. 获取安装文件
+2. 解压缩
+3. 配置环境变量
+4. 配置hadoop的配置文件
+5. 格式化(只做一次)
+6. 启动hadoop
+</code></pre>
+
+</li>
+</ul>
+<p>启动hdfs之后，可以使用<code>jps</code>命令查看当前主机运行的所有<code>java进程</code>，其中主节点应该运行<code>namenode</code>进程和<code>SecondaryNameNode</code>进程，从节点应该运行<code>datanode</code>进程。如果是伪分布模式，则当前主机应该同时包含以上3个进程。</p>
+<p>启动yarn之后，使用<code>jps</code>查看，主节点应该运行<code>ResourceManager</code>，从节点应该运行<code>NodeManager</code>，如果是伪分布模式，则当前主机应该同时包含以上2个进程。</p>
+<h3>14 HDFS</h3>
+<p>HDFS(Hadoop Distributed File System)，是Hadoop的分布式文件系统，可以实现海量数据的分布式存储</p>
+<h4>14.1 Block的概念</h4>
+<p>HDFS对于上传的数据，默认按照128MB(2.x版本)的大小切分成多个Block，这些Block会被保存在集群不同的节点上。</p>
+<p>BLock的大小可以根据具体业务的需求进行调整。Block越大，硬盘的寻址开销越小，但是可能造成的存储空间的浪费越多，因为一个Block中即使仅包含1MB的内容，占用的硬盘空间也是128MB。</p>
+<p>因此，HDFS是面向大文件的，小文件使用HDFS存储效率较低。如果一定要保存小文件，可以先将多个小文件的内容汇总生成一个大文件，再上传HDFS。</p>
+<h4>14.2 核心进程的作用</h4>
+<ul>
+<li>
+<p>NameNode
+是HDFS的核心管理进程</p>
+<ol>
+<li>运行在Master(主节点)上</li>
+<li>负责接受用户对上传文件和下载文件的请求</li>
+<li>负责计算上传文件的切分策略和存储策略</li>
+<li>负责保存一个文件和切分的所有Block的对应关系</li>
+<li>负责保存Block和Slave(从节点)的对应关系</li>
+<li>负责监控整个集群所有Slave的硬盘资源情况和运行情况</li>
+</ol>
+</li>
+</ul>
+<p>NameNode所在的master如果宕机，Hadoop集群存在单点故障的风险。Hadoop1.x版本就存在这个问题。Hadoop2.x修复了这个问题，可以为NameNode设置一个热备。</p>
+<p>Master因为运行NameNode，对内存的需求非常大，对硬盘的需求相对小。</p>
+<ul>
+<li>
+<p>DataNode</p>
+<ol>
+<li>运行在一个Slave的进程</li>
+<li>负责接收用户对Block的上传和下载请求</li>
+<li>对当前Slave的硬盘空间和Block存储情况进行管理</li>
+<li>定时向NameNode汇报自己的情况</li>
+</ol>
+</li>
+<li>
+<p>SecondaryNameNode</p>
+<ol>
+<li>负责定时对NameNode上保存的数据(文件与Block的对应关系及Block和节点的对应关系)进行备份(CheckPoint机制)</li>
+<li>也可以作为NameNode的热备</li>
+</ol>
+</li>
+</ul>
+<p>HDFS在设计上充分考虑了整个提供的稳定性和问题的自我修复能力，对于HDFS来说，某一个节点宕机是常态而非意态。</p>
+<h4>14.3 文件上传和文件下载的执行流程</h4>
+<h4>14.4 HDFS的基本命令</h4>
+<p>通用的语法是: hdfs dfs -命令 参数</p>
+<p>具体命令和linux的命令非常相似</p>
+<p>常用命令：</p>
+<pre><code>-put    文件上传
+-ls     文件/文件夹查看
+-cat    文件内容查看
+-get    文件下载
+-mkdir  创建文件夹
+-rm     删除
+-cp     拷贝
+</code></pre>
+
+<p><strong>上传到HDFS的数据是不支持对文件的内容进行修改的，原因是在设计时牺牲了这部分功能，来保证海量数据的吞吐量</strong></p>
+<h4>14.5 HDFS的JavaAPI(略)</h4>
+<h4>14.6 HDFS的配置和调优(略)</h4>
+<h3>15 分布式计算</h3>
+<p>核心思想：移动算法比移动数据更高效</p>
+<p>将需要执行的计算逻辑，通过网络发送到保存了被计算数据的节点上，在该节点上对这部分数据进行计算，之后再将所有节点的计算结果进行汇总，以得到最终的结果。</p>
+<p>优势：
+1. 不需要通过网络传输大量的原始数据，而是将算法通过网络发送到有数据的节点，在该节点上直接运算
+2. 所有节点的运算是并行执行的
+3. 不存在一个节点无法保存所有汇总数据的问题</p>
+<p>挑战：
+1. 分布式计算的核心计算逻辑较为简单，但是将这些计算逻辑准确发送到有数据的节点上执行计算，并对结果进行汇总的逻辑比较难
+2. 如果某一个节点上的计算任务失败，该如何重启该任务也是需要考虑的
+3. 每个节点上的临时计算结果如何保存，最终的数据如何高效汇总的逻辑也比较难</p>
+<p>因此，需要使用成熟的分布式计算引擎来实现。</p>
+<h4>15.1 MapReduce</h4>
+<p>Hadoop内置的分布式计算引擎，用于对海量数据执行分布式计算(离线)</p>
+<p>MapReduce由<strong>计算模型</strong>和<strong>计算库<strong>构成，开发者需要使用计算模型来向MapReduce平台提供要执行的分布式计算的</strong>具体逻辑</strong>，MapReduce平台会使用<strong>计算库</strong>来解决分布式计算的复杂性问题。</p>
+<p>MapReduce的<strong>计算模型</strong>非常简单，有2个核心方法构成，一个是<code>map()</code>方法，另一个是<code>reduce()</code>。</p>
+<p><code>map()</code>方法用于封装在所有有数据的节点上执行的并行计算的逻辑。</p>
+<p><code>reduce()</code>方法用于封装对分布式计算结果进行汇总的逻辑。</p>
+<h3>16 Hive</h3>
+<p>Hadoop生态系统中的数据仓库工具，允许用户使用SQL对HDFS上的数据进行操作，常见的操作如查询和分析。</p>
+<p>原生的Hive是将用户的SQL语句翻译成MapReduce任务，在集群上执行。</p>
+<p>Hive使用Facebook开发之后，共享给Apache，主要是让不懂Java编程的使用者可以基于SQL进行大数据分析。</p>
+<p>Hive提供了一种类SQL的操作语言HiveQL</p>
+<h3>16.1 安装Hive</h3>
+<ul>
+<li>获取安装文件</li>
+<li>解压缩</li>
+<li>配置环境变量</li>
+<li>配置Hive的配置文件</li>
+<li>启动Hive
+启动Hive的前提是已经启动了Hadoop</li>
+</ul>
+<h3>16.2 使用Hive</h3>
+<p>用户基于HiveQL对Hive进行操作，进而操作HDFS上的数据，HiveQL与SQL非常类似，因此操作Hive就像在操作关系型数据库。</p>
+<ul>
+<li>建库</li>
+</ul>
+<p>在hive中如果没有使用<code>use</code>命令选择库，所有的操作是默认基于<code>default</code>库的</p>
+<ul>
+<li>
+<p>建表</p>
+</li>
+<li>
+<p>使用HiveQL操作表</p>
+</li>
+</ul>
+<p>从ftp上的车次数据文件夹下载20190601.zip文件并解压缩，可以得到一个<code>20190601.csv</code>文件</p>
+<p>.csv格式的数据是标准的结构化数据，每行文本是一条数据，一条数据的多个字段使用逗号进行分割。文件的最上方一行一般是表头。</p>
+<p>该文件最好不要使用excel等工具进行打开，因为这些软件会自动修改文件的内容以适合操作。</p>
+<p>需求：将20190601.csv的数据导入到hive中，基于hiveQL进行分析</p>
+<p>将文件从windows上传linux </p>
+<pre><code>cd /opt
+rz -y
+对话框中选中20190601.csv，选择上传
+</code></pre>
+
+<p>将文件从Linux上传hdfs</p>
+<pre><code>hdfs dfs -put /opt/20190601.csv /
+查询
+hdfs dfs -ls /
+</code></pre>
+
+<p>在Hive中建库和建表</p>
+<pre><code>-- 创建库
+create database nybikedb;
+
+-- 使用库
+use nybikedb;
+
+-- 创建表
+create table tb_trip_1(
+tripduration int,
+starttime string,
+stoptime string,
+start_station_id int,
+start_station_name string,
+start_station_latitude double,
+start_station_longitude double,
+end_station_id int,
+end_station_name string,
+end_station_latitude double,
+end_station_longitude double,
+bikeid int,
+usertype string,
+birth_year int,
+gender int
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+-- hive关联的原始数据字段的分隔符使用逗号 
+
+-- 导入hdfs上的数据
+load data inpath 'hdfs://master:8020/20190601-3.csv' 
+overwrite into table tb_trip_1;
+
+-- 检查导入的数据条数 (76419)
+select count(*) from tb_trip_1;
+
+-- 检查一条数据的字段是否正确 
+select * from tb_trip_1 limit 1;
+
+-- 统计数据中所有男性骑行者的数量 (45072)
+select count(*) from tb_trip_1 where gender=1;
+</code></pre>
+
+<p>当我们将文件数据导入到Hive中后，原来在hdfs本目录下的<code>20190601-3.csv</code>会被自动放入以下路径<code>/hive/warehouse/nybikedb.db/tb_trip_1/</code>，相当于该文件交给hive来管理</p>
+<h4>hadoop启动遇到问题----------------------------</h4>
+<p>启动hadoop的命令
+start-dfs.sh
+start-yarn.sh</p>
+<p>如果<code>jps</code>命令后发现少进程，应该到hadoop的logs目录下，查找对应的日志文件，阅读日志文件中的异常信息，来锁定问题的原因。</p>
+<p>关闭hadoop的命令
+stop-dfs.sh
+stop-yarn.sh</p>
+<h4>----------------------------</h4>
+<p>作业提交格式：</p>
+<p>压缩文件，文件名是自己的姓名，里面是作业要求的内容</p>
+<p>注意不要拿别人的内容来提交</p>
+<p>目录：ftp上的作业提交文件夹</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
