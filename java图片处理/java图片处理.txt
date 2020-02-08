@@ -1,0 +1,40 @@
+import java.io.*;
+ 2 import java.sql.*;
+ 3 public class LoadStoreBLOB {
+ 4     public static void main(String[] args) {
+ 5         DBConnection     DB = new DBConnection();    //负责连接MySQl数据库的类
+ 6         Connection         con = null;
+ 7         PreparedStatement     ps = null;
+ 8         ResultSet      rs = null;
+ 9         InputStream    in = null; 
+10         try {
+11             //从本地硬盘硬盘读取一张图片保存到数据库
+12             con=DB.getConn();
+13             in=new FileInputStream("sdf.png");
+14             ps=con.prepareStatement("insert into test.phototest values(?,?)");
+15             ps.setInt(1,2);
+16             ps.setBinaryStream(2, in, in.available());
+17             ps.executeUpdate();
+18             in.close();
+19             DB.closeConn(con);
+20             
+21             //从数据库读取图片保存到本地硬盘
+22             con=DB.getConn();
+23             ps=con.prepareStatement("select * from test.phototest where id=?");
+24             ps.setInt(1,2);
+25             rs=ps.executeQuery();
+26             rs.next();    //将光标指向第一行
+27             in=rs.getBinaryStream("photo");
+28             byte[] b=new byte[in.available()];    //新建保存图片数据的byte数组
+29             in.read(b);
+30             OutputStream out=new FileOutputStream("222.jpg");
+31             out.write(b);
+32             out.flush();
+33             out.close();
+34             DB.closeConn(con);
+35         } 
+36         catch (Exception e) {
+37             System.out.println("Error::"+e);
+38         }
+39     }
+40 }
