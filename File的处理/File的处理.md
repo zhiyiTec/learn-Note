@@ -6,6 +6,10 @@
 - [4. File转 MultipartFile](#4-file转-multipartfile)
 - [5.获取MultipartFile文件类型的大小](#5获取multipartfile文件类型的大小)
 - [6.压缩图片](#6压缩图片)
+- [7.前后端文件的交互](#7前后端文件的交互)
+  - [7.1 单文件的交互](#71-单文件的交互)
+  - [7.2 多文件的交互](#72-多文件的交互)
+  - [7.3 ajax交互](#73-ajax交互)
 
 <!-- /TOC -->
 # 1.创建目录
@@ -156,4 +160,135 @@
 
         return re;
     }
+```
+# 7.前后端文件的交互
+## 7.1 单文件的交互
+我们前端使用ajax进行表单提交   
+前端：
+* 1.h5的用法   
+
+``` js
+ var file = document.getElementById('exampleInputFile');
+ var temp = file.files[0];
+ var formData = new FormData();
+ formData.append('file', temp)
+```
+* 2. vue-elementUi的用法
+``` js
+ const formData = new FormData();
+ formData.append("file", this.fileList[0].raw);
+```
+ajax 发送请求：
+``` js
+   $.ajax({
+          url: "http://localhost:2000/vue/upload",
+          data: formData,
+          dataType: "json",
+          type: "post",
+          processData: false, // 告诉jQuery不要去处理发送的数据
+          contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+          //加上这句话,允许浏览器向服务器跨域请求时携带cookie
+          xhrFields: {
+            withCredentials: true
+          },
+          crossDomain: true,
+          success: function(data) {
+            console.log(data);
+          },
+          error: function(data) {
+            console.log(data);
+          }
+        });
+```
+后端：
+``` java
+@ResponseBody
+	@RequestMapping(value = "/uploadVideo")
+	public Map<String,Object> uploadVideo(@RequestParam(value = "file", required = false) MultipartFile file,
+										  @RequestParam(value = "videoName") String videoName,
+										  HttpServletResponse response, HttpServletRequest request) {
+		response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		response.setHeader("Access-Control-Allow-Credentials", "true");// 允许服务器向浏览器跨域响应时更改浏览器（客户端）的cookie
+		 System.out.println("您发送的文件为："+file.getOriginalFilename());
+		return map;
+	}
+```
+对应关系如下：
+![](1.png)
+## 7.2 多文件的交互
+前端：
+* 1.h5的用法   
+
+``` js
+var formData = new FormData();
+
+ var files = document.getElementById('exampleInputFile').files;
+ for(i=0;i<files.length;i++){
+    formData.append('files['+i+"]", files[i])
+ }
+ 
+```
+* 2. vue-elementUi的用法
+``` js
+const formData = new FormData();
+        for (let i = 0; i < this.fileList.length; i++) {
+          formData.append("files["+i+"]", this.fileList[i].raw);
+        }
+```
+后端：
+``` java
+    @PostMapping(path = "/upload")
+    @ResponseBody
+    public Map<String,Object> upload(FilePo filePo, HttpServletResponse response, HttpServletRequest request){
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");// 允许服务器向浏览器跨域响应时更改浏览器（客户端）的cookie
+        Map<String,Object>map=new HashMap<>();
+        if(filePo.getFiles()!=null){
+            FileUtils.MultipartFile2File(filePo.getFiles()[0]);
+        }
+
+        map.put("result",200);
+        return map;
+    }
+```
+对应的FilePo：
+``` java
+import org.springframework.web.multipart.MultipartFile;
+
+public class FilePo {
+    private MultipartFile []files;
+
+    public MultipartFile[] getFiles() {
+        return files;
+    }
+
+    public void setFiles(MultipartFile[] files) {
+        this.files = files;
+    }
+}
+```
+对应关系如下：
+![](2.png)
+## 7.3 ajax交互
+无论是h5还是vue我们均采用jquery的ajax进行前后端的交互，个人习惯问题，如果是vue也可以使用axios
+``` js
+   $.ajax({
+          url: "http://localhost:2000/vue/upload",
+          data: formData,
+          dataType: "json",
+          type: "post",
+          processData: false, // 告诉jQuery不要去处理发送的数据
+          contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+          //加上这句话,允许浏览器向服务器跨域请求时携带cookie
+          xhrFields: {
+            withCredentials: true
+          },
+          crossDomain: true,
+          success: function(data) {
+            console.log(data);
+          },
+          error: function(data) {
+            console.log(data);
+          }
+        });
 ```
