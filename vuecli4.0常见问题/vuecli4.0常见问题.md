@@ -8,6 +8,11 @@
   - [3.3 如果为安装部署nginx，参考此处](#33-如果为安装部署nginx参考此处)
   - [3.4 nginx的静态资源的分离，参考此处](#34-nginx的静态资源的分离参考此处)
   - [3.5 将dist目录下的文件放在你nginx指定的目录下，在浏览器访问即可](#35-将dist目录下的文件放在你nginx指定的目录下在浏览器访问即可)
+- [4. 引入jquery](#4-引入jquery)
+  - [4.1 首先使用指令安装jquery](#41-首先使用指令安装jquery)
+  - [4.2 在main.ts进行引用](#42-在maints进行引用)
+  - [4.3 在vue.config.js文件中添加以下配置](#43-在vueconfigjs文件中添加以下配置)
+  - [4.4 具体如何使用](#44-具体如何使用)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -39,3 +44,69 @@ dist文件对应的目录:
 ![](4.jpg)
 在浏览器访问路径：
 ![](5.png)
+# 4. 引入jquery
+## 4.1 首先使用指令安装jquery
+``` js
+npm install jquery --save
+```
+## 4.2 在main.ts进行引用
+``` js
+import 'jquery'
+```
+![](6.png)
+## 4.3 在vue.config.js文件中添加以下配置
+``` js
+// 引入jq需要加入以下代码
+const webpack = require('webpack')
+
+  chainWebpack: config => {
+        config.plugin('provide').use(webpack.ProvidePlugin, [{
+            $: 'jquery',
+            jquery: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }])
+    }
+```
+![](7.png)
+注意：若没有vue.config.js，则需要自己新建一个该文件
+![](8.png)   
+下面贴出vue.config.js的代码
+``` js
+// 引入jq需要加入以下代码
+const webpack = require('webpack')
+module.exports = {
+    publicPath: process.env.NODE_ENV === 'production' ?
+        './' : '/',
+    devServer: {
+        port: 3000, //前台代理端口
+        proxy: {
+            '/vue': {
+                target: 'http: //localhost:2000', //后台接口
+                ws: true, //如果要代理websockets
+                secure: false, // 使用的是http协议则设置为false，https协议则设置为true
+                changeOrigin: true, //将选项changeOrigin设置true为基于名称的虚拟托管站点。
+                pathRewrite: {
+                    '^/vue': '/vue'
+                }
+            }
+        }
+    },
+    chainWebpack: config => {
+        config.plugin('provide').use(webpack.ProvidePlugin, [{
+            $: 'jquery',
+            jquery: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }])
+    }
+
+
+}
+```
+## 4.4 具体如何使用
+在你要使用的页面中添加
+``` js
+import $ from "jquery";
+```
+![](9.png)  
