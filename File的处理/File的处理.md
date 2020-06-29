@@ -10,6 +10,9 @@
   - [7.1 单文件的交互](#71-单文件的交互)
   - [7.2 多文件的交互](#72-多文件的交互)
   - [7.3 ajax交互](#73-ajax交互)
+- [8.springBoot设置文件上传大小](#8springboot设置文件上传大小)
+  - [方式1：在application.properties添加以下内容](#方式1在applicationproperties添加以下内容)
+  - [方式2：在配置类中添加以下内容](#方式2在配置类中添加以下内容)
 
 <!-- /TOC -->
 # 1.创建目录
@@ -292,3 +295,33 @@ public class FilePo {
           }
         });
 ```
+# 8.springBoot设置文件上传大小
+## 方式1：在application.properties添加以下内容
+``` xml
+## 设置上传文件大小
+# 启用http代理
+spring.servlet.multipart.enabled=true
+# 最大请求文件大小
+spring.servlet.multipart.max-request-size=100MB
+# 设置单个文件大小
+spring.servlet.multipart.max-file-size=20
+```
+## 方式2：在配置类中添加以下内容
+``` java
+
+@Configuration
+public class UploadConfig {
+ 
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        //单个文件最大
+        factory.setMaxFileSize("20480KB"); //KB,MB
+        /// 设置总上传数据总大小
+        factory.setMaxRequestSize("1024000KB");
+        return factory.createMultipartConfig();
+    }
+}
+```
+若我们上传的文件目录是由nginx反向代理的，则需要修改nginx.conf
+![](3.png)
