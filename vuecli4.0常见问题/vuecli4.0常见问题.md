@@ -13,6 +13,10 @@
   - [4.2 在main.ts进行引用](#42-在maints进行引用)
   - [4.3 在vue.config.js文件中添加以下配置](#43-在vueconfigjs文件中添加以下配置)
   - [4.4 具体如何使用](#44-具体如何使用)
+- [5.部署至tomcat 服务器](#5部署至tomcat-服务器)
+  - [5.1 在服务器上的Tomcat的 webapps文件夹下,新建一个文件夹如：vueservice](#51-在服务器上的tomcat的-webapps文件夹下新建一个文件夹如vueservice)
+  - [5.2 将我们打包好的dist目录中的文件放在刚刚新建的文件夹下，注意打包方式与部署至nginx服务器方式一致，注意打包后对index.html的修改，参考3.打包部署到nginx服务器](#52-将我们打包好的dist目录中的文件放在刚刚新建的文件夹下注意打包方式与部署至nginx服务器方式一致注意打包后对indexhtml的修改参考3打包部署到nginx服务器)
+  - [5.3 启动tomcat服务器，访问路径如下：http://localhost:8083/vueservice/](#53-启动tomcat服务器访问路径如下httplocalhost8083vueservice)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -110,3 +114,10 @@ module.exports = {
 import $ from "jquery";
 ```
 ![](9.png)  
+# 5.部署至tomcat 服务器
+## 5.1 在服务器上的Tomcat的 webapps文件夹下,新建一个文件夹如：vueservice
+![](10.png) 
+## 5.2 将我们打包好的dist目录中的文件放在刚刚新建的文件夹下，注意打包方式与部署至nginx服务器方式一致，注意打包后对index.html的修改，参考[3.打包部署到nginx服务器]()
+## 5.3 启动tomcat服务器，访问路径如下：http://localhost:8083/vueservice/
+注意：此处的http://localhost:8083/vueservice/中vueservice要与你自己创建的文件夹的名字一致
+![](11.jpg) 
