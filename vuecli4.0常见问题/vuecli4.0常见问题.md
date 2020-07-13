@@ -19,6 +19,10 @@
   - [5.3 启动tomcat服务器，访问路径如下：http://localhost:8083/vueservice/](#53-启动tomcat服务器访问路径如下httplocalhost8083vueservice)
 - [6.解决vue部署至服务器刷新非主页面404问题](#6解决vue部署至服务器刷新非主页面404问题)
   - [6.1 路由配置是history模式，所以我们将history模式去掉](#61-路由配置是history模式所以我们将history模式去掉)
+- [7.vue组件引用js文件的函数](#7vue组件引用js文件的函数)
+  - [7.1 我们在util.js文件中创建了一个函数，而我们要想在组件中使用这个函数，则必须使用export进行导出](#71-我们在utiljs文件中创建了一个函数而我们要想在组件中使用这个函数则必须使用export进行导出)
+  - [7.2 具体在组件中的使用](#72-具体在组件中的使用)
+  - [7.3 引用css文件](#73-引用css文件)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -127,3 +131,24 @@ import $ from "jquery";
 ## 6.1 路由配置是history模式，所以我们将history模式去掉
 打开 router/index.ts，删除mode: "history"
 ![](12.png) 
+# 7.vue组件引用js文件的函数
+## 7.1 我们在util.js文件中创建了一个函数，而我们要想在组件中使用这个函数，则必须使用export进行导出
+``` util.js
+export function getFileType(fileName) {
+    var index = fileName.indexOf(".");
+    var type = fileName.substr(index + 1);
+    return type;
+}
+```
+## 7.2 具体在组件中的使用
+``` js
+import {getFileType} from "../../assets/js/util.js";
+```
+注意必须要使用{}进行处理
+![](13.png)
+![](14.png)
+## 7.3 引用css文件
+``` js
+@import "../../assets/css/common.css";
+```
+![](15.png)
