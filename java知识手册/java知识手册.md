@@ -6,6 +6,9 @@
 - [2.java8 list去重——通过指定元素去重](#2java8-list去重通过指定元素去重)
   - [2.1 去重方法](#21-去重方法)
   - [2.2 测试示例](#22-测试示例)
+- [3.枚举配置类](#3枚举配置类)
+  - [3.1 枚举类](#31-枚举类)
+  - [3.2 测试示例](#32-测试示例)
 
 <!-- /TOC -->
 # 1.java8 list排序——通过指定元素排序
@@ -82,4 +85,34 @@ public class TbLabel {
         tbLabelList.add(tbLabel2);
         tbLabelList.add(tbLabel3);
          tbLabelList = tbLabelList.stream().sorted(Comparator.comparing(TbLabel::getUserAnswerTimes).reversed()).collect(Collectors.toList());//根据DetailId去重
+```
+# 3.枚举配置类
+## 3.1 枚举类
+``` java
+ public enum ContentConfig {
+    /**infoType 消息类型（0-待回复；1-用户审批;2-互助圈审批;3-创建学校审批）**/
+    INFOTYPE_ANSWER(0),
+    INFOTYPE_USER_APPROVE(1),
+    INFOTYPE_HELPCIRCLE_APPROVE(2),
+    INFOTYPE_CREATESCHOOL_APPROVE(3);
+    private final int value;
+
+    ContentConfig(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+```
+## 3.2 测试示例
+``` java 
+ /**
+     * 使用示例
+     * @param args
+     */
+    public static void main(String[] args) {
+        System.out.println(ContentConfig.INFOTYPE_ANSWER.getValue());
+    }
 ```
