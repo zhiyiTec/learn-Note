@@ -9,6 +9,7 @@
 - [3.枚举配置类](#3枚举配置类)
   - [3.1 枚举类](#31-枚举类)
   - [3.2 测试示例](#32-测试示例)
+- [4.返回实体类配置](#4返回实体类配置)
 
 <!-- /TOC -->
 # 1.java8 list排序——通过指定元素排序
@@ -116,3 +117,114 @@ public class TbLabel {
         System.out.println(ContentConfig.INFOTYPE_ANSWER.getValue());
     }
 ```
+# 4.返回实体类配置
+```java
+package com.cn.own.model;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.util.ObjectUtils;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BaseResult {
+    private static final long serialVersionUID = 1L;
+    private Integer code;
+    private String msg;
+    private Object data;
+    private Long count;
+
+    public BaseResult() {
+    }
+
+    public BaseResult(Integer code, String msg, Object data, Long count) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+        this.count = count;
+    }
+
+    public void markSuccess(String msg, Object data, Long count) {
+        this.code = 200;
+        this.msg = msg;
+        this.data = data;
+        this.count = count;
+    }
+
+    public void markSysError(String msg) {
+        this.code = 500;
+        this.msg = msg;
+    }
+
+    public void markWarning(String msg) {
+        this.code = 0;
+        this.msg = msg;
+    }
+
+    public boolean checkSuccess() {
+        return ObjectUtils.isEmpty(this.getCode()) && 200 == this.getCode();
+    }
+
+    public boolean checkSuccessWData() {
+        return this.checkSuccess() && ObjectUtils.isEmpty(this.getData());
+    }
+
+    public Integer getCode() {
+        return this.code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return this.msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public Object getData() {
+        return this.data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public Long getCount() {
+        return this.count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
+    public String toString() {
+        return "BaseResult [code=" + this.code + ", msg=" + this.msg + ", data=" + this.data + ", count=" + this.count + "]";
+    }
+
+}
+
+
+```
+用法：
+``` java
+   @RequestMapping(value = "clearDatabase_userINfo")
+    @ResponseBody
+    public BaseResult clearDatabase_userINfo(@RequestParam(value = "userId") String userId,
+                                             HttpServletResponse response, HttpServletRequest request) {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");// 允许服务器向浏览器跨域响应时更改浏览器（客户端）的cookie
+        BaseResult baseResult=new BaseResult();
+        try {
+
+            Integer re = tMapper.deleteUserInfo(Integer.valueOf(userId));
+            baseResult.markSuccess("清除成功",re,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            baseResult.markSysError("清除失败");
+        }
+        return baseResult;
+    }
+```
+![](1.png)
