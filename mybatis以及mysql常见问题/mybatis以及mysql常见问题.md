@@ -1,18 +1,22 @@
 <!-- TOC -->
 
 - [1.设置外键失败问题](#1设置外键失败问题)
-    - [1.1.问题描述](#11问题描述)
-    - [1.2.解决方案：](#12解决方案)
+  - [1.1.问题描述](#11问题描述)
+  - [1.2.解决方案：](#12解决方案)
 - [2.批量删除出现 sql injection violation, multi-statement not allow : ...的问题](#2批量删除出现-sql-injection-violation-multi-statement-not-allow--的问题)
-    - [2.1.问题描述：](#21问题描述)
-    - [2.2.解决方案](#22解决方案)
-        - [2.2.1.引入阿里的Durid连接池](#221引入阿里的durid连接池)
-        - [2.2.2.创建一个配置类来开启Druid的防火墙配置](#222创建一个配置类来开启druid的防火墙配置)
-        - [2.2.3.在application.properties的配置文件中修改jdb连接路径，添加allowMultiQueries=true，改为如下：](#223在applicationproperties的配置文件中修改jdb连接路径添加allowmultiqueriestrue改为如下)
+  - [2.1.问题描述：](#21问题描述)
+  - [2.2.解决方案](#22解决方案)
+    - [2.2.1.引入阿里的Durid连接池](#221引入阿里的durid连接池)
+    - [2.2.2.创建一个配置类来开启Druid的防火墙配置](#222创建一个配置类来开启druid的防火墙配置)
+    - [2.2.3.在application.properties的配置文件中修改jdb连接路径，添加allowMultiQueries=true，改为如下：](#223在applicationproperties的配置文件中修改jdb连接路径添加allowmultiqueriestrue改为如下)
 - [3.设置外键提示3780错误](#3设置外键提示3780错误)
-    - [3.1 问题描述](#31-问题描述)
-    - [3.2解决方案:](#32解决方案)
-        - [3.2.1 首先注意两者是否均选中或均未选中Unsigned，再次注意编码的方式上是否一致，最后在查看是否属于同一种类型](#321-首先注意两者是否均选中或均未选中unsigned再次注意编码的方式上是否一致最后在查看是否属于同一种类型)
+  - [3.1 问题描述](#31-问题描述)
+  - [3.2解决方案:](#32解决方案)
+    - [3.2.1 首先注意两者是否均选中或均未选中Unsigned，再次注意编码的方式上是否一致，最后在查看是否属于同一种类型](#321-首先注意两者是否均选中或均未选中unsigned再次注意编码的方式上是否一致最后在查看是否属于同一种类型)
+- [4.mysql使用循环生成测试数据](#4mysql使用循环生成测试数据)
+  - [4.1.创建存储过程](#41创建存储过程)
+  - [4.2.使用这个存储过程](#42使用这个存储过程)
+  - [4.3.使用完成之后可以删除这个存储过程](#43使用完成之后可以删除这个存储过程)
 
 <!-- /TOC -->
 # 1.设置外键失败问题
@@ -109,3 +113,26 @@ spring.datasource.url=jdbc:mysql://localhost:3306/vqqdeoplay?autoReconnect=true&
 incompatible
 ## 3.2解决方案:
 ### 3.2.1 首先注意两者是否均选中或均未选中Unsigned，再次注意编码的方式上是否一致，最后在查看是否属于同一种类型
+# 4.mysql使用循环生成测试数据
+## 4.1.创建存储过程
+``` java
+delimiter //
+create procedure getData()
+BEGIN
+DECLARE i INT;
+SET i=1;
+WHILE i<200000 DO
+INSERT INTO trade VALUES ("172.20.0.41","2016-03-31_09-19-23.404","trade","sendMessage.trade.Test","main","2532",UUID(),"XGD","main","content");
+SET i=i+1;
+END WHILE;
+END
+//
+```
+## 4.2.使用这个存储过程
+```java
+CALL getData();
+```
+## 4.3.使用完成之后可以删除这个存储过程
+``` java
+DROP PROCEDURE getData;
+```
