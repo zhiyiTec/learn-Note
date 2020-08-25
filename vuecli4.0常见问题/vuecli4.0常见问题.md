@@ -23,6 +23,11 @@
   - [7.1 我们在util.js文件中创建了一个函数，而我们要想在组件中使用这个函数，则必须使用export进行导出](#71-我们在utiljs文件中创建了一个函数而我们要想在组件中使用这个函数则必须使用export进行导出)
   - [7.2 具体在组件中的使用](#72-具体在组件中的使用)
   - [7.3 引用css文件](#73-引用css文件)
+- [8.配置跨域](#8配置跨域)
+  - [8.1 首先引入axios](#81-首先引入axios)
+  - [8.2 在main.ts(main.js)文件中进行引入](#82-在maintsmainjs文件中进行引入)
+  - [8.3 配置跨域](#83-配置跨域)
+  - [8.4 具体如何使用](#84-具体如何使用)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -152,3 +157,53 @@ import {getFileType} from "../../assets/js/util.js";
 @import "../../assets/css/common.css";
 ```
 ![](15.png)
+# 8.配置跨域
+## 8.1 首先引入axios
+``` js
+npm install --save axios vue-axios
+```
+## 8.2 在main.ts(main.js)文件中进行引入
+``` js
+import axios from 'axios'
+Vue.prototype.$axios = axios
+```
+![](16.png)
+注意：使用axios时直接使用 this.$axios即可
+## 8.3 配置跨域
+在vue.config.js文件中添加以下代码，注意：若没有vue.config.js参考本文第四章创建此文件
+``` js
+   proxy: {
+            '/api': {
+                target: 'http://localhost:8088', //你要跨域的网址  比如  'http://news.baidu.com',
+                // secure: true, // 如果是https接口，需要配置这个参数
+                changeOrigin: true, //这个参数是用来回避跨站问题的，配置完之后发请求时会自动修改http header里面的host，但是不会修改别的
+                pathRewrite: {
+                    '^/api': '/api' //路径的替换规则
+                        //这里的配置是正则表达式，以/api开头的将会被用用‘/api’替换掉，假如后台文档的接口是 /api/list/xxx
+                        //前端api接口写：axios.get('/api/list/xxx') ， 被处理之后实际访问的是：http://news.baidu.com/api/list/xxx
+                }
+            }
+        }
+```
+![](17.png)
+## 8.4 具体如何使用
+``` js
+   testCross() {
+      console.log("aaaaaaaaaaa");
+      this.$axios({
+        method: "post",
+        url: "http://localhost:8088/campusGang/test/test1",
+         data: {
+    firstName: 'Fred',
+    lastName: 'Flintstone'
+  }
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+      }).then((res) => {
+        console.log(res);
+      }).catch((error)=>{
+        console.log(error)
+      });
+    },
+```
