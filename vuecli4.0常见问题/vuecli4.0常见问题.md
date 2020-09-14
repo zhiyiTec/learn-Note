@@ -28,6 +28,11 @@
   - [8.2 在main.ts(main.js)文件中进行引入](#82-在maintsmainjs文件中进行引入)
   - [8.3 配置跨域](#83-配置跨域)
   - [8.4 具体如何使用](#84-具体如何使用)
+- [9.解决‘vue-cli-service' 不是内部或外部命令，也不是可运行的程序或批处理文件的报错](#9解决vue-cli-service-不是内部或外部命令也不是可运行的程序或批处理文件的报错)
+  - [9.1 解决办法](#91-解决办法)
+- [10.引入echarts](#10引入echarts)
+  - [1.使用指令下载所需要的库](#1使用指令下载所需要的库)
+  - [2.在main.js（或者main.ts）文件中进行引用](#2在mainjs或者maints文件中进行引用)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -206,4 +211,19 @@ Vue.prototype.$axios = axios
         console.log(error)
       });
     },
+```
+# 9.解决‘vue-cli-service' 不是内部或外部命令，也不是可运行的程序或批处理文件的报错
+![](18.png)
+## 9.1 解决办法
+将项目里的“node_modules”文件夹删除，然后运行npm run i,如果没有这个文件夹就直接运行npm run i，运行结束之后重新npm run serve即可
+# 10.引入echarts
+## 1.使用指令下载所需要的库
+``` js
+npm install echarts -S
+```
+## 2.在main.js（或者main.ts）文件中进行引用
+``` js
+// 引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 ```
