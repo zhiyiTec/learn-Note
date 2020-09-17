@@ -20,6 +20,7 @@
   - [3.2引入maven依赖](#32引入maven依赖)
   - [3.3 controller](#33-controller)
   - [3.4 配置application.properties](#34-配置applicationproperties)
+- [注意 :](#注意-)
 
 <!-- /TOC -->
 # 1.api 用来存放通用的实体类以及工具类
@@ -510,4 +511,18 @@ dubbo.monitor.protocol=registry
 在运行此项目之前务必却保zookeeper以及provider已经启动
 同样也在dubbo-admin检验是否注册成功
 ![](5.png)
+# 注意 :
+若遇到打包失败的问题，尝试下面的这种方法：
+在pom文件中添加maven-surefire-plugin插件
+``` xml
+<!--添加配置跳过测试-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+```
 至此一个简单的springBoot集成dubbo的项目至此结束
