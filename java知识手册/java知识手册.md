@@ -10,6 +10,7 @@
   - [3.1 枚举类](#31-枚举类)
   - [3.2 测试示例](#32-测试示例)
 - [4.返回实体类配置](#4返回实体类配置)
+- [5.web工具类](#5web工具类)
 
 <!-- /TOC -->
 # 1.java8 list排序——通过指定元素排序
@@ -228,3 +229,35 @@ public class BaseResult {
     }
 ```
 ![](1.png)
+# 5.web工具类
+获取request session等
+``` java
+package com.dubbo.consumer.indentity.util;
+
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+public class WebUtils {
+    /**
+     * 获取request
+     *
+     * @return
+     */
+    public static HttpServletRequest getRequest() {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes();
+        return requestAttributes == null ? null : requestAttributes.getRequest();
+    }
+    /**
+     * 获取session
+     *
+     * @return
+     */
+    public static HttpSession getSession() {
+        HttpSession session   = getRequest().getSession();
+        return session;
+    }
+}
+```
