@@ -259,5 +259,15 @@ public class WebUtils {
         HttpSession session   = getRequest().getSession();
         return session;
     }
+    
+    /**
+     * 获取response
+     *
+     * @return
+     */
+      public static HttpServletResponse getResponse(){
+        HttpServletResponse response = ((ServletWebRequest)RequestContextHolder.getRequestAttributes()).getResponse();
+        return response;
+    }
 }
 ```
