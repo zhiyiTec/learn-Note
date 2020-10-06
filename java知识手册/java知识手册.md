@@ -10,6 +10,8 @@
   - [3.1 枚举类](#31-枚举类)
   - [3.2 测试示例](#32-测试示例)
 - [4.返回实体类配置](#4返回实体类配置)
+  - [4.1 相关maven依赖](#41-相关maven依赖)
+  - [4.2 实体类](#42-实体类)
 - [5.web工具类](#5web工具类)
 
 <!-- /TOC -->
@@ -119,6 +121,36 @@ public class TbLabel {
     }
 ```
 # 4.返回实体类配置
+## 4.1 相关maven依赖
+``` xml
+<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.7.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.7.4</version>
+        </dependency>
+
+```
+## 4.2 实体类
 ```java
 package com.cn.own.model;
 
