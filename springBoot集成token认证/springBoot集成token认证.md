@@ -99,16 +99,25 @@ jwt的第三部分是一个签证信息
 # 2.与springBoot项目的集成
 ## 1.添加maven依赖
 ``` xml
- <!--token-->
+<!--token-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.3.0</version>
         </dependency>
+
+        <!--fastjson-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.47</version>
+        </dependency>
+        <!-- 很好用的一个工具类包 这里用来处理json和AES加密-->
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.4.4</version>
         </dependency>
 ```
 注意：我们默认是已经配置好mybatis的web项目，还未配置myBatis?[点击此处](https://blog.csdn.net/zhiyikeji/article/details/85019689?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522160048535419195188331273%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=160048535419195188331273&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_v2~rank_blog_default-19-85019689.pc_v2_rank_blog_default&utm_term=springBoot&spm=1018.2118.3001.4187)
@@ -257,18 +266,6 @@ public interface UserService {
 }
 
 ```
-TokenService
-``` java
-public interface TokenService {
-    /**
-     * 获取用户token
-     * @param user
-     * @return
-     */
-    public String getToken(User user);
-}
-
-```
 ## 6.service的实现类
 UserServiceImpl
 ``` java
@@ -293,29 +290,6 @@ public class UserServiceImpl implements UserService {
     }
 }
 ```
-TokenServiceImpl
-``` java
-@Service
-public class TokenServiceImpl implements TokenService {
-
-    @Override
-    public String getToken(User user) {
-        Date start = new Date();
-        long currentTime = System.currentTimeMillis() + 60* 60 * 1000;//一小时有效时间
-        Date end = new Date(currentTime);
-        String token = "";
-        try {
-            token = JWT.create().withAudience(user.getUserId().toString()).withIssuedAt(start).withExpiresAt(end)
-                    .sign(Algorithm.HMAC256(user.getPassword()));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return token;
-    }
-}
-```
-注意：如果Algorithm.HMAC256无法使用，则手动引入外部的sunjce_provider.jar,[点击此处下载sunjce_provider.jar包](http://zhiyitec.top:2000/downLoad/sunjce_provider.jar)，不知道怎么引用外部Jar到项目中？[点击此处](https://blog.csdn.net/zhiyikeji/article/details/108655717)
 ## 7.UserMapper.xml
 ``` xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -347,49 +321,155 @@ public class TokenServiceImpl implements TokenService {
 ## 8.token的生成方法
 TokenUtils
 ``` java
-package com.dubbo.consumer.indentity.util;
+package com.personal.indentity.utils;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.auth0.jwt.JWT;
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
 
 public class TokenUtils {
     /**
-     * 通过token获取用户id
-     * @return
+     * 签名秘钥
      */
-    public static String getTokenUserId() {
-        String token = getToken();
-        String userId = JWT.decode(token).getAudience().get(0);
-        return userId;
-    }
-
-
-
+    private static final String SECRET = "zx12345678";
+    /**
+     * 签发人
+     */
+    private static final String issuer="zhiyi";
+    /**
+     * token过期时间，单位:min
+     */
+    private static final Integer expireTime=2;
 
     /**
-     * 从session或者header中获取token
+     * 从header中取token
      * @return
      */
     public static String getToken(){
-        String token=null;
-        //先从session中获取token
-        HttpSession session   = WebUtils.getSession();
-        Object tokenObject=session.getAttribute("token");
-        if(tokenObject!=null){
-            token=tokenObject.toString();
-        }
-        if(StringUtils.isEmpty(token)){
-            //从 http 请求头中取出 token
-            token = WebUtils.getRequest().getHeader("token");
-        }
-        return token;
+        HttpServletRequest request =WebUtils.getRequest();
+        String re=request.getHeader("token");
+        return re;
     }
+
+    /**
+     * 创建token
+     * @param json 需要放入token的参数，多个参数可以封装成json或者map
+     * @return token
+     */
+    public static String createToken(JSONObject json) {
+        try {
+            // 加密方式
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
+            return JWT.create()
+                    .withSubject(json.toString())
+                    .withIssuer(issuer)
+                    // 设置过期时间为60分钟后
+                    .withExpiresAt(DateUtil.offsetMinute(new Date(), expireTime))
+                    .withClaim("customString", "zhiyi")
+                    .withArrayClaim("customArray", new Integer[]{1, 2, 3})
+                    .sign(algorithm);
+        } catch (Exception exception) {
+            //Invalid Signing configuration / Couldn't convert Claims.
+            System.out.println(exception.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 校验token合法性
+     *
+     * @param token to verify.
+     */
+    public static boolean verifyToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    // 验证签发人是否相同
+                    .withIssuer(issuer)
+                    .build();
+            /*
+             * 校验：
+             * 格式校验：header.payload.signature
+             * 加密方式校验 Header中的alg
+             * 签名信息校验，防篡改
+             * 载体Payload 中公有声明字段校验
+             */
+            verifier.verify(token);
+            return true;
+        } catch (Exception exception) {
+            //Invalid signature/claims
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 解析token
+     *
+     * @param token to decode.
+     */
+    public static void decodeToken(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            Map<String, Claim> claims = jwt.getClaims();
+            Claim customStringClaim = claims.get("customString");
+            Claim customArrayClaim = claims.get("customArray");
+
+            String issuer = jwt.getIssuer();
+            String subject = jwt.getSubject();
+
+            System.out.println(customStringClaim.asString());
+            System.out.println(Arrays.toString(customArrayClaim.asArray(Integer.class)));
+            System.out.println(issuer);
+            System.out.println(JSONUtil.parseObj(subject).get("userId"));
+
+        } catch (JWTDecodeException exception) {
+            //Invalid token
+            exception.printStackTrace();
+        }
+    }
+
+    public static String getUserIdByToken(String token){
+        DecodedJWT jwt = JWT.decode(token);
+        Map<String, Claim> claims = jwt.getClaims();
+        String subject = jwt.getSubject();
+        String re=JSONUtil.parseObj(subject).get("userId").toString();
+        return re;
+    }
+
+
+    public static void main(String[] args) {
+        JSONObject subjectJson = new JSONObject();
+        subjectJson.put("userId", 1);
+        subjectJson.put("name", "ylc");
+        String token = createToken(subjectJson);
+        System.out.println("token:" + token);
+        System.out.println("==============================================");
+//
+//        System.out.println("1 min exp,now verify result:" + verifyToke(token));
+//        System.out.println("==============================================");
+//
+//        System.out.println("decode info:");
+//        decodeToken(token);
+//        System.out.println("================================================");
+//        System.out.println("1 min later,verify result:"+verifyToke("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJ1c2VySWRcIjoxLFwibmFtZVwiOlwieWxjXCJ9IiwiaXNzIjoiemhpeWkiLCJleHAiOjE2MDIzMzI2OTMsImN1c3RvbUFycmF5IjpbMSwyLDNdLCJjdXN0b21TdHJpbmciOiJ6aGl5aSJ9.v6AQ2mba8gGsHFpJ52EY4fwoN03gEDsCUUSafpPscyQ"));
+//        System.out.println("================================================");
+        System.out.println("userId:"+getUserIdByToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJ1c2VySWRcIjoxLFwibmFtZVwiOlwieWxjXCJ9IiwiaXNzIjoiemhpeWkiLCJleHAiOjE2MDIzMzM1MjEsImN1c3RvbUFycmF5IjpbMSwyLDNdLCJjdXN0b21TdHJpbmciOiJ6aGl5aSJ9.BKU-X6Bre9kCbsCtQgwDO6UE7znqbM84xy8dH6R7AiY"));
+    }
+
+
 }
+
 
 ```
 WebUtils
@@ -431,19 +511,14 @@ withAudience()存入需要保存在token的信息，这里我把用户ID存入to
 ## 9.拦截器
 用于获取token并验证token
 ``` java
-package com.dubbo.consumer.indentity.interceptor;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.dubbo.consumer.indentity.annoation.PassToken;
-import com.dubbo.consumer.indentity.annoation.UserLoginToken;
-import com.dubbo.consumer.indentity.util.TokenUtils;
-import com.dubbo.indetity.po.User;
-import com.dubbo.indetity.service.UserService;
-import org.apache.dubbo.config.annotation.Reference;
+package com.personal.indentity.interceptor;
+import com.personal.indentity.annoation.PassToken;
+import com.personal.indentity.annoation.UserLoginToken;
+import com.personal.indentity.service.UserService;
+import com.personal.indentity.utils.TokenUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -455,19 +530,20 @@ import java.lang.reflect.Method;
 
 @Controller
 public class AuthenticationInterceptor implements HandlerInterceptor {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("=========================启动token拦截器======================");
+        logger.info("=========================启动token拦截器======================");
         String token = TokenUtils.getToken();
         // 如果不是映射到方法直接通过
-        if(!(handler instanceof HandlerMethod)){
+        if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        HandlerMethod handlerMethod=(HandlerMethod)handler;
-        Method method=handlerMethod.getMethod();
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Method method = handlerMethod.getMethod();
         //检查是否有passtoken注释，有则跳过认证
         if (method.isAnnotationPresent(PassToken.class)) {
             PassToken passToken = method.getAnnotation(PassToken.class);
@@ -483,24 +559,32 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if (token == null) {
                     throw new RuntimeException("无token，请重新登录");
                 }
-                // 获取 token 中的 userid
-                String userId;
+                //校验token有效性
+                Boolean verify = false;
                 try {
-                    userId = JWT.decode(token).getAudience().get(0);
-                } catch (JWTDecodeException j) {
-                    throw new RuntimeException("401");
+                    verify = TokenUtils.verifyToken(token);
+                } catch (Exception e) {
+                    verify = false;
+                    throw new RuntimeException("无效token");
                 }
-                User user = userService.getUserByUserId(Integer.valueOf(userId));
-                if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
+                if(!verify){
+                    throw new RuntimeException("token校验失败");
                 }
-                // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
-                try {
-                    jwtVerifier.verify(token);
-                } catch (JWTVerificationException e) {
-                    throw new RuntimeException("401");
-                }
+//                // 获取 token 中的 userid
+//                if (verify) {
+//                    String userId;
+//                    try {
+//                        userId = TokenUtils.getUserIdByToken(token);
+//                    } catch (JWTDecodeException j) {
+//                        throw new RuntimeException("401");
+//                    }
+//                    User user = userService.getUserByUserId(Integer.valueOf(userId));
+//                    if (user == null) {
+//                        throw new RuntimeException("用户不存在，请重新登录");
+//                    }
+//                } else {
+//                    throw new RuntimeException("token校验失败");
+//                }
                 return true;
             }
         }
@@ -662,78 +746,55 @@ InterceptorRegistry内的addInterceptor需要一个实现HandlerInterceptor接�
 ## 11.controller层
 在数据访问接口中加入登录操作注解
 ``` java
-package com.dubbo.consumer.indentity;
+package com.personal.indentity.controller;
 
-import com.dubbo.api.po.BaseResult;
-
-import com.dubbo.consumer.indentity.annoation.UserLoginToken;
-import com.dubbo.consumer.indentity.util.TokenUtils;
-import com.dubbo.indetity.po.User;
-import com.dubbo.indetity.service.TokenService;
-
-
-import com.dubbo.indetity.service.UserService;
-
-
-import org.apache.dubbo.common.json.JSONObject;
-import org.apache.dubbo.config.annotation.Reference;
+import cn.hutool.json.JSONObject;
+import com.personal.api.po.ResultResponse;
+import com.personal.indentity.entity.Token;
+import com.personal.indentity.entity.User;
+import com.personal.indentity.service.UserService;
+import com.personal.indentity.utils.TokenUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 
 @Controller
-public class UserController {
+public class LoginController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     UserService userService;
-    @Autowired
-    TokenService tokenService;
-
-    // 登录
     @ResponseBody
-    @RequestMapping(value = "/login" ,method = RequestMethod.POST)
-    public String login(@RequestBody User user,HttpServletResponse response, HttpServletRequest request) {
-        HttpSession session   =   request.getSession();
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    public ResultResponse login(@RequestBody User user, HttpServletResponse response, HttpServletRequest request){
+        ResultResponse resultResponse=new ResultResponse();
+        user.setUserName(user.getUsername());
         User basic=userService.getUserByUserName(user.getUserName());
-        User userForBase = new User();
-        userForBase.setUserId(basic.getUserId());
-        userForBase.setUserName(basic.getUserName());
-        userForBase.setPassword(basic.getPassword());
-        if (!userForBase.getPassword().equals(user.getPassword())) {
-            return "密码错误";
-
-        } else {
-            String token = tokenService.getToken(userForBase);
-            Cookie cookie = new Cookie("token", token);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            session.setAttribute("token",token);
-            return token;
-
-
+        if(basic==null){
+            resultResponse.markError("用户名或密码错误");
+        }else {
+            //比对密码
+            if (user.getPassword().equals(basic.getPassword())){
+                JSONObject subjectJson = new JSONObject();
+                subjectJson.put("userId", 1);
+                String token = TokenUtils.createToken(subjectJson);
+                Cookie cookie = new Cookie("token", token);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                resultResponse.markSuccess("token获取成功",new Token(token));
+            }else{
+                resultResponse.markError("用户名或密码错误");
+            }
         }
-        return "获取失败";
-    }
-    /***
-     * 这个请求需要验证token才能访问
-     * @date 2019/06/14
-     * @return String 返回类型
-     */
-    @ResponseBody
-    @UserLoginToken
-    @RequestMapping(value = "/getMessage" ,method = RequestMethod.GET)
-    public String getMessage(HttpServletResponse response, HttpServletRequest request) {
-
-        // 取出token中带的用户id 进行操作
-        System.out.println(TokenUtils.getTokenUserId());
-
-        return "您已通过验证";
+        return resultResponse;
     }
 }
+
 ```
 不加注解的话默认不验证，登录接口一般是不验证的。在getMessage()中我加上了登录注解，说明该接口必须登录获取token后，在请求头中加上token并通过验证才可以访问
 ## 12.测试
