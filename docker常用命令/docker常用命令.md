@@ -17,6 +17,10 @@
 - [9.查看日志](#9查看日志)
 - [10.进入当前正在运行的容器](#10进入当前正在运行的容器)
 - [11.从容器内拷贝文件到主机上](#11从容器内拷贝文件到主机上)
+- [12.查看docker状态](#12查看docker状态)
+- [13.提交容器成为一个新的副本](#13提交容器成为一个新的副本)
+- [14.查看容器详细信息](#14查看容器详细信息)
+- [15.数据卷的挂载](#15数据卷的挂载)
 
 <!-- /TOC -->
 # 1.停止镜像
@@ -60,7 +64,7 @@ docker run [可选参数] 镜像名
 > -p 指定容器端口 -p 8080:2000 主机端口映射容器端口
 比如：
 > docker run -it centos /bin/bash
-
+> sudo docker run -d --name nginx01  -p 3344:80 nginx
 # 5.启动镜像
 ```
 docker start 镜像名
@@ -92,3 +96,23 @@ docker cp 容器id:容器内路径  目的主机路径
 比如：
 >  sudo docker cp a121e690a3b1:/1.java /home
 将a121e690a3b1容器内的根目录下的1.java文件拷贝到宿主机的home目录下
+# 12.查看docker状态
+```
+docker stats
+或
+docker stats 镜像id 比如：docker stats 77c7c394723b
+```
+# 13.提交容器成为一个新的副本
+```
+docker commit -m="提交的描述信息" -a='作者' 容器id 目标镜像名：[Tag]
+```
+# 14.查看容器详细信息
+```
+docker inspect 容器id
+```
+# 15.数据卷的挂载
+```
+sudo docker run -it -v /home/docker/centos_mout:/home centos /bin/bash
+```
+下面解释一下命令的意思：
+> 该命令是将centos镜像下的/home目录同步至我们主机上的/home/docker/centos_mout上面，即我们在centos镜像下做任何操作均会同步至我们本地主机上的/home/docker/centos_mout目录上面 ，且这种行为是 双向的，也就是说我们在自己主机上的/home/docker/centos_mout目录下面做任何 操作也会同步至centos镜像下的/home文件下

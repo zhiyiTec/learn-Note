@@ -17,6 +17,13 @@
   - [4.1.创建存储过程](#41创建存储过程)
   - [4.2.使用这个存储过程](#42使用这个存储过程)
   - [4.3.使用完成之后可以删除这个存储过程](#43使用完成之后可以删除这个存储过程)
+- [5.解决连接数据库提示Authentication plugin 'caching_sha2_password' cannot be loaded的问题](#5解决连接数据库提示authentication-plugin-caching_sha2_password-cannot-be-loaded的问题)
+  - [5.1 管理员权限运行命令提示符，登陆MySQL](#51-管理员权限运行命令提示符登陆mysql)
+  - [5.2 修改账户密码加密规则并更新用户密码](#52-修改账户密码加密规则并更新用户密码)
+    - [5.2.1 修改加密规则](#521-修改加密规则)
+    - [5.2.2 更新一下用户的密码](#522-更新一下用户的密码)
+  - [5.3 刷新权限](#53-刷新权限)
+  - [5.4 重置密码](#54-重置密码)
 
 <!-- /TOC -->
 # 1.设置外键失败问题
@@ -136,3 +143,26 @@ CALL getData();
 ``` java
 DROP PROCEDURE getData;
 ```
+# 5.解决连接数据库提示Authentication plugin 'caching_sha2_password' cannot be loaded的问题
+## 5.1 管理员权限运行命令提示符，登陆MySQL
+![](1.png)
+## 5.2 修改账户密码加密规则并更新用户密码
+### 5.2.1 修改加密规则 
+```
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'password' PASSWORD EXPIRE NEVER;
+```
+### 5.2.2 更新一下用户的密码
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'; 
+```
+![](2.png)
+## 5.3 刷新权限
+```
+FLUSH PRIVILEGES;
+```
+![](3.png)
+## 5.4 重置密码
+```
+alter user 'root'@'localhost' identified by '111111';
+```
+![](4.png)
