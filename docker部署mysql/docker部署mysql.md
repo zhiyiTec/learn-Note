@@ -9,6 +9,7 @@
   - [4.3 进入mysql](#43-进入mysql)
   - [4.4 修改远程权限：](#44-修改远程权限)
   - [4.5 通过Navicat等远程访问工具进行访问](#45-通过navicat等远程访问工具进行访问)
+- [5.数据卷的挂载，方面我们后期维护](#5数据卷的挂载方面我们后期维护)
 
 <!-- /TOC -->
 # 1.拉取mysql镜像
@@ -45,3 +46,7 @@ alter user 'root'@'%' identified with mysql_native_password by 'root';
 ```
 ## 4.5 通过Navicat等远程访问工具进行访问
 ![](4.png)
+# 5.数据卷的挂载，方面我们后期维护
+```
+sudo docker run -it -v /home/docker/mysql/conf:/etc/mysql/conf.d -v /home/docker/mysql/data:/var/lib/mysql
+```
