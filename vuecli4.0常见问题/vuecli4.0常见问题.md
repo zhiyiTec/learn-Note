@@ -33,6 +33,10 @@
 - [10.引入echarts](#10引入echarts)
   - [1.使用指令下载所需要的库](#1使用指令下载所需要的库)
   - [2.在main.js（或者main.ts）文件中进行引用](#2在mainjs或者maints文件中进行引用)
+- [11.推荐一款日期格式化插件 moment](#11推荐一款日期格式化插件-moment)
+  - [11.1 安装](#111-安装)
+  - [11.2 在使用的页面进行引用](#112-在使用的页面进行引用)
+  - [11.3 如何使用](#113-如何使用)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -227,3 +231,18 @@ npm install echarts -S
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 ```
+# 11.推荐一款日期格式化插件 moment
+## 11.1 安装
+``` js
+npm install moment --save
+```
+## 11.2 在使用的页面进行引用
+```
+import moment from "moment";
+```
+![](19.png)
+## 11.3 如何使用
+```js
+ this.startTime=moment(this.startTime).format("YYYY-MM-DD HH:mm:ss")
+```
+此时日期就会格式化为如2020-10-28 15:28:21
