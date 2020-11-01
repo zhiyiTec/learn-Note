@@ -24,6 +24,10 @@
     - [5.2.2 更新一下用户的密码](#522-更新一下用户的密码)
   - [5.3 刷新权限](#53-刷新权限)
   - [5.4 重置密码](#54-重置密码)
+- [6.解决HOST is not allowed to connect to this mysql server](#6解决host-is-not-allowed-to-connect-to-this-mysql-server)
+  - [6.1 问题描述](#61-问题描述)
+  - [6.2 问题原因](#62-问题原因)
+  - [6.3 解决方案](#63-解决方案)
 
 <!-- /TOC -->
 # 1.设置外键失败问题
@@ -166,3 +170,34 @@ FLUSH PRIVILEGES;
 alter user 'root'@'localhost' identified by '111111';
 ```
 ![](4.png)
+# 6.解决HOST is not allowed to connect to this mysql server
+## 6.1 问题描述
+当我们远程连接mysql服务器时会出现HOST is not allowed to connect to this mysql server这种错误
+![](5.png)
+## 6.2 问题原因
+> host主机不能访问本机的mysql服务，原因需要连接非本机的mysql的时候，默认host是localhost，我们需要将这个mysql连接权限设置成%，更改方法直接通过软件更改和命令行更改：   
+> 在mysql的数据库选择mysql这个数据库，里面有一个user表，进入表中有一个host字段将localhost值更改为%这个保存后，刷新或者重启MySQL服务都行。
+登录服务器mysql查看
+> ![](6.png)
+
+## 6.3 解决方案
+> 授权访问,因为是本地连接,所以,给予了所有权限
+> ```
+> grant all privileges on *.* to 'root'@'%' with grant option;
+> ```
+> ![](7.png)
+
+报错是因为产生用户不能授权的原因是mysql 数据库中user 表中的特定用户(root) 的host 的属性值为localhost.
+接下来我们执行以下操作
+``` yml
+update user set host='%' where user='root';
+
+grant all privileges on *.* to 'root'@'%';
+
+flush privileges;
+```
+![](8.png)
+再次进行连接测试
+![](9.png)
+
+
