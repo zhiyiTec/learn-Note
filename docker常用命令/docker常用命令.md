@@ -5,6 +5,8 @@
     - [2. 通过运行 docker stop id  停止运行](#2-通过运行-docker-stop-id-停止运行)
     - [3.进程停止后就可以t通过 docker rm id  删除 承载改进程的容器了](#3进程停止后就可以t通过-docker-rm-id-删除-承载改进程的容器了)
     - [4.最后通过运行 docker rmi id  删除镜像](#4最后通过运行-docker-rmi-id-删除镜像)
+    - [5.停止所有镜像](#5停止所有镜像)
+    - [6.删除所有镜像](#6删除所有镜像)
 - [2.拉取镜像](#2拉取镜像)
     - [1.不指定版本（默认获取最新版本）](#1不指定版本默认获取最新版本)
     - [2.指定版本](#2指定版本)
@@ -47,6 +49,10 @@
   - [18.3 发布至阿里云镜像](#183-发布至阿里云镜像)
     - [18.3.1 进入至阿里云镜像仓库](#1831-进入至阿里云镜像仓库)
     - [18.3.2 创建镜像仓库](#1832-创建镜像仓库)
+- [19.容器互联](#19容器互联)
+  - [19.1 在启动时我们需要使用--link来实现容器互联](#191-在启动时我们需要使用--link来实现容器互联)
+- [20.自定义网络](#20自定义网络)
+- [21.实现网络连通](#21实现网络连通)
 
 <!-- /TOC -->
 # 1.停止镜像
@@ -65,6 +71,14 @@ docker rm 进程id
 ### 4.最后通过运行 docker rmi id  删除镜像
 ```
 docker rmi 进程id/进程名
+```
+### 5.停止所有镜像
+```
+sudo docker stop $(sudo docker ps -aq)
+```
+### 6.删除所有镜像
+```
+sudo docker rm $(sudo docker ps -aq)
 ```
 # 2.拉取镜像
 ### 1.不指定版本（默认获取最新版本）
@@ -264,3 +278,36 @@ docker push 镜像名称:版本号
 ![](14.png)
 创建完成之后点击刚刚创建成功的镜像仓库，根据相应的步骤进行操作
 ![](15.png)
+# 19.容器互联
+我们以tomcat为例
+## 19.1 在启动时我们需要使用--link来实现容器互联
+```
+sudo docker run -d --name tomcat03 --link tomcat02 tomcat:9.0
+```
+这样的话我们就可以将tomcat03在启动后与tomcat02实现互联
+# 20.自定义网络
+```
+sudo docker network create  --driver bridge --subnet 192.168.0.0/16 --gateway 192.168.0.1 mynet
+```
+通过gateway搭建成功之后的网络对应的网关都会经过192.168.0.1
+查看自定义网络是否成功
+```
+sudo docker network ls
+```
+![](16.png)
+我们接下来可以启动一个在自己自定义网络下的服务
+```
+sudo docker run -d -P --name tomcat-mynet01 --net mynet tomcat:9.0
+```
+# 21.实现网络连通
+使用指令
+```
+sudo docker  network connect mynet tomcat01
+```
+这种命令就可以实现将tomcat01下的网络连通到mynet网路下
+执行该命令之后我们再来看一下mynet的情况
+```
+docker inspect mynet
+```
+
+
