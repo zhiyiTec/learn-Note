@@ -52,6 +52,23 @@
       - [1.多行输出](#1多行输出)
       - [2.单行动态刷新](#2单行动态刷新)
       - [3.文本进度条](#3文本进度条)
+- [4.程序的控制结构](#4程序的控制结构)
+  - [1.程序的循环结构](#1程序的循环结构)
+    - [1.遍历循环](#1遍历循环)
+    - [2.无限循环](#2无限循环)
+    - [3.循环控制保留字](#3循环控制保留字)
+  - [2.random库](#2random库)
+    - [1.基本随机数函数](#1基本随机数函数)
+    - [2.扩展随机数函数](#2扩展随机数函数)
+    - [3.圆周率的计算](#3圆周率的计算)
+- [5.函数和代码复用](#5函数和代码复用)
+  - [1.函数的定义与使用](#1函数的定义与使用)
+    - [1.可变参数传递](#1可变参数传递)
+    - [2.函数返回值](#2函数返回值)
+    - [3.局部变量和全局变量](#3局部变量和全局变量)
+    - [4.lambda函数](#4lambda函数)
+  - [2.七段数码管的绘制](#2七段数码管的绘制)
+  - [3.代码复用与函数递归](#3代码复用与函数递归)
 
 <!-- /TOC -->
 # 1.python的基本语法元素
@@ -373,3 +390,216 @@ for i in range(scale + 1):
 print("\n" + "执行结果".center(scale // 2, "-"))
 ```
 输出结果：![](38.png)
+# 4.程序的控制结构
+## 1.程序的循环结构
+### 1.遍历循环
+for <循环变量> in <遍历结构>:
+    <语句块>
+``` python
+for i in range(9):
+    print(i)
+```
+输出结果：![](39.png)
+``` python
+for i in range(1,6):
+    print(i)
+```
+输出结果：![](40.png)
+``` python
+for i in range(1,6,2):
+    print(i)
+```
+输出结果：![](41.png)
+* 字符串循环
+``` python
+str = "python123"
+for c in str:
+    print(c, end="#")
+```
+输出结果：![](42.png)
+### 2.无限循环
+while <条件>:
+    <语句块>
+``` python
+a = 3
+while a > 0:
+    a-=1
+    print(a)
+
+```
+输出结果：![](43.png)
+### 3.循环控制保留字
+* break 跳出并结束当前整个循环，执行循环后的语句
+注意:break只能跳出最内层循环
+``` python
+str = "PYTHON"
+for c in str:
+    if c == "T":
+        break
+    print(c, end=" ")
+```
+输出结果：![](45.png)
+* continue 结束当次循环，继续执行后续次数的循环
+``` python
+str = "PYTHON"
+for c in str:
+    if c == "T":
+        continue
+    print(c, end=" ")
+```
+输出结果：![](44.png)
+## 2.random库
+random库是使用随机数的python的标准库
+使用 import random进行引入
+### 1.基本随机数函数
+| 函数           | 描述                                                                                                                                                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|seed(a=None) | 初始化给定的随机数种子，默认为当前系统时间<br>>>>random.seed(10)#产生种子10对应的序列<br>|
+| random()      | 生成一个[0.0,1.0)之间的随机小数<br>>>>random.random()<br> 0.5714025946899135|
+
+``` python
+import random
+random.seed(10)
+print(random.random())
+```
+输出结果：![](46.png)
+### 2.扩展随机数函数
+| 函数           | 描述                                                                                                                                                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|randint(a, b)| 生成一个[a, b]之间的整数<br>>>>random.randint(10，100)<br>64|
+|randrange(m, n[, k])| 生成一个[m, n)之间以k为步长的随机<br>>>>random.randrange(10，100，10)<br>80|
+|getrandbits(k)| 生成一个k比特长的随机整数<br>>>>random.getrandbits(16)<br>37885|
+|uniform(a, b)| 生成一个[a, b]之间的随机小数<br>>>>random.uniform(10，100)<br>13.096321648808136|
+|choice(seq)| 从序列seq中随机选择一个元素<br>>>>random.choice([1,2,3,4,5,6,7,8,9])<br>8|
+|shuffle(seq)|将序列seq中元素随机排列，返回打乱后的序列<br>>>>5=[1,2,3,4,5,6,7,8,9];random.shuffle(s);print(s)<br>[3，5，8，9，6， 1，2，7，4]|
+### 3.圆周率的计算
+``` python
+import random
+import time
+DARTS = 1000 * 1000
+hits = 0.0  # 表示命中的数量
+start = time.perf_counter()
+for i in range(1, DARTS + 1):
+    x = random.random()
+    y = random.random()
+    dist = pow(x ** 2 + y ** 2, 0.5)
+    if dist <= 1.0:
+        hits += 1
+pi = 4 * (hits / DARTS)
+print("圆周率的值为：{}".format(pi))
+print("运行时间：{:.5f}".format(time.perf_counter() - start))
+```
+输出结果：![](47.png)
+# 5.函数和代码复用
+## 1.函数的定义与使用
+### 1.可变参数传递
+``` python
+def fact(n, *b):
+    s = 1
+    for i in range(1, n + 1):
+        s *= i
+    for item in b:
+        s *= item
+    return s
+result = fact(10, 1, 2, 3)
+print(result)
+```
+输出结果：![](48.png)
+### 2.函数返回值
+函数可以返回0个或多个结果
+``` python
+def fact(n, m):
+    s = 1
+    for i in range(1, n + 1):
+        s *= i
+    return s // m, n, m
+print(fact(5, 2))
+a, b, c = fact(5, 2)
+print("a:{},b:{},c:{}".format(a, b, c))
+```
+输出结果：![](49.png)
+### 3.局部变量和全局变量
+在函数内部在不使用global保留字声明的情况下所定义的变量都是局部变量
+### 4.lambda函数
+lambda函数是一种匿名函数，即没有名字的函数
+<函数名>=lambda <参数>:<表达式>
+等价于
+def <函数名>(<参数>):
+  <函数体>
+  return <返回值>
+ ``` python
+f = lambda x, y: x + y
+print(f(10, 15))
+g=lambda :"lambda函数"
+print(g())
+ ```
+## 2.七段数码管的绘制
+ ``` python
+import turtle
+import time
+
+
+# 绘制数码管间隔
+def drawGap():
+    turtle.penup()
+    turtle.fd(5)
+
+
+# 绘制单段数码管
+def drawLine(draw):
+    drawGap()
+    turtle.pendown() if draw else turtle.penup()
+    turtle.fd(40)
+    drawGap()
+    turtle.right(90)
+
+
+# date为日期，格式为'%y-%m=%d+'
+def drawDate(date):
+    turtle.pencolor("red")
+    for i in date:
+        if i == "-":
+            turtle.write('年', font=("Arial", 18, "normal"))
+            turtle.pencolor("green")
+            turtle.fd(40)
+        elif i == "=":
+            turtle.write("月", font=("Arial", 18, "normal"))
+            turtle.pencolor("blue")
+            turtle.fd(40)
+        elif i == "+":
+            turtle.write("日", font=("Arial", 18, "normal"))
+        else:
+            drawDigit(eval(i))
+
+
+# 根据数字绘制七段数码管
+def drawDigit(digit):
+    drawLine(True) if digit in [2, 3, 4, 5, 6, 8, 9] else drawLine(False)
+    drawLine(True) if digit in [0, 1, 3, 4, 5, 6, 7, 8, 9] else drawLine(False)
+    drawLine(True) if digit in [0, 2, 3, 5, 6, 8, 9] else drawLine(False)
+    drawLine(True) if digit in [0, 2, 6, 8] else drawLine(False)
+    turtle.left(90)
+    drawLine(True) if digit in [0, 4, 5, 6, 8, 9] else drawLine(False)
+    drawLine(True) if digit in [0, 2, 3, 5, 6, 7, 8, 9] else drawLine(False)
+    drawLine(True) if digit in [0, 1, 2, 3, 4, 7, 8, 9] else drawLine(False)
+    turtle.left(180)
+    turtle.penup()  # 为绘制后续数字
+    turtle.fd(20)  # 为绘制后续数字确定位置
+
+
+def main():
+    turtle.setup(800, 350, 200, 200)
+    turtle.penup()
+    turtle.fd(-300)
+    turtle.pensize(5)
+    drawDate(time.strftime('%Y-%m=%d+', time.gmtime()))
+    turtle.hideturtle()
+    turtle.done()
+
+
+main()
+
+ ```
+ 输出结果：![](50.png)
+ ## 3.代码复用与函数递归
+ 
