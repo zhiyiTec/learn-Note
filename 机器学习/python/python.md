@@ -69,6 +69,16 @@
     - [4.lambda函数](#4lambda函数)
   - [2.七段数码管的绘制](#2七段数码管的绘制)
   - [3.代码复用与函数递归](#3代码复用与函数递归)
+    - [1.n!](#1n)
+    - [2.字符串翻转](#2字符串翻转)
+    - [3.斐波那契数列](#3斐波那契数列)
+    - [4.汉诺塔问题](#4汉诺塔问题)
+  - [4.PyInstaller库的使用](#4pyinstaller库的使用)
+    - [1.通过pip指令进行安装](#1通过pip指令进行安装)
+    - [2.pyInstaller库的使用说明](#2pyinstaller库的使用说明)
+      - [1.简单的使用](#1简单的使用)
+      - [2.pyInstaller库常用参数](#2pyinstaller库常用参数)
+  - [5.科赫雪花小包裹问题分析](#5科赫雪花小包裹问题分析)
 
 <!-- /TOC -->
 # 1.python的基本语法元素
@@ -601,5 +611,118 @@ main()
 
  ```
  输出结果：![](50.png)
- ## 3.代码复用与函数递归
- 
+
+## 3.代码复用与函数递归
+### 1.n!
+``` python
+def fact(n):
+    if n == 0:
+        return 1
+    else:
+        return n * fact(n - 1)
+
+
+print("递归的结果为：{}".format(fact(3)))
+```
+### 2.字符串翻转
+``` python
+def rvs(s):
+    if s == "":
+        return s
+    else:
+        return rvs(s[1:]) + s[0]
+print("反转结果：{}".format(rvs("字符串反转")))
+```
+### 3.斐波那契数列
+![](51.png)
+``` python
+def f(n):
+    if n == 1 or n == 2:
+        return 1
+    else:
+        return f(n - 1) + f(n - 2)
+```
+### 4.汉诺塔问题
+[问题详解](https://blog.csdn.net/qq_37873310/article/details/80461767)
+
+## 4.PyInstaller库的使用
+将.py源代码转换成无需源代码的可执行文件
+![](52.png)
+### 1.通过pip指令进行安装
+``` shell
+pip install pyinstaller
+```
+![](53.png)
+### 2.pyInstaller库的使用说明
+#### 1.简单的使用
+cd到对应的工程目录，执行以下指令
+``` shell
+pyinstaller -F <文件名.py>
+```
+![](56.png)
+最后生成的可执行文件在dist目录下
+![](57.png)
+#### 2.pyInstaller库常用参数
+-h --clean -D,--onedir -F,--onefile -i<图标文件名.ico>
+![](54.png)
+使用示例：
+![](55.png)
+
+## 5.科赫雪花小包裹问题分析
+科赫曲线也叫雪花曲线
+![](58.png)
+下面开始进行绘制：
+* 科赫曲线
+``` python
+import turtle
+
+
+def koch(size, n):
+    if n == 0:
+        turtle.fd(size)
+    else:
+        for angle in [0, 60, -120, 60]:
+            turtle.left(angle)
+            koch(size / 3, n - 1)
+
+
+def main():
+    turtle.setup(800, 400)
+    turtle.penup()
+    turtle.goto(-300, -50)
+    turtle.pendown()
+    turtle.pensize(2)
+    koch(600, 3)
+
+
+main()
+```
+* 科赫雪花的绘制:
+``` python
+import turtle
+
+
+def koch(size, n):
+    if n == 0:
+        turtle.fd(size)
+    else:
+        for angle in [0, 60, -120, 60]:
+            turtle.left(angle)
+            koch(size / 3, n - 1)
+
+
+def main():
+    turtle.setup(600, 600)
+    turtle.penup()
+    turtle.goto(-200, 100)
+    turtle.pendown()
+    turtle.pensize(2)
+    level = 3  # 3阶科赫曲线
+    koch(400, level)
+    turtle.right(120)
+    koch(400, level)
+    turtle.right(120)
+    koch(400, level)
+    turtle.hideturtle()
+main()
+```
