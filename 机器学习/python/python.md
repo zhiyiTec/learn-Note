@@ -79,6 +79,36 @@
       - [1.简单的使用](#1简单的使用)
       - [2.pyInstaller库常用参数](#2pyinstaller库常用参数)
   - [5.科赫雪花小包裹问题分析](#5科赫雪花小包裹问题分析)
+- [6.组合数据类型](#6组合数据类型)
+  - [1.集合类型及操作](#1集合类型及操作)
+    - [1.集合的描述](#1集合的描述)
+    - [2.集合操作符](#2集合操作符)
+    - [3.集合的处理方法](#3集合的处理方法)
+    - [4.集合类型应用场景](#4集合类型应用场景)
+  - [2.序列类型及操作](#2序列类型及操作)
+    - [1.序列类型的定义](#1序列类型的定义)
+    - [2.序列处理函数及方法](#2序列处理函数及方法)
+    - [3.元祖类型及操作](#3元祖类型及操作)
+    - [4.列表类型及操作](#4列表类型及操作)
+      - [1.列表的定义](#1列表的定义)
+      - [2.列表常用的操作](#2列表常用的操作)
+      - [3.列表常用函数](#3列表常用函数)
+      - [4.实现功能](#4实现功能)
+    - [5.序列类型应用场景](#5序列类型应用场景)
+      - [1.数据保护](#1数据保护)
+    - [6.总结](#6总结)
+  - [3.“基本统计值计算“问题分析](#3基本统计值计算问题分析)
+    - [1.需求](#1需求)
+    - [2.如何实现](#2如何实现)
+  - [4.字典类型及操作](#4字典类型及操作)
+    - [1.字典类型的定义](#1字典类型的定义)
+    - [2.字典处理函数及方法](#2字典处理函数及方法)
+  - [5.jieba库的使用](#5jieba库的使用)
+    - [1.jieba库的安装](#1jieba库的安装)
+    - [2.jieba库的分词原理](#2jieba库的分词原理)
+    - [3.jieba库使用说明](#3jieba库使用说明)
+      - [4.常用函数](#4常用函数)
+  - [6.文本词频统计](#6文本词频统计)
 
 <!-- /TOC -->
 # 1.python的基本语法元素
@@ -726,3 +756,405 @@ def main():
     turtle.hideturtle()
 main()
 ```
+
+# 6.组合数据类型
+## 1.集合类型及操作
+### 1.集合的描述
+* 集合用大括号{}表示，元素之间用逗号分隔
+* 建立集合类型用{}或set
+* 建立空集合类型，必须使用set()
+* 集合间每个元素唯一，不存在相同元素
+* 集合元素无序
+
+``` python
+A = {"python", 123, ("python", 123)}
+print(A)
+B = set("pypy123123")
+print(B)
+C = {"python", 123, "python", 123}
+print(C)
+
+```
+输出结果：![](59.PNG)
+### 2.集合操作符
+交S&T 并S|T 补S^T 差S-T
+![](60.png)
+增强操作符：
+S|=T S-=T S&=T S^=T
+![](61.png)
+``` python
+A = {"p", "y", 123}
+B = set("pypym123")
+print("A-B:{}".format(A - B))
+print("B-A:{}".format(B - A))
+print("A&B:{}".format(A & B))
+print("A | B:{}".format(A | B))
+print("A ^ B", format(A ^ B))
+```
+输出结果：![](62.png)
+### 3.集合的处理方法
+S.add S.discard S.remove S.clear s.pop
+![](63.png)
+![](64.png)
+S.copy len(s) x in s x not in S set(X)
+![](65.png)
+``` python
+A = {"p", "y", 123}
+try:
+    while True:
+        print(A.pop(), end="")
+except:
+    pass
+```
+### 4.集合类型应用场景
+* 1.包含关系比较
+``` python
+A = {"p", "y", 123}
+print("p" in A)
+```
+输出结果:![](66.png)
+* 2.数据去重
+``` python
+# 列表
+ls = ["p", "p", "y", "y", 123]
+s = set(ls)
+print(s)
+ls=list(s) #将集合转为列表
+print(ls)
+```
+输出结果：![](67.png)
+
+## 2.序列类型及操作
+### 1.序列类型的定义
+序列是具有先后关系的一组元素
+* 序列一维元素向量，元素类型可以不同
+* 类似数学元素序列:$$ s_0,s_1,...,s_n-1 $$
+* 元素间由序号引导，通过下标访问序列的特定元素
+
+序列是一个基类类型
+![](68.png)
+序列号的定义：
+![](69.png)
+### 2.序列处理函数及方法
+x in s x not in s s+t s*n 或n*s s[i] s[i:j]或s[i:j:k]
+![](70.png)
+len(s) min(s) max(s) s.index(x)或s.index(x,i,j) s.count(x)
+![](71.png)
+### 3.元祖类型及操作
+元组是序列类型的扩展
+* 元组是一种序列类型，一旦创建就不能修改
+* 使用小括号()或tuple()创建，元素间用逗号,分隔
+* 可以使用或不使用小括号
+
+``` python
+creature = "cat", "dog", "tiger", "human"
+print(creature[::-1])
+color = (111, "blue", creature)
+print(color[-1][2])
+```
+输出结果：![](72.png)
+### 4.列表类型及操作
+#### 1.列表的定义
+* 列表是一种序列类型，创建后可以随意被修改
+* 使用方括号[]或list()创建，元素间用.分隔
+* 可以使用或不适用小括号
+
+``` 
+ls = ["cat", "dog", "tiger", 1024]
+print(ls)
+lt = ls
+print(lt)
+lt.pop(0)
+print(ls)
+print(lt)
+```
+输出结果:![](73.png)
+我们可以看出lt=ls这句话并不是真正的产生一个新的列表，而是声明了一个新的变量lt，并且指向与ls的同一个内存地址
+#### 2.列表常用的操作
+ls[i]=x ls[i:j:k]=lt del ls[i] del ls[i:j:k] ls+=lt ls *=n
+![](74.png)
+``` python
+ls = ["cat", "dog", "tiger", 1024]
+ls[1:2] = [1, 2, 3, 4, 5, 6]
+print("ls:{}".format(ls))
+del ls[::3]
+print("ls[::3]:{}".format(ls))
+ls *= 2
+print("ls *= 2:{}".format(ls))
+```
+输出结果:![](75.png)
+#### 3.列表常用函数
+ls.append ls.clear() ls.copy() ls.insert(i,x) ls.pop(i) ls.remove(x) ls.reverse()
+![](76.png)
+``` python
+ls = ["cat", "dog", "tiger", 1024]
+ls.append(1234)
+print("ls.append(1234):{}".format(ls))
+ls.insert(3, "human")
+print('ls.insert:{}'.format(ls))
+ls.reverse()
+print("ls.reverse(){}".format(ls))
+```
+输出结果：![](78.png)
+#### 4.实现功能
+现在实现以下需求
+![](77.png)
+``` python
+# 定义一个空列表
+lt = []
+# 向Lt中新增5个元素
+lt += [1, 2, 3, 4, 5]
+print("新增5个元素之后的结果为{}".format(lt))
+# 修改lt中的第二个元素
+lt[1] = 6
+print("修改lt中的第二个元素:{}".format(lt))
+# 向第二个位置增加一个元素
+lt.insert(1, 7)
+print("向第二个位置增加一个元素:{}".format(lt))
+# 从lt中删除第一个元素
+lt.pop(0)  # 或del lt[0]
+print("从lt中删除第一个元素{}".format(lt))
+# 删除lt中第0到第三个位置的元素，包含第三个位置
+del lt[0:3]
+print("删除lt中第0到第三个位置的元素，包含第三个位置:{}".format(lt))
+# 判断lT中是否包含数字0
+print("判断lT中是否包含数字0:{}".format(0 in lt))
+# 向lt中新增数字0
+lt.append(0)
+print("向lt中新增数字0:{}".format(lt))
+# 返回数字0在lt中的索引
+print("返回数字0在lt中的索引:{}".format(lt.index(0)))
+# lt的长度
+print("lt的长度:{}".format(len(lt)))
+# lt的最大元素
+print("lt的最大元素:{}".format(max(lt)))
+# lt的最小元素
+print("lt的最小元素:{}".format(min(lt)))
+# 清空lt
+lt.clear()
+print("清空lt:{}".format(lt))
+```
+输出结果：![](79.png)
+### 5.序列类型应用场景
+* 元组用于元素不改变的场景，更多应用于固定场景搭配
+* 列表更加灵活，它是最常用的序列类型
+* 最主要的作用：表示一组有序的数据，进而操作他们
+
+#### 1.数据保护
+如果不希望数据被程序所改变，转换为元组类型
+``` python
+ls = ["cat", "dog", "tiger", 1024]
+lt=tuple(ls)
+print(lt)
+del lt[0]
+```
+输出结果:![](80.png)
+### 6.总结
+* 序列是基本类型，扩展类型包括：字符串，元组，列表
+* 元组用（）和tuple()创建，列表用[]和list()创建
+* 元组操作与序列基本相同
+* 列表操作在序列操作的基础上增加了更多的灵活性
+
+
+## 3.“基本统计值计算“问题分析
+### 1.需求
+![](81.png)
+### 2.如何实现
+* 总个数：len()
+* 求和：for ... in 
+* 平均值：求和/总个数
+* 方差：各个数据与平均数差的平方的和的平均数
+* 中位数：排序，然后...奇数找中间1个，偶数找中间两个取平均
+
+``` python
+# 获取用户输入的数据
+def getNum():
+    nums = []
+    isNumStr = input("请输入数字（回车退出）：")
+    while isNumStr != "":
+        nums.append(eval(isNumStr))
+        isNumStr = input("请输入数字（回车退出）：")
+    return nums
+
+
+# 计算平均值
+def mean(numbers):
+    s = 0.
+    for num in numbers:
+        s += num
+    return s / len(numbers)
+
+
+# 计算用户输入的方差
+def dev(numbers, mean):
+    sdev = 0.
+    for num in numbers:
+        sdev = sdev + (num - mean) ** 2
+    return pow(sdev / (len(numbers) - 1), 0.5)
+
+
+# 计算中位数
+def median(numbers):
+    sorted(numbers)
+    size = len(numbers)
+    if size % 2 == 0:
+        a1 = numbers[size // 2]
+        a2 = numbers[size // 2 + 1]
+        result = (a1 + a2) / 2
+    else:
+        result = numbers[size // 2]
+    return result
+
+
+def main():
+    n = getNum()
+    m = mean(n)
+    print("平均值：{},方差:{:.2},中位数:{}".format(m, dev(n, m), median(n)))
+main()
+```
+输出结果：![](82.png)
+## 4.字典类型及操作
+### 1.字典类型的定义
+* 映射是一种键（索引）和值（数据）的对应
+
+``` python
+d = {"中国": "北京", "美国": "华盛顿", "法国": "巴黎"}
+print(d)
+print(d["中国"])
+print(type(d))
+```
+输出结果：![](83.png)
+
+### 2.字典处理函数及方法
+del d[k] k in d d.keys() d.values() d.items()
+![](84.png)
+``` python
+d = {"中国": "北京", "美国": "华盛顿", "法国": "巴黎"}
+print("中国 in d:{}".format("中国" in d))
+print("d.keys():{}".format(d.keys()))
+print("d.values:{}".format(d.values()))
+```
+输出结果:![](85.png)
+d.get() d.pop d.popitem d.clear len
+![](86.png)
+``` python
+# 1.定义一个空字典
+d = {}
+print("定义一个空字典:{}".format(d))
+# 2.向d中新增两个元素
+d["a"] = 1
+d["b"] = 2
+print("向d中新增两个元素:{}".format(d))
+# 3.修改第二个元素
+d["b"] = 3
+print("修改第二个元素:{}".format(d))
+# 4.判断字符c是否是d键
+print("判断字符c是否是d键:{}".format("c" in d))
+```
+输出结果：![](87.png)
+
+## 5.jieba库的使用
+用于分词
+### 1.jieba库的安装
+在cmd中输入指令
+```
+pip install jieba
+```
+### 2.jieba库的分词原理
+jieba库分词依靠中文词库
+* 利用一个中文词库，确定汉字之间的关联概率
+* 汉字间概率大的组成词组，形成分词结果
+* 除了分词，用户还可以添加自定义的词组
+
+### 3.jieba库使用说明
+三种模式：
+* 精确模式：把文本精确的切分开，不存在冗余单词
+* 全模式：把文本中所有可能的词语都扫描出来，有冗余
+* 搜索引擎模式：在精确模式基础上对长词再次进行切分
+#### 4.常用函数
+jieba.lcut(s) jieba.lcut(s,cut_all=True)
+![](88.png)
+jieba.lcut_for_search(s) jieba.add_word(w)
+![](89.PNG)
+
+## 6.文本词频统计
+``` python
+file = "./file/hamlet.txt"
+
+
+def getText(file):
+    txt = open(file, "r").read()
+    txt = txt.lower()
+    for ch in '!"#$%&()*+,-./:;<=>?@[\\]^_’{|}~':
+        txt = txt.replace(ch, " ")
+    return txt
+
+
+hamletText = getText(file)
+words = hamletText.split()
+counts = {}
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+items = list(counts.items())
+
+items.sort(key=lambda x: x[1], reverse=True)
+print(items)
+for i in range(10):
+    word, count = items[i]
+    print("{0:<10}{1:>5}".format(word, count))
+```
+```python
+import jieba
+
+txt = open("./file/三国.txt", "r", encoding="utf-8").read()
+words = jieba.lcut(txt)
+counts = {}
+for word in words:
+ if len(word) == 1:
+        continue
+else:
+    counts[word] = counts.get(word, 0) + 1
+items = list(counts.items())
+
+items.sort(key=lambda x: x[1], reverse=True)
+print(items)
+for i in range(10):
+    word, count = items[i]
+    print("{0:<10}{1:>5}".format(word, count))
+```
+下面附上文件链接
+[点击此处下载hamlet.txt](http://zhiyitec.top:2000/downLoad/1606396013625hamlet.txt)
+[点击此处下载三国.txt](http://zhiyitec.top:2000/downLoad/1606396013631三国.txt)
+接下来我们继续统计三国里面出现的人物：
+``` python
+import jieba
+
+txt = open("./file/三国.txt", "r", encoding="utf-8").read()
+excludes = {"将军", "却说", "荆州", "二人", "不可", "不能", "如此","如何"}
+words = jieba.lcut(txt)
+counts = {}
+for word in words:
+    if len(word) == 1:
+        continue
+    elif word in ["诸葛亮", "孔明曰"]:
+        rword = "孔明"
+    elif word in ["关公", "云长"]:
+        rword = "关羽"
+    elif word in ["玄德", "玄德曰"]:
+        rword = "刘备"
+    elif word in ["孟德", "丞相"]:
+        rword = "曹操"
+    else:
+        rword = word
+    counts[rword] = counts.get(rword, 0) + 1
+for word in excludes:
+    del counts[word]
+items = list(counts.items())
+items.sort(key=lambda x: x[1], reverse=True)
+print(items)
+for i in range(10):
+    word, count = items[i]
+    print("{0:<10}{1:>5}".format(word, count))
+
+```
+输出结果：![](90.png)
