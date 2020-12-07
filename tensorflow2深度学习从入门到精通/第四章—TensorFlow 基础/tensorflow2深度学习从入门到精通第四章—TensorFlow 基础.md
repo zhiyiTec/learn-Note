@@ -27,6 +27,9 @@
     - [4.6.3 小结](#463-小结)
   - [4.7 维度变换](#47-维度变换)
     - [4.7.1 Reshape](#471-reshape)
+    - [4.7.2 增删维度](#472-增删维度)
+      - [增加维度](#增加维度)
+      - [删除维度](#删除维度)
 
 <!-- /TOC -->
 # 第4章 TensorFlow 基础
@@ -569,4 +572,118 @@ print(x)
 >  对于shape 为[4,32,32,3]的图片数据，通过 Reshape 操作将 shape 调整为[4,1024,3]，此时视图的维度顺序为b-piexl-c，张量的存储顺序为[b,h,w,c]。
 > 可以将[4,1024,3]恢复为
 > ![](53.png)
-> 
+
+在 TensorFlow 中，可以通过张量的 ndim 和 shape 成员属性获得张量的维度数和形状：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.range(96)
+x = tf.reshape(x, [2, 4, 4, 3])
+print("x.ndim",x.ndim)
+print("x.shape",x.shape)
+```
+![](54.png)
+通过 tf.reshape(x, new_shape)，可以将张量的视图任意的合法改变：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.range(96)
+x = tf.reshape(x, [2, 4, 4, 3])
+x=tf.reshape(x, [2, -1])
+print("reshape——x.ndim", x.ndim)
+print("reshape——x.shape", x.shape)
+print("reshape——x", x)
+```
+![](55.png)
+下面解释一下相应的参数：
+* 参数-1 :表示当前轴上长度需要根据视图总元素不变的法则自动推导,从而方便用户书写。
+  比如，上面的-1 可以推导为$$\frac{2*4*4*3}{2}$$
+
+再次改变数据的视图为[2,4,12]：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.range(96)
+x = tf.reshape(x, [2, 4, 12])
+print("reshape[2,4,12]——x.ndim", x.ndim)
+print("reshape[2,4,12]——x.shape", x.shape)
+print("reshape[2,4,12]——x", x)
+```
+![](56.png)
+下面解释一下[2,4,12]的含义：这是将x的形状变为2行4列，其中每一行有12个元素
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.range(96)
+x = tf.reshape(x, [2, -1, 3])
+print("reshape[2, -1, 3]——x.ndim", x.ndim)
+print("reshape[2, -1, 3]——x.shape", x.shape)
+print("reshape[2, -1, 3]——x", x)
+```
+![](57.png)
+下面在解释一下 [2, -1, 3]中-1的含义，它表示：$$\frac{2*4*4*3}{2*3}$$
+经过上面的一系列变换视图，张量的存储顺序始终没有发生任何改变，仍然是在内存中仍然是按着初始写入的顺序0,1,2,…,95保存的。
+
+### 4.7.2 增删维度
+#### 增加维度 
+增加一个长度为 1 的维度相当于给原有的数据增加一个新维度的概念，维度长度为 1，故数据并不需要改变，仅仅是改变数据的理解方式，因此它其实可以理解为改变视图的一种特殊方式
+下面我们考虑一个具体的例子：
+> 一张 28x28 灰度图片的数据保存为 为[28,28]的张量，在末尾给张量增加一新维度，定义为为通道数维度，此时张量的 shape 变为[28,28,1]：
+
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.random.uniform([28, 28], maxval=10, dtype=tf.int32)
+print(x)
+```
+![](58.png)
+通过 tf.expand_dims(x, axis)可在指定的 axis 轴前可以插入一个新的维度：
+``` python
+x=tf.expand_dims(x, axis=2)
+```
+![](59.PNG)
+我们先对比一下插入前和插入后的数据：
+* 插入前：
+  ![](60.png)
+* 插入后：
+  ![](61.png)
+可以看到，插入一个新维度后，数据的存储顺序并没有改变，依然按着5，2，3，3，1...的顺序保存，仅仅是在插入一个新的维度后，改变了数据的视图
+同样的方法，我们可以在最前面插入一个新的维度，并命名为图片数量维度，长度为1，此时张量的 shape 变为[1,28,28,1]
+![](62.png)
+注意：tf.expand_dims 的 axis
+  * 为正时，表示在当前维度之前插入一个新维度
+  * 为负时，表示当前维度之后插入一个新的维度
+
+以[𝑐,ℎ, ,𝑑]张量为例，不同 axis 参数的实际插入位置如下图 4.6 所示：
+![](63.png)
+#### 删除维度 
+是增加维度的逆操作，与增加维度一样，删除维度只能删除长度为 1 的维
+度，也不会改变张量的存储。继续考虑增加维度后 shape 为[1,28,28,1]的例子。
+如果希望将图片数量维度删除，可以通过 tf.squeeze(x, axis)函数，axis 参数为待删除的维度的索引号，图片数量的维度轴 axis=0：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.random.uniform([28, 28], maxval=10, dtype=tf.int32)
+x = tf.expand_dims(x, axis=2)
+x = tf.expand_dims(x, axis=0)
+# 删除维度
+x=tf.squeeze(x,axis=0)
+print(x)
+```
+![](64.png)
+继续删除通道数维度，由于已经删除了图片数量维度，此时的x的shape 为[28,28,1]，因此删除通道数维度时指定 axis=2：
+``` python
+
+```
