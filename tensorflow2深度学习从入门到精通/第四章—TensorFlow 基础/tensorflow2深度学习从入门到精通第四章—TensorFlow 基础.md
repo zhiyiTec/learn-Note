@@ -30,6 +30,9 @@
     - [4.7.2 增删维度](#472-增删维度)
       - [增加维度](#增加维度)
       - [删除维度](#删除维度)
+    - [4.7.3 交换维度](#473-交换维度)
+    - [4.7.4 数据复制](#474-数据复制)
+  - [4.8 Broadcasting](#48-broadcasting)
 
 <!-- /TOC -->
 # 第4章 TensorFlow 基础
@@ -685,5 +688,154 @@ print(x)
 ![](64.png)
 继续删除通道数维度，由于已经删除了图片数量维度，此时的x的shape 为[28,28,1]，因此删除通道数维度时指定 axis=2：
 ``` python
-
+x=tf.squeeze(x,axis=2)
+print("tf.squeeze(x,axis=2)",x)
 ```
+![](65.png)
+但是如果不指定维度参数 axis，即 tf.squeeze(x)，那么他会默认删除所有长度为 1 的维度：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.random.uniform([1, 28, 28, 1], maxval=10, dtype=tf.int32)
+print("未删除前：", x.shape)
+x = tf.squeeze(x)
+print("删除后：",x.shape)
+```
+![](66.png)
+### 4.7.3 交换维度
+改变视图、增删维度都不会影响张量的存储。在实现算法逻辑时，在保持维度顺序不变的条件下，仅仅改变张量的理解方式是不够的，有时需要直接调整的存储顺序，即交换维度(Transpose)。通过交换维度，改变了张量的存储顺序，同时也改变了张量的视图。
+交换维度操作是非常常见的，比如在 TensorFlow 中，图片张量的默认存储格式是通道后行格式：[b,h,w,c]，但是部分库的图片格式是通道先行：[b,c,h,w]，因此需要完成[b,h,w,c]到[b,c,h,w]维度交换运算。
+我们以[b,h,w,c]转换到[b,c,h,w]为例，介绍如何使用tf.transpose(x, perm)函数完成维度交换操作，其中
+* perm表示新维度顺序List
+
+考虑图片张量 shape 为[2,32,32,3]， 图片数量、行、列、通道数 的维度索引分别为 0,1,2,3，如果需要交换为[b,c,h,w]格式，则新维度的排序为 图片数量、通道数、行、列 ，对应的索引号为[0,3,1,2]，实现如下:
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.random.normal([2, 32, 32, 3])
+x=tf.transpose(x, perm=[0, 3, 1, 2])
+print(x)
+```
+![](67.png)
+下面大致解释一下上面的代码:
+> perm后面的顺序就是原始对应位置进行交换后的顺序，也就是说原来3号位对应的位置现在放在2号位置上
+
+如果希望将[b,h,w,c]交换为[b,w,h,c]，即将行列维度互换，则新维度索引为[0,2,1,3]:
+![](68.png)
+注意:通过 tf.transpose 完成维度交换后，张量的存储顺序已经改变，视图也随之改变，后续的所有操作必须基于新的存续顺序进行
+### 4.7.4 数据复制
+* 当通过增加维度操作插入新维度后，可能希望在新的维度上面复制若干份数据，满足后续算法的格式要求。
+* 考虑𝑍 = 𝑌@𝑋 + 𝒃的例子，偏置𝒃插入新维度后，需要在新维度上复制 batch size(步长尺寸) 份数据,将 shape 变为与𝑌@𝑋一致后，才能完成张量相加运算。
+* 可以通过tf.tile(x, multiples)函数完成数据在指定维度上的复制操作
+  multiples 分别指定了每个维度上面的复制倍数
+  * 对应位置为 1 表明不复制
+  * 为 2 表明新长度为原来的长度的 2 倍，即数据复制一份，以此类推。
+以输入为[2,4]，输出为 3 个节点线性变换层为例，偏置𝒃定义为：
+![](69.png)
+通过 tf.expand_dims(b,axis=0)插入新维度：样本数量维度
+![](70.png)
+此时𝒃的 shape 变为[1,3]，我们需要在 axis=0 图片数量维度上根据输入样本的数量复制若干次，这里的 batch size 为 2，𝒃变为矩阵 B：
+![](71.png)
+实现以上结果，我们可以通过以下步骤：
+通过 tf.tile(b, multiples=[2,1])即可在 axis=0 维度复制 1 次在 axis=1 维度不复制。
+> axis=0表示[1,3]中的1也就是一行，上面的代码就是将第一行复制一次
+
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+b = tf.constant([1, 2])
+print("初始状态下：", b)
+b = tf.expand_dims(b, axis=0)
+print("在0号位插入一个新的维度：", b)
+b=tf.tile(b,multiples=[2,1])
+print("复制一次之后：",b)
+```
+![](72.png)
+我们在看一个例子
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x=tf.range(4)
+x=tf.reshape(x,[2,2])
+print("未复制之前的x:",x)
+x=tf.tile(x,multiples=[1,2])
+print("在列维度上复制一份数据：",x)
+x=tf.tile(x,multiples=[2,1])
+print("在行维度上复制一份数据：",x)
+```
+![](73.png)
+需要注意的是，tf.tile 会创建一个新的张量来保存复制后的张量，由于复制操作涉及到大量数据的读写 IO 运算，计算代价相对较高。
+神经网络中不同 shape 之间的运算操作十分频繁，那么有没有轻量级的复制操作呢？这就是接下来要介绍的 Broadcasting 操作。
+## 4.8 Broadcasting
+Broadcasting 也叫广播机制(自动扩展也许更合适)，它是一种轻量级张量复制的手段，在逻辑上扩展张量数据的形状，但是只要在需要时才会执行实际存储复制操作。
+对于大部分场景，Broadcasting 机制都能通过优化手段避免实际复制数据而完成逻辑运算，从而相对于 tf.tile 函数，减少了大量计算代价。
+对于所有长度为 1 的维度，Broadcasting 的效果和 tf.tile 一样，都能在此维度上逻辑复
+制数据若干份，但是区别在于
+*  tf.tile 会创建一个新的张量，执行复制 IO 操作，并保存复制后的张量数据
+*  Broadcasting 并不会立即复制数据，它会逻辑上改变张量的形状，使得视图上变成了复制后的形状
+
+Broadcasting 会通过深度学习框架的优化手段避免实际复制数据而完成逻辑运算，至于怎么实现的我们不用考虑，对于用户来说，Broadcasting 和 tf.tile 复制的最终效果是一样的，操作对用户透明，但是 Broadcasting 机制节省了大量计算资源，建议在运算过程中尽可能地利用 Broadcasting 提高计算效率。
+继续考虑上述的Y = X@W+ 𝒃的例子，X@W的 shape 为[2,3]，𝒃的 shape 为[3]，我们可以通过结合 tf.expand_dims 和 tf.tile 完成实际复制数据运算，将𝒃变换为[2,3]，然后与X@W完成相加。但实际上，我们直接将 shape 为[2,3]与[3]的𝒃相加：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+
+x = tf.random.normal([2, 4])
+w = tf.random.normal([4, 3])
+b = tf.random.normal([3])
+y = x @ w + b
+print(y)
+```
+![](74.png)
+我们可以看出上述加法并没有发生逻辑错误，那么它是怎么实现的呢？
+这是因为它自动调用 Broadcasting函数 tf.broadcast_to(x, new_shape)，将 2 者 shape 扩张为相同的[2,3]，即上式可以等效为：
+``` python
+y = x@w + tf.broadcast_to(b,[2,3])
+```
+也就是说，操作符+在遇到 shape 不一致的 2 个张量时，会自动考虑将 2 个张量Broadcasting 到一致的 shape，然后再调用 tf.add 完成张量相加运算
+这也就解释了我们之前一直存在的困惑。通过自动调用 tf.broadcast_to(b, [2,3])的 Broadcasting 机制，既实现了
+增加维度、复制数据的目的，又避免实际复制数据的昂贵计算代价，同时书写更加简洁高效。
+
+那么有了 Broadcasting 机制后，所有 shape 不一致的张量是不是都可以直接完成运算了呢？
+很明显，所有的运算都需要在正确逻辑下进行，Broadcasting 机制并不会扰乱正常的计算逻辑，它只会针对于最常见的场景自动完成增加维度并复制数据的功能，提高开发效率和运行效率。这种最常见的场景是什么呢？
+这就要说到 Broadcasting 设计的核心思想。
+> Broadcasting 机制的核心思想是**普适性**，即同一份数据能普遍适合于其他位置。在验证普适性之前，需要将张量 shape 靠右对齐，然后进行普适性判断：对于长度为 1 的维度，默认这个数据普遍适合于当前维度的其他位置；对于不存在的维度，则在增加新维度后默认当前数据也是普适性于新维度的，从而可以扩展为更多维度数、其他长度的张量形状。
+
+这段话可能读起来比较难理解，下面我们通过一个例子去理解它：
+考虑 shape 为[w,1]的张量 A，需要扩展为 shape：[b,h,w,c]，如图 4.7 所示，上行为欲扩展的 shape，下面为现有 shape：
+![](75.png)
+下面我们经过如下几个步骤来实现：
+* 将 2 个 shape 靠右对齐
+* 对于通道维度 c，张量的现长度为 1，则默认此数据同样适合当前维度的其他位置，将数据逻辑上复制c − 1份，长度变为 c；
+* 对于不存在的 b 和 h 维度，则自动插入新维度，新维度长度为 1，同时默认当前的数据普适于新维度的其他位置，即对于其它的图片、其他的行来说，与当前的这一行的数据完全一致。
+* 这样将数据b，h 维度的长度自动扩展为 b，h，如图 4.8 所示：
+
+![](76.png)
+通过 tf.broadcast_to(x, new_shape)可以显式将现有 shape 扩张为 new_shape：
+``` python
+a = tf.random.normal([32, 1])
+a = tf.broadcast_to(a, [2, 32, 32, 3])
+print(a)
+```
+![](77.png)
+下面我们来考虑不满足普适性原则的例子，如下图 4.9 所示：
+![](78.png)
+在 c 维度上，张量已经有 2 个特征数据，新 shape 对应维度长度为 c(c ≠ 2，比如 c=3)，那么当前维度上的这 2 个特征无法普适到其他长度，故不满足普适性原则，无法应用Broadcasting 机制，将会触发错误：
+``` python
+a = tf.random.normal([32, 2])
+a=tf.broadcast_to(a, [2, 32, 32, 4])
+print(a)
+```
+![](79.png)
+在进行张量运算时，有些运算可以在处理不同 shape 的张量时，会隐式自动调用Broadcasting 机制，如+，-，*，/等运算等，将参与运算的张量 Broadcasting 成一个公共shape，再进行相应的计算，如图 4.10 所示，演示了 3 种不同 shape 下的张量 A，B 相加的例子：
+![](80.png)
