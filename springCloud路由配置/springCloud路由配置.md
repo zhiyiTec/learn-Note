@@ -18,6 +18,7 @@
     - [使用postMan测试：](#使用postman测试)
   - [5.2 统一服务降级](#52-统一服务降级)
     - [测试：](#测试)
+- [6.设置熔断请求时间](#6设置熔断请求时间)
 
 <!-- /TOC -->
 # 1.之前讲解了springBoot集成springCloud，即实现了服务注册中心，服务者，消费者功能的实现
@@ -257,4 +258,23 @@ public class FallBackConfig implements org.springframework.cloud.netflix.zuul.fi
 ```
 ### 测试：
 在测试之前我们先关闭consumer的服务，在发送请求
+# 6.设置熔断请求时间
+对于一些请求时间比较长的接口，会返回type=Gateway Timeout, status=504这种错误
+``` json
+{
+  "timestamp": "2020-06-29T11:42:00.366+0000",
+  "status": 504,
+  "error": "Gateway Timeout",
+  "message": "com.netflix.zuul.exception.ZuulException: Hystrix Readed time out"
+}
+```
+这是由于被zuul熔断了，解决办法就是设置熔断时间,具体解决办法如下：
+在application.properties文件中添加：
+``` yml
+# 设置熔断时间
+#请求处理的超时时间
+ribbon.ReadTimeout=120000
+#请求连接的超时时间
+ribbon.ConnectTimeout=30000
+```
 至此zuul的功能基本实现，如果有不当之处希望各位小哥哥，小姐姐多多指教

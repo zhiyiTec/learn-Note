@@ -33,6 +33,12 @@
     - [4.7.3 交换维度](#473-交换维度)
     - [4.7.4 数据复制](#474-数据复制)
   - [4.8 Broadcasting](#48-broadcasting)
+  - [4.9 数学运算](#49-数学运算)
+    - [4.9.1 加减乘除](#491-加减乘除)
+    - [4.9.2 乘方](#492-乘方)
+    - [4.9.3 指数 对数](#493-指数-对数)
+    - [4.9.4 矩阵相乘](#494-矩阵相乘)
+  - [4.10 前向传播实战](#410-前向传播实战)
 
 <!-- /TOC -->
 # 第4章 TensorFlow 基础
@@ -839,3 +845,262 @@ print(a)
 ![](79.png)
 在进行张量运算时，有些运算可以在处理不同 shape 的张量时，会隐式自动调用Broadcasting 机制，如+，-，*，/等运算等，将参与运算的张量 Broadcasting 成一个公共shape，再进行相应的计算，如图 4.10 所示，演示了 3 种不同 shape 下的张量 A，B 相加的例子：
 ![](80.png)
+
+## 4.9 数学运算
+### 4.9.1 加减乘除
+加减乘除是最基本的数学运算，分别通过：
+* tf.add 加
+* tf.subtract 减
+* tf.multiply 乘
+* tf.divide 除
+但是TensorFlow 已经重载了+ −∗/运算符，一般推荐直接使用运算符来完成加减乘除运算。
+
+整除和余除也是常见的运算之一，分别通过//和%运算符实现。
+我们来演示整除运算：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+a = tf.range(5)
+print("a", a)
+b = tf.constant(2)
+print("b:", b)
+c = a // b
+print("a//b:", c)
+```
+![](81.png)
+下面解释一下这个原理：
+> 0//2=0 1//2=0 2//2=1 3//2=1 4//2=2
+
+余除运算
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+d = a % b
+print("a%b", d)
+```
+![](82.png)
+> 0%2=0 1%2=1 2%2=0 3%2=1 4%2=0
+
+### 4.9.2 乘方
+通过 tf.pow(x, a)可以方便地完成$$y=x^a$$乘方运算，也可以通过运算符**实现x ∗∗ a运算，实现如下:
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.range(4)
+print("未运算之前：",x)
+x = tf.pow(x, 3)
+print("运算之后：",x)
+
+```
+![](83.png)
+设置指数为$$\frac{1}{a}$$ 形式即可实现根号运算$$\sqrt[a]{x}$$
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x = tf.constant([1., 4., 9.])
+print("未运算之前：", x)
+x = x ** (0.5)
+print("运算之后：", x)
+```
+![](84.png)
+对于常见的平方和平方根运算，可以使用
+* tf.square(x) 实现平方操作
+* tf.sqrt(x) 实现开根号操作
+  
+  ``` python
+  import tensorflow as tf
+  from tensorflow_core.python import keras
+  from tensorflow.keras import layers
+  import numpy as np
+  x = tf.range(5)
+  x = tf.cast(x, dtype=tf.float32)
+  print("未运算之前：", x)
+  x = tf.square(x)
+  print("运算之后：", x)
+  x=tf.sqrt(x)
+  print("开平方之后：", x)
+  ```
+  ![](85.png)
+
+### 4.9.3 指数 对数
+通过 tf.pow(a, x)或者**运算符可以方便实现指数运算$$a^x$$
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+x=tf.constant([1,2,3])
+y=tf.pow(2,x)
+print(y)
+```
+![](86.png)
+* 对于自然指数$$e^x$$可以通过 tf.exp(x)实现：
+  ``` python
+  print(tf.exp(1.))
+  ```
+  ![](87.png)
+* 在 TensorFlow 中，自然对数$$\log_e^{x}$$可以通过 tf.math.log(x)实现:
+  ``` python
+  x = tf.exp(3.)
+  x = tf.math.log(x)
+  print(x)
+  ```
+  ![](88.png)
+* 对其他底数的对数进行计算：
+  我们可以通过换底公式：
+  ![](89.png)
+  间接的通过 tf.math.log(x)实现。
+  ![](90.png)
+  ``` python
+  import tensorflow as tf
+  from tensorflow_core.python import keras
+  from tensorflow.keras import layers
+  import numpy as np
+  x = tf.constant([1., 2.])
+  x = 10 ** x
+  print("x:", x)
+  y = tf.math.log(x) / tf.math.log(10.)
+  print("y", y)
+  ```
+  ![](91.png)
+### 4.9.4 矩阵相乘
+神经网络中间包含了大量的矩阵相乘运算，前面我们已经介绍了通过@运算符可以方便的实现矩阵相乘，还可以通过
+tf.matmul(a, b)实现。需要注意的是，TensorFlow 中的矩阵相乘可以使用批量方式，也就是张量 a,b 的维度数可以大于 2。当张量 a,b 维度数大于2时，TensorFlow 会选择 a,b 的最后两个维度进行矩阵相乘，前面所有的维度都视作 Batch 维度
+根据矩阵相乘的定义，a 和 b 能够矩阵相乘的条件是，a 的倒数第一个维度长度(列)和b 的倒数第二个维度长度(行)必须相等。
+比如：张量 a shape:[4,3,28,32]可以与张量 b shape:[4,3,32,2]进行矩阵相乘：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+a = tf.random.normal([4, 3, 23, 32])
+b = tf.random.normal([4, 3, 32, 2])
+print(a @ b)
+```
+![](92.png)
+矩阵相乘函数支持自动 Broadcasting 机制：
+``` python
+import tensorflow as tf
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+a=tf.random.normal([4,28,32])
+b=tf.random.normal([32,16])
+print(tf.matmul(a,b))
+```
+![](93.png)
+## 4.10 前向传播实战
+本节我们将利用我们已经学到的知识去完成三层神经网络的实现：
+![](94.png)
+我们采用的数据集是 MNIST 手写数字图片集，输入节点数为 784，第一层的输出节点数是256，第二层的输出节点数是 128，第三层的输出节点是 10，也就是当前样本属于 10 类别的概率。
+* 首先创建每个非线性函数的 w,b 参数张量：
+  ``` python
+  w1 = tf.Variable(tf.random.truncated_normal([784, 256], stddev=0.1))
+  b1 = tf.Variable(tf.zeros([256]))
+  w2 = tf.Variable(tf.random.truncated_normal([256, 128], stddev=0.1))
+  b2 = tf.Variable(tf.zeros([128]))
+  w3 = tf.Variable(tf.random.truncated_normal([128, 10], stddev=0.1))
+  b3 = tf.Variable(tf.zeros([10]))
+  ```
+* 在前向计算时，首先将 shape 为[b,28,28]的输入数据 Reshape 为[b,784] 即  [b, 28, 28] => [b, 28*28]
+  ``` python
+  x=tf.range(784)
+  x = tf.reshape(x, [-1, 28*28])
+  ```
+* 完成第一个非线性函数的计算，我们这里显示地进行 Broadcasting:大致过程如下：
+  [b, 784]@[784, 256] + [256] => [b, 256] + [256] => [b, 256] +[b, 256]
+  ``` python
+  h1 = x @ w1 + tf.broadcast_to(b1, [x.shape[0], 256])
+  h1 = tf.nn.relu(h1)
+  ```
+* 同样的方法完成第二个和第三个非线性函数的前向计算，输出层可以不使用 ReLU 激活函数：
+  [b, 256] => [b, 128]
+  ``` python
+  h2 = h1@w2 + b2
+  h2 = tf.nn.relu(h2)
+  ```
+  [b, 128] => [b, 10]
+  ``` python
+  out = h2@w3 + b3
+  ```
+* 将真实的标注张量 y 转变为 one-hot 编码，并计算与 out 的均方差：
+  mse = mean(sum(y-out)^2) 
+   [b, 10]
+   ``` python
+   loss = tf.square(y_onehot - out)
+   ```
+   mean: scalar
+   ``` python
+   loss = tf.reduce_mean(loss)
+   ```
+   上述的前向计算过程都需要包裹在 with tf.GradientTape() as tape 上下文中，使得前向计算时能够保存计算图信息，方便反向求导运算。
+* 通过 tape.gradient()函数求得网络参数到梯度信息：
+  compute gradients
+  ``` python
+  grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
+  ```
+  并按照![](95.png)
+  来更新网络参数：
+  w1 = w1 - lr * w1_grad
+  ``` python
+    w1.assign_sub(lr * grads[0])
+    b1.assign_sub(lr * grads[1])
+    w2.assign_sub(lr * grads[2])
+    b2.assign_sub(lr * grads[3])
+    w3.assign_sub(lr * grads[4])
+    b3.assign_sub(lr * grads[5])
+  ```
+其中 assign_sub()将原地(In-place)减去给定的参数值，实现参数的自我更新操作。网络训练
+误差值的变化曲线如图 4.11 所示。
+![](96.png)
+下面附上源码：
+``` python
+import tensorflow as tf
+import os
+from tensorflow import keras
+from tensorflow.keras import layers, optimizers, datasets
+from tensorflow_core.python import keras
+from tensorflow.keras import layers
+import numpy as np
+(x, y), (x_val, y_val) = datasets.mnist.load_data() # 加载数据集
+x = 2*tf.convert_to_tensor(x, dtype=tf.float32)/255.-1 # 转换为张量，缩放到-1~1
+y = tf.convert_to_tensor(y, dtype=tf.int32) # 转换为张量
+print(x, y)
+y_onehot = tf.one_hot(y, depth=10)
+w1 = tf.Variable(tf.random.truncated_normal([784, 256], stddev=0.1))
+b1 = tf.Variable(tf.zeros([256]))
+w2 = tf.Variable(tf.random.truncated_normal([256, 128], stddev=0.1))
+b2 = tf.Variable(tf.zeros([128]))
+w3 = tf.Variable(tf.random.truncated_normal([128, 10], stddev=0.1))
+b3 = tf.Variable(tf.zeros([10]))
+x = tf.random.uniform([28, 28])
+x = tf.reshape(x, [-1, 28*28])
+
+lr = 0.01
+with tf.GradientTape() as tape:
+    h1 = x @ w1 + tf.broadcast_to(b1, [x.shape[0], 256])
+    h1 = tf.nn.relu(h1)
+    h2 = h1 @ w2 + b2
+    h2 = tf.nn.relu(h2)
+    out = h2 @ w3 + b3
+    loss = tf.square(y_onehot - out)
+    print(loss)
+    loss = tf.reduce_mean(loss)
+    print(loss)
+    grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
+
+w1.assign_sub(lr * grads[0])
+b1.assign_sub(lr * grads[1])
+w2.assign_sub(lr * grads[2])
+b2.assign_sub(lr * grads[3])
+w3.assign_sub(lr * grads[4])
+b3.assign_sub(lr * grads[5])
+```
