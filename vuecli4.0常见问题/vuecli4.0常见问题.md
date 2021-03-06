@@ -37,6 +37,11 @@
   - [11.1 安装](#111-安装)
   - [11.2 在使用的页面进行引用](#112-在使用的页面进行引用)
   - [11.3 如何使用](#113-如何使用)
+- [12.vue路由设置](#12vue路由设置)
+  - [12.1 配置页面带参数的跳转](#121-配置页面带参数的跳转)
+    - [12.1.1 传参](#1211-传参)
+    - [12.1.2 接受参数](#1212-接受参数)
+  - [12.2 消除地址栏路由参数](#122-消除地址栏路由参数)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -246,3 +251,23 @@ import moment from "moment";
  this.startTime=moment(this.startTime).format("YYYY-MM-DD HH:mm:ss")
 ```
 此时日期就会格式化为如2020-10-28 15:28:21
+# 12.vue路由设置
+## 12.1 配置页面带参数的跳转
+### 12.1.1 传参
+``` html
+<router-link :to="{path: 'apple', query: {color: 'red' }}"> to apple</router-link>
+```
+### 12.1.2 接受参数
+``` js
+var color=this.$route.query.color
+```
+## 12.2 消除地址栏路由参数
+* 方法1：
+``` js
+let path = this.$route.path; //先获取路由路径
+this.$router.push(path); //再跳转路由路径，query参数没带过去，所以被清除了
+```
+* 方法2：
+``` js
+this.$router.push({ query: {} });
+```
