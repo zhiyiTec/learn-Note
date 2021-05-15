@@ -8,6 +8,9 @@
 - [4.配置分页插件](#4配置分页插件)
 - [5.添加自动生成代码的功能](#5添加自动生成代码的功能)
 - [6.主运行程序上添加注解@MapperScan](#6主运行程序上添加注解mapperscan)
+- [7.集成后的常见错误](#7集成后的常见错误)
+  - [7.1 SpringCloud集成 报错 An attempt was made to call a method that does not exist. The attempt was made](#71-springcloud集成-报错-an-attempt-was-made-to-call-a-method-that-does-not-exist-the-attempt-was-made)
+  - [7.2 net.sf.jsqlparser.statement.select.PlainSelect.getGroupByColumnReferences()Ljava/util/List](#72-netsfjsqlparserstatementselectplainselectgetgroupbycolumnreferencesljavautillist)
 
 <!-- /TOC -->
 # 1.添加驱动依赖
@@ -257,3 +260,30 @@ public class GeneratorCodeConfig {
 # 6.主运行程序上添加注解@MapperScan
 ![](5.png)
 至此配置全部结束
+# 7.集成后的常见错误
+## 7.1 SpringCloud集成 报错 An attempt was made to call a method that does not exist. The attempt was made
+原因：与pageHelper插件冲突
+解决办法：将pageHelper插件中的mybatis排除掉
+``` xml
+ <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+```
+## 7.2 net.sf.jsqlparser.statement.select.PlainSelect.getGroupByColumnReferences()Ljava/util/List
+原因：jar包版本不对
+解决办法：添加jsqlparser依赖如果有此依赖请降低版本
+``` xml
+<dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>1.4</version>
+        </dependency>
+```

@@ -47,12 +47,19 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
+          //添加head参数配置start---用于设置请求头
+        ParameterBuilder tokenPar = new ParameterBuilder();
+        List<Parameter> pars = new ArrayList<>();
+        tokenPar.name(ContenConfig.TOKEN_SIGN).description("token令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+        pars.add(tokenPar.build());
+        //添加head参数配置end
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()) // 调用apiInfo方法
                 .pathMapping("/") //配置访问路径
                 .select()
                 .paths(PathSelectors.regex("/.*")) //匹配路径下的方法
-                .build();
+                .build()
+                .globalOperationParameters(pars);//注意这里是将请求头加入到配置中;
 
     }
 
