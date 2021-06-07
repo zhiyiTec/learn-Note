@@ -42,6 +42,10 @@
     - [12.1.1 传参](#1211-传参)
     - [12.1.2 接受参数](#1212-接受参数)
   - [12.2 消除地址栏路由参数](#122-消除地址栏路由参数)
+- [13.vue-cli取消eslint](#13vue-cli取消eslint)
+- [14.vue引入Cookies](#14vue引入cookies)
+  - [14.1 安装js-cookie](#141-安装js-cookie)
+  - [14.2 在需要使用的文件里引入依赖](#142-在需要使用的文件里引入依赖)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -270,4 +274,32 @@ this.$router.push(path); //再跳转路由路径，query参数没带过去，所
 * 方法2：
 ``` js
 this.$router.push({ query: {} });
+```
+# 13.vue-cli取消eslint
+找到.eslintrc.js将"@vue/prettier"注释掉
+![](20.png)
+![](21.png)
+重新启动项目即可
+# 14.vue引入Cookies
+## 14.1 安装js-cookie
+``` js
+npm install --save js-cookie
+```
+## 14.2 在需要使用的文件里引入依赖
+``` js
+import Cookies from 'js-cookie'; //引入cookie操作依赖
+```
+![](22.png)
+下面给出一些cookie的常用操作
+``` js
+export function getCookie(key) {
+    return Cookies.get(key)
+}
+export function setCookie(key, value) {
+    return Cookies.set(key, value)
+}
+
+export function removeCookie(key) {
+    return Cookies.remove(key)
+}
 ```
