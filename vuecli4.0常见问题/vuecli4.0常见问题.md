@@ -46,6 +46,9 @@
 - [14.vue引入Cookies](#14vue引入cookies)
   - [14.1 安装js-cookie](#141-安装js-cookie)
   - [14.2 在需要使用的文件里引入依赖](#142-在需要使用的文件里引入依赖)
+- [15.npm cnpm的切换](#15npm-cnpm的切换)
+  - [15.1 npm -->cnpm](#151-npm---cnpm)
+  - [15.2 cnpm--> npm](#152-cnpm---npm)
 
 <!-- /TOC -->
 # 1.创建项目
@@ -302,4 +305,14 @@ export function setCookie(key, value) {
 export function removeCookie(key) {
     return Cookies.remove(key)
 }
+```
+
+# 15.npm cnpm的切换
+## 15.1 npm -->cnpm
+``` js
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
+## 15.2 cnpm--> npm 
+``` js
+npm config set registry https://registry.npmjs.org
 ```
